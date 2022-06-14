@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Core.DTOs
 {
-    public class SubCategory_Category_DTO
+    public class SubCategory_By_Category_Group
     {
 		public int category_id { get; set; }
 		public string category_name { get; set; }
 		public string category_image { get; set; }
+		public List<SubCategory_DTO> subCategory_DTOs { get; set; }
+	}
+	public class SubCategory_DTO
+    {
 		public int sub_category_id { get; set; }
 		public string sub_ctg_name { get; set; }
 		public string sub_ctg_description { get; set; }

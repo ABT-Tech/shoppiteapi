@@ -21,12 +21,7 @@ namespace Shoppite.Infrastructure.Repositories
         {
 
         }
-        public async Task<IEnumerable<Core.Entities.Category>> GetEmployeeByLastName(string lastname)
-        {
-            return await _shoppiteContext.Categories
-                .Where(m => m.LastName == lastname)
-                .ToListAsync();
-        }
+        
         public async Task<List<SubCategory_Category_DTO>> GetCategoryNavList()
         {
             GeneralDbContext generalDbContext = new GeneralDbContext();
@@ -45,5 +40,6 @@ namespace Shoppite.Infrastructure.Repositories
                 return subCategory_Category_DTO;
             }
         }
+        
     }
 }

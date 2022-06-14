@@ -53,6 +53,10 @@ namespace Shoppite.API
             services.AddMediatR(typeof(CreateCategoryHandler).GetTypeInfo().Assembly);
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<ISidebarRepository, SidebarRepository>();
+            services.AddTransient<ISliderBannerRepository, SliderBannerRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
