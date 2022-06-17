@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Infrastructure.Repositories
 {
-    public class SliderBannerRepository: ISliderBannerRepository
+    public class CenterBannerRepository : ICenterBannerRepository
     {
-        public async Task<List<SliderBanner_DTO>> GetsliderBannerNavList()
+        public async Task<List<Center_Banner_DTO>> GetcenterBannerNavList()
         {
             GeneralDbContext generalDbContext = new GeneralDbContext();
-            List<SliderBanner_DTO> sliderBanner_DTO = new List<SliderBanner_DTO>();
+            List<Center_Banner_DTO> center_Banner_DTO = new List<Center_Banner_DTO>();
             using (var connection = new SqlConnection(generalDbContext.ConnectionString))
             {
                 connection.Open();
@@ -25,12 +25,12 @@ namespace Shoppite.Infrastructure.Repositories
                 command.CommandType = CommandType.StoredProcedure;
                 command.CommandText = "proc_getallbannnerlist_for_slider";
                 command.Parameters.AddWithValue("@org_id", 1);
-                command.Parameters.AddWithValue("@banner_type","slider_banner");
+                command.Parameters.AddWithValue("@banner_type", "middle_banner");
                 var dataReader = await command.ExecuteReaderAsync();
                 ExtensionMethods extensionMethods = new ExtensionMethods();
-                sliderBanner_DTO = extensionMethods.DataReaderMapToList<SliderBanner_DTO>(dataReader);
+                center_Banner_DTO = extensionMethods.DataReaderMapToList<Center_Banner_DTO>(dataReader);
                 connection.Close();
-                return sliderBanner_DTO;
+                return center_Banner_DTO;
             }
         }
     }

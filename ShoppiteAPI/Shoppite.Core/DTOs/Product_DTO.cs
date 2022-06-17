@@ -16,8 +16,8 @@ namespace Shoppite.Core.DTOs
         public string product_name { get; set; }
         public string product_description { get; set; }
         public string product_code { get; set; }
-        public float product_price { get; set; }
-        public float product_discount { get; set; }
+        public double product_price { get; set; }
+        public double product_discount { get; set; }
         public int product_quantity { get; set; }
         public string product_image { get; set; }
         public bool is_available { get; set; }

@@ -12,25 +12,25 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Infrastructure.Repositories
 {
-    public class SliderBannerRepository: ISliderBannerRepository
+    public class Cloth_subRepository : ICloth_subRepository
     {
-        public async Task<List<SliderBanner_DTO>> GetsliderBannerNavList()
+        public async Task<List<Cloth_SubCategory_DTO>> GetclothSubNavList()
         {
             GeneralDbContext generalDbContext = new GeneralDbContext();
-            List<SliderBanner_DTO> sliderBanner_DTO = new List<SliderBanner_DTO>();
+            List<Cloth_SubCategory_DTO> cloth_SubCategory_DTO = new List<Cloth_SubCategory_DTO>();
             using (var connection = new SqlConnection(generalDbContext.ConnectionString))
             {
                 connection.Open();
                 var command = connection.CreateCommand();
                 command.CommandType = CommandType.StoredProcedure;
-                command.CommandText = "proc_getallbannnerlist_for_slider";
+                command.CommandText = "proc_getallsub_categories_by_cloth";
                 command.Parameters.AddWithValue("@org_id", 1);
-                command.Parameters.AddWithValue("@banner_type","slider_banner");
+                command.Parameters.AddWithValue("@category_id", 6);
                 var dataReader = await command.ExecuteReaderAsync();
                 ExtensionMethods extensionMethods = new ExtensionMethods();
-                sliderBanner_DTO = extensionMethods.DataReaderMapToList<SliderBanner_DTO>(dataReader);
+                cloth_SubCategory_DTO = extensionMethods.DataReaderMapToList<Cloth_SubCategory_DTO>(dataReader);
                 connection.Close();
-                return sliderBanner_DTO;
+                return cloth_SubCategory_DTO;
             }
         }
     }

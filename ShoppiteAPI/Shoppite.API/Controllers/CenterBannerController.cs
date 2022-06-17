@@ -11,18 +11,18 @@ namespace Shoppite.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class SliderBannerController : Controller
+    public class CenterBannerController : Controller
     {
         private readonly IMediator _mediator;
-        public SliderBannerController(IMediator mediator)
+        public CenterBannerController(IMediator mediator)
         {
             _mediator = mediator;
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<Core.DTOs.SliderBanner_DTO>> GetSliderBanner()
+        public async Task<List<Core.DTOs.Center_Banner_DTO>> GetCenterBanner()
         {
-            return await _mediator.Send(new GetAllSliderBannerQuery());
+            return await _mediator.Send(new GetAllCenterBannerQuery());
         }
     }
 }

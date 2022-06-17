@@ -56,6 +56,8 @@ namespace Shoppite.API
             services.AddTransient<ISidebarRepository, SidebarRepository>();
             services.AddTransient<ISliderBannerRepository, SliderBannerRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<ICloth_subRepository, Cloth_subRepository>();
+            services.AddTransient<ICenterBannerRepository, CenterBannerRepository>();
 
         }
 
