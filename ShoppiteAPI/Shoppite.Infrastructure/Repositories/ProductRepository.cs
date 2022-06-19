@@ -76,5 +76,44 @@ namespace Shoppite.Infrastructure.Repositories
             }
         }
 
+        public async Task<CartProduct> PostCartProduct(CartProduct cartProduct)
+        {
+            GeneralDbContext generalDbContext = new GeneralDbContext();
+            using (var connection = new SqlConnection(generalDbContext.ConnectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "addcart";
+                command.Parameters.AddWithValue("@org_id", cartProduct.org_id);
+                command.Parameters.AddWithValue("@user_id", cartProduct.user_id);
+                command.Parameters.AddWithValue("@category_id", cartProduct.category_id);
+                command.Parameters.AddWithValue("@sub_ctg_id", cartProduct.sub_ctg_id);
+                command.Parameters.AddWithValue("@product_id", cartProduct.product_id);
+                await command.ExecuteNonQueryAsync();
+                return cartProduct;
+            }
+        }
+
+        public async Task<List<CartProduct>> GetCartProduct(int org_id, int user_id)
+        {
+            GeneralDbContext generalDbContext = new GeneralDbContext();
+            List<CartProduct> cartProduct = new List<CartProduct>();
+            using (var connection = new SqlConnection(generalDbContext.ConnectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "proc_getcartproduct";
+                command.Parameters.AddWithValue("@org_id", org_id);
+                command.Parameters.AddWithValue("@user_id", user_id);
+                var dataReader = await command.ExecuteReaderAsync();
+                ExtensionMethods extensionMethods = new ExtensionMethods();
+                cartProduct = extensionMethods.DataReaderMapToList<CartProduct>(dataReader);
+                connection.Close();
+                return cartProduct;
+            }
+        }
+
     }
 }

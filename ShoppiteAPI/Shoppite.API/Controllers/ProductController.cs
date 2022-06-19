@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shoppite.Application.Commands;
 using Shoppite.Application.Queries;
 using Shoppite.Core.DTOs;
 using System;
@@ -82,6 +83,21 @@ namespace Shoppite.API.Controllers
         public async Task<List<Core.DTOs.Product_DTO>> GetProductdisc(int category_id, int sub_category_id, int product_id)
         {
             return await _mediator.Send(new GetProducDiscQuery(category_id, sub_category_id, product_id));
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<Core.DTOs.CartProduct> AddToCart(CartProduct cartProduct)
+        {
+            return await _mediator.Send(new CreateAddToCartCommand(cartProduct));
+        }
+
+        [HttpGet]
+        [Route("{org_id}/{user_id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<Core.DTOs.CartProduct>> GetProductdisc(int org_id, int user_id)
+        {
+            return await _mediator.Send(new GetAllCartProductQuery(org_id, user_id));
         }
     }
 }

@@ -12,5 +12,7 @@ namespace Shoppite.Core.Repositories
         Task<List<Product_DTO>> GetproductNavList();
         Task<List<Product_DTO>> GetproductList(int category_id, int sub_category_id);
         Task<List<Product_DTO>> Getproductdisc(int category_id, int sub_category_id, int product_id);
+        Task<CartProduct> PostCartProduct(CartProduct cartProduct);
+        Task<List<CartProduct>> GetCartProduct(int org_id, int user_id);
     }
 }

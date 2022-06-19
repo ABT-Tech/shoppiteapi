@@ -20,16 +20,16 @@ namespace Shoppite.Application.Handlers.CommandHandlers
         {
             _createCategoryRepo = categoryRepository;
         }
-        public async Task<CategoryResponse> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<WishListResponse> Handle(CreateWishListCommand request, CancellationToken cancellationToken)
         {
-            var categoryEntitiy = CategoryMapper.Mapper.Map<Shoppite.Core.Entities.Category>(request);
-            if (categoryEntitiy is null)
-            {
-                throw new ApplicationException("Issue with mapper");
-            }
-            var newCategory = await _createCategoryRepo.AddAsync(categoryEntitiy);
-            var categoryResponse = CategoryMapper.Mapper.Map<CategoryResponse>(newCategory);
-            return categoryResponse;
+            //var categoryEntitiy = CategoryMapper.Mapper.Map<Shoppite.Core.Entities.Category>(request);
+            //if (categoryEntitiy is null)
+            //{
+            //    throw new ApplicationException("Issue with mapper");
+            //}
+            //var newCategory = await _createCategoryRepo.AddAsync(categoryEntitiy);
+            //var categoryResponse = CategoryMapper.Mapper.Map<CategoryResponse>(newCategory);
+            return null;
         }
     }
 }

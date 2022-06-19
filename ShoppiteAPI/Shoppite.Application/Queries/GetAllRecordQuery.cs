@@ -15,5 +15,6 @@ namespace Shoppite.Application.Queries
     public record GetAllProductQuery : IRequest<List<Core.DTOs.Product_DTO>>;
     public record GetAllSidebarQuery : IRequest<List<Core.DTOs.Sidebar_DTO>>;
     public record GetAllSliderBannerQuery : IRequest<List<Core.DTOs.SliderBanner_DTO>>;
+    public record GetAllCartProductQuery(int org_id, int user_id) : IRequest<List<Core.DTOs.CartProduct>>;
 
 }
