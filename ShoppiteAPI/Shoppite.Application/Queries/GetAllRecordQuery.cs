@@ -16,5 +16,8 @@ namespace Shoppite.Application.Queries
     public record GetAllSidebarQuery : IRequest<List<Core.DTOs.Sidebar_DTO>>;
     public record GetAllSliderBannerQuery : IRequest<List<Core.DTOs.SliderBanner_DTO>>;
     public record GetAllCartProductQuery(int org_id, int user_id) : IRequest<List<Core.DTOs.CartProduct>>;
+    public record GetAllWishListQuery(int org_id, int user_id) : IRequest<List<Core.DTOs.WishList_DTO>>;
+    public record DeleteWishListQuery(int org_id, int user_id, int id) : IRequest<List<Core.DTOs.WishList_DTO>>;
+    public record DeleteCartListQuery(int org_id, int user_id, int id) : IRequest<List<Core.DTOs.CartProduct>>;
 
 }

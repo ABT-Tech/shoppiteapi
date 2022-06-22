@@ -2,6 +2,7 @@
 using Shoppite.Application.Commands;
 using Shoppite.Application.Mapper;
 using Shoppite.Application.Responses;
+using Shoppite.Core.DTOs;
 using Shoppite.Core.Repositories;
 using System;
 using System.Collections.Generic;
@@ -12,24 +13,17 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Application.Handlers.CommandHandlers
 {
-    public class CreateWishListHandler : IRequestHandler<CreateWishListCommand, WishListResponse>
+    public class CreateWishListHandler : IRequestHandler<CreateWishListCommand, WishList_DTO>
     {
-        private readonly ICategoryRepository _createCategoryRepo;
+        private readonly IProductRepository _createProductRepository;
 
-        public CreateWishListHandler(ICategoryRepository categoryRepository)
+        public CreateWishListHandler(IProductRepository createProductRepository)
         {
-            _createCategoryRepo = categoryRepository;
+            _createProductRepository = createProductRepository;
         }
-        public async Task<WishListResponse> Handle(CreateWishListCommand request, CancellationToken cancellationToken)
+        public async Task<WishList_DTO> Handle(CreateWishListCommand request, CancellationToken cancellationToken)
         {
-            //var categoryEntitiy = CategoryMapper.Mapper.Map<Shoppite.Core.Entities.Category>(request);
-            //if (categoryEntitiy is null)
-            //{
-            //    throw new ApplicationException("Issue with mapper");
-            //}
-            //var newCategory = await _createCategoryRepo.AddAsync(categoryEntitiy);
-            //var categoryResponse = CategoryMapper.Mapper.Map<CategoryResponse>(newCategory);
-            return null;
+            return await _createProductRepository.PostWishList(request.WishList);
         }
     }
 }

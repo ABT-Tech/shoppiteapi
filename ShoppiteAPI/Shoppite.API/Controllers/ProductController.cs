@@ -95,9 +95,40 @@ namespace Shoppite.API.Controllers
         [HttpGet]
         [Route("{org_id}/{user_id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<Core.DTOs.CartProduct>> GetProductdisc(int org_id, int user_id)
+        public async Task<List<Core.DTOs.CartProduct>> GetCartList(int org_id, int user_id)
         {
             return await _mediator.Send(new GetAllCartProductQuery(org_id, user_id));
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<Core.DTOs.WishList_DTO> PostWishList(WishList_DTO wishList_DTO)
+        {
+            return await _mediator.Send(new CreateWishListCommand(wishList_DTO));
+        }
+
+        [HttpGet]
+        [Route("{org_id}/{user_id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<Core.DTOs.WishList_DTO>> GetWishList(int org_id, int user_id)
+        {
+            return await _mediator.Send(new GetAllWishListQuery(org_id, user_id));
+        }
+
+        [HttpGet]
+        [Route("{org_id}/{user_id}/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<Core.DTOs.WishList_DTO>> DeleteWishList(int org_id, int user_id, int id)
+        {
+            return await _mediator.Send(new DeleteWishListQuery(org_id, user_id, id));
+        }
+
+        [HttpGet]
+        [Route("{org_id}/{user_id}/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<Core.DTOs.CartProduct>> DeleteCartList(int org_id, int user_id, int id)
+        {
+            return await _mediator.Send(new DeleteCartListQuery(org_id, user_id, id));
         }
     }
 }

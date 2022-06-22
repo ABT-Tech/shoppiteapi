@@ -10,4 +10,5 @@ namespace Shoppite.Application.Commands
 {
     public record CreateAddToCartCommand(CartProduct Product) : IRequest<CartProduct>;
     public record CreateAuthCommand(UserCredential UserCredentials) : IRequest<string>;
+    public record CreateWishListCommand(WishList_DTO WishList) : IRequest<WishList_DTO>;
 }

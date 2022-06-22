@@ -115,5 +115,87 @@ namespace Shoppite.Infrastructure.Repositories
             }
         }
 
+        public async Task<WishList_DTO> PostWishList(WishList_DTO wishList_DTO)
+        {
+            GeneralDbContext generalDbContext = new GeneralDbContext();
+            using (var connection = new SqlConnection(generalDbContext.ConnectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "addwishlist";
+                command.Parameters.AddWithValue("@org_id", wishList_DTO.org_id);
+                command.Parameters.AddWithValue("@user_id", wishList_DTO.user_id);
+                command.Parameters.AddWithValue("@category_id", wishList_DTO.category_id);
+                command.Parameters.AddWithValue("@sub_ctg_id", wishList_DTO.sub_ctg_id);
+                command.Parameters.AddWithValue("@product_id", wishList_DTO.product_id);
+                await command.ExecuteNonQueryAsync();
+                return wishList_DTO;
+            }
+        }
+
+        public async Task<List<WishList_DTO>> GetWishList(int org_id, int user_id)
+        {
+            GeneralDbContext generalDbContext = new GeneralDbContext();
+            List<WishList_DTO> wishList = new List<WishList_DTO>();
+            using (var connection = new SqlConnection(generalDbContext.ConnectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "proc_getWishList";
+                command.Parameters.AddWithValue("@org_id", org_id);
+                command.Parameters.AddWithValue("@user_id", user_id);
+                var dataReader = await command.ExecuteReaderAsync();
+                ExtensionMethods extensionMethods = new ExtensionMethods();
+                wishList = extensionMethods.DataReaderMapToList<WishList_DTO>(dataReader);
+                connection.Close();
+                return wishList;
+            }
+        }
+
+        public async Task<List<WishList_DTO>> DeleteWishList(int org_id, int user_id, int id)
+        {
+            GeneralDbContext generalDbContext = new GeneralDbContext();
+            List<WishList_DTO> wishListD = new List<WishList_DTO>();
+            using (var connection = new SqlConnection(generalDbContext.ConnectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "deleteWishList";
+                command.Parameters.AddWithValue("@org_id", org_id);
+                command.Parameters.AddWithValue("@user_id", user_id);
+                command.Parameters.AddWithValue("@id", id);
+                await command.ExecuteNonQueryAsync();
+                connection.Close();
+                wishListD= await GetWishList(org_id, user_id);
+                return wishListD;
+            }
+        }
+
+        public async Task<List<CartProduct>> DeleteCartList(int org_id, int user_id, int id)
+        {
+            GeneralDbContext generalDbContext = new GeneralDbContext();
+            List<CartProduct> dcartProduct = new List<CartProduct>();
+            using (var connection = new SqlConnection(generalDbContext.ConnectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "deleteCartList";
+                command.Parameters.AddWithValue("@org_id", org_id);
+                command.Parameters.AddWithValue("@user_id", user_id);
+                command.Parameters.AddWithValue("@id", id);
+                await command.ExecuteNonQueryAsync();
+                connection.Close();
+                dcartProduct = await GetCartProduct(org_id, user_id);
+                return dcartProduct;
+            }
+        }
+
     }
+
+
+
 }
