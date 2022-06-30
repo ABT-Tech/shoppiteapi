@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Application.Handlers.CommandHandlers
 {
-    public class CreateAuthHandler : IRequestHandler<CreateAuthCommand, string>
+    public class CreateAuthHandler : IRequestHandler<CreateAuthCommand, Users_DTO>
     {
         private readonly IJwtAuth _jwtAuth;
 
@@ -19,9 +19,9 @@ namespace Shoppite.Application.Handlers.CommandHandlers
         {
             _jwtAuth = jwtAuth;
         }
-        public async Task<string> Handle(CreateAuthCommand request, CancellationToken cancellationToken)
+        public async Task<Users_DTO> Handle(CreateAuthCommand request, CancellationToken cancellationToken)
         {
-            return await _jwtAuth.Authentication(request.UserCredentials.UserName, request.UserCredentials.Password); 
+            return await _jwtAuth.Authentication(request.UserCredentials.email, request.UserCredentials.password, request.UserCredentials.org_id); 
         }
     }
 }

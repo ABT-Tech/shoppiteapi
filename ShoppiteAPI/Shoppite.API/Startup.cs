@@ -61,7 +61,7 @@ namespace Shoppite.API
             services.AddTransient<ICloth_subRepository, Cloth_subRepository>();
             services.AddTransient<ICenterBannerRepository, CenterBannerRepository>();
             services.AddTransient<IJwtAuth, AuthRepository>();
-
+            services.AddTransient<IUserRepository, UserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

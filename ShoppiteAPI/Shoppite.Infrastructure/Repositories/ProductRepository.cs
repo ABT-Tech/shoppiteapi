@@ -193,6 +193,28 @@ namespace Shoppite.Infrastructure.Repositories
                 return dcartProduct;
             }
         }
+        
+
+        public async Task<List<CartProduct>> UpdateCartQuantity(int org_id, int user_id, int id, int prod_quantity)
+        {
+            GeneralDbContext generalDbContext = new GeneralDbContext();
+            List<CartProduct> ucartProduct = new List<CartProduct>();
+            using (var connection = new SqlConnection(generalDbContext.ConnectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "updateCartList";
+                command.Parameters.AddWithValue("@org_id", org_id);
+                command.Parameters.AddWithValue("@user_id", user_id);
+                command.Parameters.AddWithValue("@id", id);
+                command.Parameters.AddWithValue("@prod_quantity", prod_quantity);
+                await command.ExecuteNonQueryAsync();
+                connection.Close();
+                ucartProduct = await GetCartProduct(org_id, user_id);
+                return ucartProduct;
+            }
+        }
 
     }
 

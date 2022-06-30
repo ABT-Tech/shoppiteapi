@@ -130,5 +130,13 @@ namespace Shoppite.API.Controllers
         {
             return await _mediator.Send(new DeleteCartListQuery(org_id, user_id, id));
         }
+
+        [HttpGet]
+        [Route("{org_id}/{user_id}/{id}/{prod_quantity}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<Core.DTOs.CartProduct>> UpdateCartQuantity(int org_id, int user_id, int id, int prod_quantity)
+        {
+            return await _mediator.Send(new UpdateCartQuantityQuery(org_id, user_id, id, prod_quantity));
+        }
     }
 }

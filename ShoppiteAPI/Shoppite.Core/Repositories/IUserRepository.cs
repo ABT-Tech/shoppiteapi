@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Core.Repositories
 {
-    public interface IJwtAuth
+   public interface IUserRepository
     {
-        Task<Users_DTO> Authentication(string username, string password,int OrgID);
-
+        Task<Users_DTO> PostUserSignup(Users_DTO users_DTO);
+        //Task<Users_DTO> GetUserInfo(int org_id, int id);
     }
 }

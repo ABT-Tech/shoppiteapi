@@ -19,5 +19,6 @@ namespace Shoppite.Application.Queries
     public record GetAllWishListQuery(int org_id, int user_id) : IRequest<List<Core.DTOs.WishList_DTO>>;
     public record DeleteWishListQuery(int org_id, int user_id, int id) : IRequest<List<Core.DTOs.WishList_DTO>>;
     public record DeleteCartListQuery(int org_id, int user_id, int id) : IRequest<List<Core.DTOs.CartProduct>>;
+    public record UpdateCartQuantityQuery(int org_id, int user_id, int id, int prod_quantity) :IRequest<List<Core.DTOs.CartProduct>>;
 
 }

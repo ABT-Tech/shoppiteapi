@@ -8,7 +8,8 @@ namespace Shoppite.Core.DTOs
 {
     public class UserCredential
     {
-        public string UserName { get; set; }
-        public string Password { get; set; }
+        public int org_id { get; set; }
+        public string email { get; set; }
+        public string password { get; set; }
     }
 }

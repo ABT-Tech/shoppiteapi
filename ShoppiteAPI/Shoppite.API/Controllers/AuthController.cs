@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Shoppite.Core.DTOs;
 
 namespace Shoppite.API.Controllers
 {
@@ -23,10 +24,9 @@ namespace Shoppite.API.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<string>> UserLogin([FromBody] CreateAuthCommand command)
+        public async Task<Core.DTOs.Users_DTO> UserLogin(UserCredential userCredential)
         {
-            var result = await _mediator.Send(command);
-            return Ok(result);
+            return await _mediator.Send(new CreateAuthCommand(userCredential));
         }
 
         [HttpPost]
