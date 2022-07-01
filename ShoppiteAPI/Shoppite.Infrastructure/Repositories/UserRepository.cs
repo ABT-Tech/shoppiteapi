@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Shoppite.Core.DTOs;
 using Shoppite.Core.Entities;
+using Shoppite.Core.Extensions;
 using Shoppite.Core.Repositories;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,26 @@ namespace Shoppite.Infrastructure.Repositories
                 command.Parameters.AddWithValue("@email", users_DTO.email);
                 command.Parameters.AddWithValue("@password", users_DTO.password);
                 await command.ExecuteNonQueryAsync();
+                return users_DTO;
+            }
+        }
+
+        public async Task<List<UserInfo_DTO>> GetAlluser(int org_id, int id)
+        {
+            GeneralDbContext generalDbContext = new GeneralDbContext();
+            List<UserInfo_DTO> users_DTO = new List<UserInfo_DTO>();
+            using (var connection = new SqlConnection(generalDbContext.ConnectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "proc_getalluser";
+                command.Parameters.AddWithValue("@org_id", org_id);
+                command.Parameters.AddWithValue("@id", id);
+                var dataReader = await command.ExecuteReaderAsync();
+                ExtensionMethods extensionMethods = new ExtensionMethods();
+                users_DTO = extensionMethods.DataReaderMapToList<UserInfo_DTO>(dataReader);
+                connection.Close();
                 return users_DTO;
             }
         }

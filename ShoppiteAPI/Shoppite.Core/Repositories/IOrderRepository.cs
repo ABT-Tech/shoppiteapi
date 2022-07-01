@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Core.Repositories
 {
-   public interface IUserRepository
+    public interface IOrderRepository
     {
-        Task<Users_DTO> PostUserSignup(Users_DTO users_DTO);
-        Task<List<UserInfo_DTO>> GetAlluser(int org_id, int id);
+        Task<Order_DTO> PostOrder(Order_DTO order);
     }
 }
