@@ -138,5 +138,28 @@ namespace Shoppite.API.Controllers
         {
             return await _mediator.Send(new UpdateCartQuantityQuery(org_id, user_id, id, prod_quantity));
         }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<Core.DTOs.Product_DTO> AddProduct(Product_DTO product_DTO)
+        {
+            return await _mediator.Send(new CreateProductCommand(product_DTO));
+        }
+
+        [HttpGet]
+        [Route("{org_id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<Core.DTOs.Product_DTO>> GetAllProducts(int org_id)
+        {
+            return await _mediator.Send(new GetAllProductsQuery(org_id));
+        }
+
+        [HttpGet]
+        [Route("{id}/{org_id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<Core.DTOs.Product_DTO>> DeleteProduct(int id,int org_id)
+        {
+            return await _mediator.Send(new DeleteProductQuery(id, org_id));
+        }
     }
 }

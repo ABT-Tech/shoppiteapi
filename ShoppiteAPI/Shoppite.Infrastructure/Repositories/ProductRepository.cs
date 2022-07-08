@@ -216,6 +216,70 @@ namespace Shoppite.Infrastructure.Repositories
             }
         }
 
+        public async Task<Product_DTO> PostProduct(Product_DTO product_DTO)
+        {
+            GeneralDbContext generalDbContext = new GeneralDbContext();
+            using (var connection = new SqlConnection(generalDbContext.ConnectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "addproducts";
+                command.Parameters.AddWithValue("@id", product_DTO.id);
+                command.Parameters.AddWithValue("@org_id", product_DTO.org_id);
+                command.Parameters.AddWithValue("@category_id", product_DTO.category_id);
+                command.Parameters.AddWithValue("@sub_ctg_id", product_DTO.sub_ctg_id);
+                command.Parameters.AddWithValue("@company_name", product_DTO.company_name);
+                command.Parameters.AddWithValue("@product_name", product_DTO.product_name);
+                command.Parameters.AddWithValue("@product_description", product_DTO.product_description);
+                command.Parameters.AddWithValue("@product_code", product_DTO.product_code);
+                command.Parameters.AddWithValue("@product_price", product_DTO.product_price);
+                command.Parameters.AddWithValue("@product_discount", product_DTO.product_discount);
+                command.Parameters.AddWithValue("@product_quantity", product_DTO.product_quantity);
+                command.Parameters.AddWithValue("@product_image", product_DTO.product_image);
+                command.Parameters.AddWithValue("@is_available", product_DTO.is_available);
+                await command.ExecuteNonQueryAsync();
+                return product_DTO;
+            }
+        }
+
+        public async Task<List<Product_DTO>> GetAllProduct(int org_id)
+        {
+            GeneralDbContext generalDbContext = new GeneralDbContext();
+            List<Product_DTO> product_DTO = new List<Product_DTO>();
+            using (var connection = new SqlConnection(generalDbContext.ConnectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "proc_getallproduct";
+                command.Parameters.AddWithValue("@org_id", org_id);
+                var dataReader = await command.ExecuteReaderAsync();
+                ExtensionMethods extensionMethods = new ExtensionMethods();
+                product_DTO = extensionMethods.DataReaderMapToList<Product_DTO>(dataReader);
+                connection.Close();
+                return product_DTO;
+            }
+        }
+
+        public async Task<List<Product_DTO>> DeleteProduct(int id, int org_id)
+        {
+            GeneralDbContext generalDbContext = new GeneralDbContext();
+            List<Product_DTO> product_DTO = new List<Product_DTO>();
+            using (var connection = new SqlConnection(generalDbContext.ConnectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "deleteproducts";
+                command.Parameters.AddWithValue("@id", id);
+                await command.ExecuteNonQueryAsync();
+                connection.Close();
+                product_DTO = await GetAllProduct(org_id);
+                return product_DTO;
+            }
+        }
+
     }
 
 

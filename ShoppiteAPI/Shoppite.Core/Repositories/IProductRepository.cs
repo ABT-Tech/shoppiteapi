@@ -19,5 +19,8 @@ namespace Shoppite.Core.Repositories
         Task<List<WishList_DTO>> DeleteWishList(int org_id, int user_id, int id);
         Task<List<CartProduct>> DeleteCartList(int org_id, int user_id, int id);
         Task<List<CartProduct>> UpdateCartQuantity(int org_id, int user_id, int id, int prod_quantity);
+        Task<Product_DTO> PostProduct(Product_DTO product_DTO);
+        Task<List<Product_DTO>> GetAllProduct(int org_id);
+        Task<List<Product_DTO>> DeleteProduct(int id, int org_id);
     }
 }

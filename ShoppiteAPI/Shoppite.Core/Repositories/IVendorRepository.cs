@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Core.Repositories
 {
-    public interface IOrderRepository
+    public interface IVendorRepository
     {
-        Task<Order_DTO> PostOrder(List<CartProduct> order);
+        Task<Vendor_DTO> PostVendor(Vendor_DTO vendor);
     }
 }

@@ -10,22 +10,20 @@ using System.Threading.Tasks;
 
 namespace Shoppite.API.Controllers
 {
-
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class OrderController : Controller
+    public class VendorController : Controller
     {
         private readonly IMediator _mediator;
-        public OrderController(IMediator mediator)
+        public VendorController(IMediator mediator)
         {
             _mediator = mediator;
         }
-
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<Core.DTOs.Order_DTO> AddOrder(List<CartProduct> cart)
+        public async Task<Core.DTOs.Vendor_DTO> AddVendor(Vendor_DTO vendor)
         {
-            return await _mediator.Send(new CreateOrderCommand(cart));
+            return await _mediator.Send(new CreateVendorCommand(vendor));
         }
     }
 }

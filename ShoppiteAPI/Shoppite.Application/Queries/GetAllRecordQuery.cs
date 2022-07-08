@@ -21,5 +21,13 @@ namespace Shoppite.Application.Queries
     public record DeleteCartListQuery(int org_id, int user_id, int id) : IRequest<List<Core.DTOs.CartProduct>>;
     public record UpdateCartQuantityQuery(int org_id, int user_id, int id, int prod_quantity) :IRequest<List<Core.DTOs.CartProduct>>;
     public record GetAllUserQuery(int org_id, int id) :IRequest<List<Core.DTOs.UserInfo_DTO>>;
-
+    public record GetAllCategoriesQuery(int org_id) : IRequest<List<Core.DTOs.Category_DTO>>;
+    public record GetAllSubcategoryQuery(int org_id) : IRequest<List<Core.DTOs.Subcatgory_DTO>>;
+    public record GetAllSubcategoryByCategoryQuery(int org_id, int category_id) : IRequest<List<Core.DTOs.Subcatgory_DTO>>;
+    public record GetAllProductsQuery(int org_id) : IRequest<List<Core.DTOs.Product_DTO>>;
+    public record DeleteCategoryQuery(int id, int org_id) :IRequest<List<Core.DTOs.Category_DTO>>;
+    public record DeleteSubCategoryQuery(int id, int org_id) :IRequest<List<Core.DTOs.Subcatgory_DTO>>;
+    public record DeleteProductQuery(int id, int org_id) :IRequest<List<Core.DTOs.Product_DTO>>;
+    public record UpdateCategorytQuery(int id, int org_id, string category_code, string category_name, string category_description, string category_image) : IRequest<List<Core.DTOs.Category_DTO>>;
+    public record GetCategorybyidQuery(int id) :IRequest<List<Core.DTOs.Category_DTO>>;
 }
