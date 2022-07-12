@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Application.Handlers.QueryHandlers
 {
-    public class UpdateProductHandler : IRequestHandler<UpdateCategorytQuery, List<Core.DTOs.Category_DTO>>
+    public class UpdateCategoryHandler : IRequestHandler<UpdateCategorytQuery, List<Core.DTOs.Category_DTO>>
     {
         private readonly ICategoriesRepository _productRepository;
 
-        public UpdateProductHandler(ICategoriesRepository productRepository)
+        public UpdateCategoryHandler(ICategoriesRepository productRepository)
         {
             _productRepository = productRepository;
         }

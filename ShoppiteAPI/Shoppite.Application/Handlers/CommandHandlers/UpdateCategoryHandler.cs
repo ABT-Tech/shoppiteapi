@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Application.Handlers
 {
-    public class CreateProductHandler : IRequestHandler<CreateProductCommand, Product_DTO>
+    public class UpdateCategoryHandler : IRequestHandler<CreateProductCommand, Product_DTO>
     {
         private readonly IProductRepository _createProductRepository;
 
-        public CreateProductHandler(IProductRepository createProductRepository)
+        public UpdateCategoryHandler(IProductRepository createProductRepository)
         {
             _createProductRepository = createProductRepository;
         }
