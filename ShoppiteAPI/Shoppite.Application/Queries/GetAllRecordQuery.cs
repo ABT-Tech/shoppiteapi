@@ -31,4 +31,5 @@ namespace Shoppite.Application.Queries
     public record UpdateCategorytQuery(int id, int org_id, string category_code, string category_name, string category_description, string category_image) : IRequest<List<Core.DTOs.Category_DTO>>;
     public record GetCategorybyidQuery(int id) :IRequest<List<Core.DTOs.Category_DTO>>;
     public record UpdateSubCategoryQuery(int id, int org_id, int category_id, string sub_ctg_name, string sub_ctg_description, string sub_ctg_code, string sub_ctg_image) : IRequest<List<Core.DTOs.Subcatgory_DTO>>;
+    public record GetAllVendorUsersQuery(int org_id) : IRequest<List<Core.DTOs.Vendor_Users_DTO>>;    
 }
