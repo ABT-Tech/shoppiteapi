@@ -25,5 +25,18 @@ namespace Shoppite.API.Controllers
         {
             return await _mediator.Send(new CreateVendorCommand(vendor));
         }
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<Core.DTOs.Vendor_Users_DTO> AddVendorUsers(Vendor_Users_DTO vendorusers)
+        {
+            return await _mediator.Send(new CreateVendorUsersCommand(vendorusers));
+        }
+        //[HttpGet]
+        //[Route("{org_id}")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //public async Task<List<Core.DTOs.Vendor_Users_DTO>> GetAllVendorUsers(int org_id)
+        //{
+        //    return await _mediator.Send(new GetAllVendorUsersQuery(org_id));
+        //}
     }
 }
