@@ -17,4 +17,5 @@ namespace Shoppite.Application.Commands
     public record CreateProductCommand(Product_DTO product_DTO) : IRequest<Product_DTO>;
     public record CreateCategoriesCommand(Category_DTO category_DTO) : IRequest<Category_DTO>;
     public record CreateSubcategoryCommand(Subcatgory_DTO subcatgory_DTO) : IRequest<Subcatgory_DTO>;
+    public record UpdateSubcategoryCommand(Subcatgory_DTO subcatgory_DTO) : IRequest<Subcatgory_DTO>;
 }

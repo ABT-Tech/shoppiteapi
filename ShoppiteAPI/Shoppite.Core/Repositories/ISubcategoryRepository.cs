@@ -13,7 +13,7 @@ namespace Shoppite.Core.Repositories
         Task<List<Subcatgory_DTO>> GetAllSubcategory(int org_id);
         Task<List<Subcatgory_DTO>> GetAllSubcategoryByCategory(int org_id, int category_id);
         Task<List<Subcatgory_DTO>> DeleteSubcategory(int id, int org_id);
-        Task<List<Subcatgory_DTO>> UpdateSubCategory(int id, int org_id, int category_id, string sub_ctg_name, string sub_ctg_description, string sub_ctg_code, string sub_ctg_image);
+        Task<Subcatgory_DTO> UpdateSubCategory(Subcatgory_DTO subcatgory_DTO);
         Task<List<Subcatgory_DTO>> GetSubCategorybyid(int id, int org_id);
     }
 }

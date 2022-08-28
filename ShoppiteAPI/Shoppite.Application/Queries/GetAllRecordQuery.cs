@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Shoppite.Core.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,11 +25,12 @@ namespace Shoppite.Application.Queries
     public record GetAllCategoriesQuery(int org_id) : IRequest<List<Core.DTOs.Category_DTO>>;
     public record GetAllSubcategoryQuery(int org_id) : IRequest<List<Core.DTOs.Subcatgory_DTO>>;
     public record GetAllSubcategoryByCategoryQuery(int org_id, int category_id) : IRequest<List<Core.DTOs.Subcatgory_DTO>>;
+    public record GetSubcategoryByIdQuery(int id, int org_id) : IRequest<List<Core.DTOs.Subcatgory_DTO>>;
     public record GetAllProductsQuery(int org_id) : IRequest<List<Core.DTOs.Product_DTO>>;
     public record DeleteCategoryQuery(int id, int org_id) :IRequest<List<Core.DTOs.Category_DTO>>;
     public record DeleteSubCategoryQuery(int id, int org_id) :IRequest<List<Core.DTOs.Subcatgory_DTO>>;
     public record DeleteProductQuery(int id, int org_id) :IRequest<List<Core.DTOs.Product_DTO>>;
     public record UpdateCategorytQuery(int id, int org_id, string category_code, string category_name, string category_description, string category_image) : IRequest<List<Core.DTOs.Category_DTO>>;
     public record GetCategorybyidQuery(int id) :IRequest<List<Core.DTOs.Category_DTO>>;
-    public record UpdateSubCategoryQuery(int id, int org_id, int category_id, string sub_ctg_name, string sub_ctg_description, string sub_ctg_code, string sub_ctg_image) : IRequest<List<Core.DTOs.Subcatgory_DTO>>;
+    public record UpdateSubCategoryQuery(Subcatgory_DTO subcatgory_DTO) : IRequest<List<Core.DTOs.Subcatgory_DTO>>;
 }
