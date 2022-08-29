@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shoppite.Application.Commands;
+using Shoppite.Application.Queries;
 using Shoppite.Core.DTOs;
 using System;
 using System.Collections.Generic;
@@ -31,12 +32,12 @@ namespace Shoppite.API.Controllers
         {
             return await _mediator.Send(new CreateVendorUsersCommand(vendorusers));
         }
-        //[HttpGet]
-        //[Route("{org_id}")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //public async Task<List<Core.DTOs.Vendor_Users_DTO>> GetAllVendorUsers(int org_id)
-        //{
-        //    return await _mediator.Send(new GetAllVendorUsersQuery(org_id));
-        //}
+        [HttpGet]
+        [Route("{org_id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<Core.DTOs.Vendor_Users_DTO>> GetAllVendorUsers(int org_id)
+        {
+            return await _mediator.Send(new GetAllVendorUsersQuery(org_id));
+        }
     }
 }

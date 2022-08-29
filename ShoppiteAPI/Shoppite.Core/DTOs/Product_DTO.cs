@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,5 +22,6 @@ namespace Shoppite.Core.DTOs
         public int product_quantity { get; set; }
         public string product_image { get; set; }
         public bool is_available { get; set; }
+        public List<IFormFile> product_file { get; set; }
     }
 }

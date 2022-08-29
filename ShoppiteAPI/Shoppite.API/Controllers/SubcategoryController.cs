@@ -6,8 +6,10 @@ using Shoppite.Application.Queries;
 using Shoppite.Core.DTOs;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace Shoppite.API.Controllers
 {
@@ -23,8 +25,14 @@ namespace Shoppite.API.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<Core.DTOs.Subcatgory_DTO> AddSubcategory(Subcatgory_DTO subcatgory_DTO)
+        public async Task<Core.DTOs.Subcatgory_DTO> AddSubcategory([FromForm]Subcatgory_DTO subcatgory_DTO)
         {
+            string path = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot");
+           // string path = Path.Combine(Directory.GetDirectories(@"C:\Images"));
+            using(Stream stream = new FileStream(path,FileMode.Create))
+            {
+                subcatgory_DTO.subcategory_file.CopyTo(stream);
+            }
             return await _mediator.Send(new CreateSubcategoryCommand(subcatgory_DTO));
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,8 @@ namespace Shoppite.Core.DTOs
         public string sub_ctg_description { get; set; }
         public string sub_ctg_code { get; set; }
         public string sub_ctg_image { get; set; }
-        
+        //public List<IFormFile> subcategory_file { get; set; }
+        public IFormFile subcategory_file { get; set; }
+
     }
 }

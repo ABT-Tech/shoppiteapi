@@ -83,7 +83,7 @@ namespace Shoppite.Infrastructure.Repositories
                 connection.Open();
                 var command = connection.CreateCommand();
                 command.CommandType = CommandType.StoredProcedure;
-                command.CommandText = "proc_getallsub_categories";
+                command.CommandText = "proc_getallvendorusers";
                 command.Parameters.AddWithValue("@org_id", org_id);
                 var dataReader = await command.ExecuteReaderAsync();
                 ExtensionMethods extensionMethods = new ExtensionMethods();

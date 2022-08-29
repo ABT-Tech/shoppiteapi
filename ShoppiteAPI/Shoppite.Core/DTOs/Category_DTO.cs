@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,6 @@ namespace Shoppite.Core.DTOs
         public string category_name { get; set; }
         public string category_description { get; set; }
         public string category_image { get; set; }
+        
     }
 }
