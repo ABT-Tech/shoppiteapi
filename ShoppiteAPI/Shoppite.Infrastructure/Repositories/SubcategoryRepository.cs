@@ -91,26 +91,24 @@ namespace Shoppite.Infrastructure.Repositories
                 return subcatgory_DTO;
             }
         }
-        public async Task<List<Subcatgory_DTO>> UpdateSubCategory(int id, int org_id, int category_id, string sub_ctg_name, string sub_ctg_description, string sub_ctg_code, string sub_ctg_image)
+        public async Task<Subcatgory_DTO> UpdateSubCategory(Subcatgory_DTO subcatgory_DTO)
         {
             GeneralDbContext generalDbContext = new GeneralDbContext();
-            List<Subcatgory_DTO> subcatgory_DTO = new List<Subcatgory_DTO>();
             using (var connection = new SqlConnection(generalDbContext.ConnectionString))
             {
                 connection.Open();
                 var command = connection.CreateCommand();
                 command.CommandType = CommandType.StoredProcedure;
                 command.CommandText = "updatesub_categories";
-                command.Parameters.AddWithValue("@id", id);
-                command.Parameters.AddWithValue("@org_id", org_id);
-                command.Parameters.AddWithValue("@category_id", category_id);
-                command.Parameters.AddWithValue("@sub_ctg_name", sub_ctg_name);
-                command.Parameters.AddWithValue("@sub_ctg_description", sub_ctg_description);
-                command.Parameters.AddWithValue("@sub_ctg_code", sub_ctg_code);
-                command.Parameters.AddWithValue("@sub_ctg_image", sub_ctg_image);
+                command.Parameters.AddWithValue("@id", subcatgory_DTO.id);
+                command.Parameters.AddWithValue("@org_id", subcatgory_DTO.org_id);
+                command.Parameters.AddWithValue("@category_id", subcatgory_DTO.category_id);
+                command.Parameters.AddWithValue("@sub_ctg_name", subcatgory_DTO.sub_ctg_name);
+                command.Parameters.AddWithValue("@sub_ctg_description", subcatgory_DTO.sub_ctg_description);
+                command.Parameters.AddWithValue("@sub_ctg_code", subcatgory_DTO.sub_ctg_code);
+                command.Parameters.AddWithValue("@sub_ctg_image", subcatgory_DTO.sub_ctg_image);
                 await command.ExecuteNonQueryAsync();
                 connection.Close();
-                subcatgory_DTO = await GetAllSubcategory(org_id);
                 return subcatgory_DTO;
             }
         }

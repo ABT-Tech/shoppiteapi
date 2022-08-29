@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Shoppite.Core.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace Shoppite.Application.Queries
     public record GetAllCategoriesQuery(int org_id) : IRequest<List<Core.DTOs.Category_DTO>>;
     public record GetAllSubcategoryQuery(int org_id) : IRequest<List<Core.DTOs.Subcatgory_DTO>>;
     public record GetAllSubcategoryByCategoryQuery(int org_id, int category_id) : IRequest<List<Core.DTOs.Subcatgory_DTO>>;
+    public record GetSubcategoryByIdQuery(int id, int org_id) : IRequest<List<Core.DTOs.Subcatgory_DTO>>;
     public record GetAllProductsQuery(int org_id) : IRequest<List<Core.DTOs.Product_DTO>>;
     public record DeleteCategoryQuery(int id, int org_id) :IRequest<List<Core.DTOs.Category_DTO>>;
     public record DeleteSubCategoryQuery(int id, int org_id) :IRequest<List<Core.DTOs.Subcatgory_DTO>>;
