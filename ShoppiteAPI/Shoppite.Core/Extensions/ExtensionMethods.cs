@@ -17,7 +17,8 @@ namespace Shoppite.Core.Extensions
             while (dr.Read())
             {
                 obj = Activator.CreateInstance<T>();
-                foreach (PropertyInfo prop in obj.GetType().GetProperties())
+                PropertyInfo[] pinfo = obj.GetType().GetFilteredProperties();
+                foreach (PropertyInfo prop in pinfo)
                 {
                     if (!object.Equals(dr[prop.Name], DBNull.Value))
                     {
@@ -27,6 +28,14 @@ namespace Shoppite.Core.Extensions
                 list.Add(obj);
             }
             return list;
+        }
+       
+    }
+    public static class TypeExtensions
+    {
+        public static PropertyInfo[] GetFilteredProperties(this Type type)
+        {
+            return type.GetProperties().Where(pi => pi.GetCustomAttributes(typeof(SkipPropertyAttribute), true).Length == 0).ToArray();
         }
     }
 }
