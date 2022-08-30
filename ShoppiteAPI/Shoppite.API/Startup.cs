@@ -45,7 +45,8 @@ namespace Shoppite.API
             });
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
-                builder.AllowAnyOrigin()
+                string[] origins = { "http://vendor.shoppite.in/", "http://localhost:3000/" };
+                builder.WithOrigins(origins)
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
