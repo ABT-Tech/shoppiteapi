@@ -52,8 +52,21 @@ namespace Shoppite.API
             }));
             services.AddAutoMapper(typeof(Startup));
             services.AddMediatR(typeof(CreateCategoryHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(CreateAddToCartHandler).GetTypeInfo().Assembly);
+            //services.AddMediatR(typeof(CreateAuthHandler).GetTypeInfo().Assembly);
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<ISidebarRepository, SidebarRepository>();
+            services.AddTransient<ISliderBannerRepository, SliderBannerRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<ICloth_subRepository, Cloth_subRepository>();
+            services.AddTransient<ICenterBannerRepository, CenterBannerRepository>();
+            services.AddTransient<IJwtAuth, AuthRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IOrderRepository, OrderRepository>();
+            services.AddTransient<IVendorRepository, VendorRepository>();
+            services.AddTransient<ICategoriesRepository, CategoriesRepository>();
+            services.AddTransient<ISubcategoryRepository, SubcategoryRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,6 +84,8 @@ namespace Shoppite.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
