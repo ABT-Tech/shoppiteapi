@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Shoppite.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace Shoppite.Core.DTOs
         public string sub_ctg_code { get; set; }
         public string sub_ctg_image { get; set; }
         //public List<IFormFile> subcategory_file { get; set; }
+        [SkipProperty]
         public IFormFile subcategory_file { get; set; }
 
     }

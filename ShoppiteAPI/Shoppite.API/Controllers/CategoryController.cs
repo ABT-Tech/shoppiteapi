@@ -23,13 +23,9 @@ namespace Shoppite.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetCategoriesAndSubCategories()
+        public async Task<List<Core.DTOs.SubCategory_Category_DTO>> GetCategoriesAndSubCategories()
         {
-            var getCategoryDetails = await _mediator.Send(new GetAllCategoryQuery());
-            var groupedCategoryDetails = getCategoryDetails.GroupBy(u =>new { u.category_id,u.category_name,u.category_image })
-                                      .Select(grp => new { CategoryId = grp.Key.category_id, grp.Key.category_name, grp.Key.category_image, SubCategoryList = grp.ToList() })
-                                      .ToList();
-            return groupedCategoryDetails;
+            return await _mediator.Send(new GetAllCategoryQuery());
         }
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
