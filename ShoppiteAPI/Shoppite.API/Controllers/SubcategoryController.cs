@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Shoppite.Application.Commands;
 using Shoppite.Application.Queries;
 using Shoppite.Core.DTOs;
@@ -18,21 +19,38 @@ namespace Shoppite.API.Controllers
     public class SubcategoryController : Controller
     {
         private readonly IMediator _mediator;
-        public SubcategoryController(IMediator mediator)
+        private readonly IConfiguration _iconfiguration;
+        public SubcategoryController(IMediator mediator, IConfiguration iconfiguration)
         {
             _mediator = mediator;
+            _iconfiguration = iconfiguration;
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<Core.DTOs.Subcatgory_DTO> AddSubcategory([FromForm]Subcatgory_DTO subcatgory_DTO)
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot");
+            string SystemPath = _iconfiguration.GetSection("SystemPath").Value+"\\"+subcatgory_DTO.org_id;
+            if (!Directory.Exists(SystemPath)) {
+                Directory.CreateDirectory(SystemPath);
+            }
+            SystemPath = SystemPath + "\\SubCategory";
+            if (!Directory.Exists(SystemPath))
+            {
+                Directory.CreateDirectory(SystemPath);
+            }
+            SystemPath = SystemPath + "\\"+subcatgory_DTO.id;
+            if (!Directory.Exists(SystemPath))
+            {
+                Directory.CreateDirectory(SystemPath);
+            }
+            string path = Path.Combine(SystemPath, subcatgory_DTO.subcategory_file.FileName);
            // string path = Path.Combine(Directory.GetDirectories(@"C:\Images"));
             using(Stream stream = new FileStream(path,FileMode.Create))
             {
                 subcatgory_DTO.subcategory_file.CopyTo(stream);
             }
+            subcatgory_DTO.sub_ctg_image = path;
             return await _mediator.Send(new CreateSubcategoryCommand(subcatgory_DTO));
         }
 
