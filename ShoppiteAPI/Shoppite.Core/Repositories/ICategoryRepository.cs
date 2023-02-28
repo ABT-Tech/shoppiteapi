@@ -1,4 +1,5 @@
 ﻿using Shoppite.Core.DTOs;
+using Shoppite.Core.Model;
 using Shoppite.Core.Repositories.Base;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,9 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Core.Repositories
 {
-    public interface ICategoryRepository : IRepository<Shoppite.Core.Entities.Category>
+    public interface ICategoryRepository 
     {
         //custom operations here
-        Task<List<SubCategory_Category_DTO>> GetCategoryNavList();
-        
+        Task<List<CategoryMaster>> GetAllCategory(int OrgId);
     }
 }

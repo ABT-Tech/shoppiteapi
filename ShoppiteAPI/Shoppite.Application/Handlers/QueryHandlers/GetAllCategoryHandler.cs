@@ -7,20 +7,24 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Shoppite.Application.Responses;
+using Shoppite.Application.Mapper;
 
 namespace Shoppite.Application.Handlers.QueryHandlers
 {
-    public class GetAllCategoryHandler : IRequestHandler<GetAllCategoryQuery, List<Core.DTOs.SubCategory_Category_DTO>>
+    public class GetAllCategoriesHandler : IRequestHandler<GetAllCategoriesQuery, List<CategoryResponse>>
     {
         private readonly ICategoryRepository _categoryRepo;
 
-        public GetAllCategoryHandler(ICategoryRepository categoryRepository)
+        public GetAllCategoriesHandler(ICategoryRepository categoryRepository)
         {
             _categoryRepo = categoryRepository;
         }
-        public async Task<List<Core.DTOs.SubCategory_Category_DTO>> Handle(GetAllCategoryQuery request, CancellationToken cancellationToken)
+        public async Task<List<CategoryResponse>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
         {
-            return (List<Core.DTOs.SubCategory_Category_DTO>)await _categoryRepo.GetCategoryNavList();
+            var CategoryList = await _categoryRepo.GetAllCategory(request.org_id);
+            var mapper = ObjectMapper.Mapper.Map<List<CategoryResponse>>(CategoryList);
+            return mapper;
         }
     }
 }

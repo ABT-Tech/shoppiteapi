@@ -12,34 +12,21 @@ using System.Data;
 using Shoppite.Core.DTOs;
 using Shoppite.Core.Extensions;
 using Shoppite.Core.Entities;
+using Shoppite.Core.Model;
 
 namespace Shoppite.Infrastructure.Repositories
 {
-    public class CategoryRepository : Repository<Shoppite.Core.Entities.Category>, ICategoryRepository
+    public class CategoryRepository : ICategoryRepository
     {
-        public CategoryRepository(ShoppiteContext shoppiteContext) : base(shoppiteContext)
+        protected readonly Shoppite_masterContext _MasterContext;
+        public CategoryRepository(Shoppite_masterContext dbContext)
         {
+            _MasterContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        }
+        public async Task<List<CategoryMaster>> GetAllCategory(int OrgId) 
+        {
+            return await _MasterContext.CategoryMasters.Where(x => x.OrgId == OrgId).ToListAsync();
 
         }
-        
-        public async Task<List<SubCategory_Category_DTO>> GetCategoryNavList()
-        {
-            GeneralDbContext generalDbContext = new GeneralDbContext();
-            List<SubCategory_Category_DTO> subCategory_Category_DTO = new List<SubCategory_Category_DTO>();
-            using (var connection = new SqlConnection(generalDbContext.ConnectionString))
-            {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.StoredProcedure;
-                command.CommandText = "proc_getallsub_categories_by_category";
-                command.Parameters.AddWithValue("@org_id", 1);
-                var dataReader = await command.ExecuteReaderAsync();
-                ExtensionMethods extensionMethods = new ExtensionMethods();
-                subCategory_Category_DTO = extensionMethods.DataReaderMapToList<SubCategory_Category_DTO>(dataReader);
-                connection.Close();
-                return subCategory_Category_DTO;
-            }
-        }
-        
     }
 }

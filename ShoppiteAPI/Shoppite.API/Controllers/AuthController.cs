@@ -1,6 +1,5 @@
 ﻿using Shoppite.Application.Commands;
 using Shoppite.Application.Queries;
-using Shoppite.Application.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

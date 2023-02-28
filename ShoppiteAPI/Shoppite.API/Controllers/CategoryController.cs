@@ -1,6 +1,5 @@
 ﻿using Shoppite.Application.Commands;
 using Shoppite.Application.Queries;
-using Shoppite.Application.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,20 +22,9 @@ namespace Shoppite.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetCategoriesAndSubCategories()
+        public async Task<object> GetAllCategories(int OrgId)
         {
-            var getCategoryDetails = await _mediator.Send(new GetAllCategoryQuery());
-            var groupedCategoryDetails = getCategoryDetails.GroupBy(u =>new { u.category_id,u.category_name,u.category_image })
-                                      .Select(grp => new { CategoryId = grp.Key.category_id, grp.Key.category_name, grp.Key.category_image, SubCategoryList = grp.ToList() })
-                                      .ToList();
-            return groupedCategoryDetails;
-        }
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<CategoryResponse>> CreateCategory([FromBody] CreateCategoryCommand command)
-        {
-            var result = await _mediator.Send(command);
-            return Ok(result);
+            return await _mediator.Send(new GetAllCategoriesQuery(OrgId));
         }
     }
 }

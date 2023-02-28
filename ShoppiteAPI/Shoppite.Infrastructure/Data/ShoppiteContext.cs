@@ -14,6 +14,5 @@ namespace Shoppite.Infrastructure.Data
 
         }
 
-        public DbSet<Shoppite.Core.Entities.Category> Categories { get; set; }
     }
 }
