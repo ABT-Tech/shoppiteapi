@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Shoppite.Application.Responses;
+using Shoppite.Core.DTOs;
 using Shoppite.Core.Model;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,8 @@ namespace Shoppite.Application.Mapper
         public ShoppiteMaterDtoMapper()
         {
             CreateMap<CategoryMaster, CategoryResponse>().ReverseMap();
+            CreateMap<OrganizationDTO, OrganizationResponse>().ReverseMap();
+            CreateMap<ProductsDTO, ProductResponse>().ReverseMap();
         }
     }
  }

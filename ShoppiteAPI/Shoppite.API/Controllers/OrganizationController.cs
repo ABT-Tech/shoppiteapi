@@ -12,26 +12,19 @@ namespace Shoppite.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class OrganizationController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public CategoryController(IMediator mediator)
+        public OrganizationController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetAllCategories(int OrgId)
+        public async Task<object> GetAllOrganizations()
         {
-            return await _mediator.Send(new GetAllCategoriesQuery(OrgId));
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetAllCarosolCategories(int OrgId)
-        {
-            return await _mediator.Send(new GetAllCarosolCategories(OrgId));
+            return await _mediator.Send(new GetAllOrganizationQuery());
         }
     }
 }

@@ -9,4 +9,9 @@ using System.Threading.Tasks;
 namespace Shoppite.Application.Queries
 {
     public record GetAllCategoriesQuery(int org_id) : IRequest<List<CategoryResponse>>;
+    public record GetAllCarosolCategories(int org_id) : IRequest<List<CategoryResponse>>;
+    public record GetAllOrganizationQuery() : IRequest<List<OrganizationResponse>>;
+    public record GetAllProductsByOrganizationsQuery(int org_id) : IRequest<List<ProductResponse>>;
+    public record GetMostSellerProductsByOrganizationsQuery(int org_id) : IRequest<List<ProductResponse>>;
+    public record GetLastVisitedProductsByOrganizationsQuery(int org_id) : IRequest<List<ProductResponse>>;
 }

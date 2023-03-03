@@ -54,6 +54,8 @@ namespace Shoppite.API
             services.AddMediatR(typeof(CreateAuthHandler).GetTypeInfo().Assembly);
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<IOrganizationRepository, OrganizationRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IJwtAuth, AuthRepository>();
         }
 
