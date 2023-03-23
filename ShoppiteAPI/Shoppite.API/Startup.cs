@@ -50,6 +50,7 @@ namespace Shoppite.API
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
+           
             services.AddAutoMapper(typeof(Startup));
             services.AddMediatR(typeof(CreateAuthHandler).GetTypeInfo().Assembly);
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -57,6 +58,9 @@ namespace Shoppite.API
             services.AddTransient<IOrganizationRepository, OrganizationRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IJwtAuth, AuthRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
