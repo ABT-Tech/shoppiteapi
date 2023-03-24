@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shoppite.Application.Queries;
 using Shoppite.Application.Commands;
 using Shoppite.Core.DTOs;
 using System;
@@ -25,6 +26,13 @@ namespace Shoppite.API.Controllers
         public async Task<object> AddToCart([FromBody] CartRequest cart)
         {
             return await _mediator.Send(new AddToCartCommand(cart));
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetAllCartDetails(int OrgId, int UserId)
+        {
+            return await _mediator.Send(new GetCartDetailsQuery(OrgId, UserId));
         }
     }
 }

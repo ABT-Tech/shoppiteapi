@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Core.Repositories
 {
-    public interface ICartRepository
-    {
+   public interface ICartRepository
+   {
+        Task<List<CartDTO>> GetCartDetails(int OrgId,int UserId);
+
         //custom operations here
         Task<string> AddToCart(CartRequest Cart);
     }
