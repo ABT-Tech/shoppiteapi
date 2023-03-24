@@ -1,6 +1,8 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Shoppite.Core.DTOs;
+using Shoppite.Core.Model;
 using Shoppite.Core.Repositories;
 using Shoppite.Infrastructure.Data;
 using System;
@@ -52,6 +54,27 @@ namespace Shoppite.Infrastructure.Repositories
                 }
             }
             return cartDTOs;
+        }
+        public async Task AddtoFavourite(Favourite favourite)
+        {
+            var username = await _MasterContext.Users.FirstOrDefaultAsync(x => x.UserId==favourite.UserId);
+            try
+            {          
+                CustomerWishlist cw = new();
+                {
+                    cw.ProductId = favourite.proId;
+                    cw.InsertDate = DateTime.Now;
+                    cw.UserName = username.Username;
+                    cw.Ip = null;
+                    cw.OrgId = favourite.orgId;
+                    _MasterContext.CustomerWishlists.Add(cw);
+                    await _MasterContext.SaveChangesAsync();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

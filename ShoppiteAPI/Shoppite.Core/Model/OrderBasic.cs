@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -7,6 +8,7 @@ namespace Shoppite.Core.Model
 {
     public partial class OrderBasic
     {
+        [Key]
         public int OrderId { get; set; }
         public Guid? OrderGuid { get; set; }
         public int? ProductId { get; set; }
