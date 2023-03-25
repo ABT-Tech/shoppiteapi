@@ -11,6 +11,7 @@ namespace Shoppite.Core.Repositories
    {
         Task<List<CartDTO>> GetCartDetails(int OrgId,int UserId);
         Task AddtoFavourite(Favourite favourite);
+        Task<List<ChangeAddress>> GetAddressByUserId(int OrgId, int UserId);
 
     }
 }

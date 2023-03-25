@@ -13,5 +13,6 @@ namespace Shoppite.Core.Repositories
     {
         Task<List<ProductsDTO>> GetAllProductsByOrganizations(int orgId);
         Task<List<ProductsDTO>> GetWishlistByUser(int orgId, int user_id);
+        Task<List<ProductsDTO>> SearchProducts(int orgId,string productname);
     }
 }

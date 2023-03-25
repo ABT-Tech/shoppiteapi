@@ -41,5 +41,11 @@ namespace Shoppite.API.Controllers
         {
             return await _mediator.Send(favourtite);
         }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetAddressByUserId(int OrgId, int UserId)
+        {
+            return await _mediator.Send(new GetAddressByUserid(OrgId, UserId));
+        }
     }
 }

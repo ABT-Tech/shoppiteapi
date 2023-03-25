@@ -76,5 +76,35 @@ namespace Shoppite.Infrastructure.Repositories
                 throw;
             }
         }
+        public async Task<List<ChangeAddress>> GetAddressByUserId(int OrgId, int UserId)
+        {
+            List<ChangeAddress> changeAddress = new List<ChangeAddress>();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_GetAddressBYUserId";
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@OrgId", OrgId));
+                command.Parameters.Add(new SqlParameter("@UserId", UserId));
+                await this._MasterContext.Database.OpenConnectionAsync();
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        ChangeAddress address = new ChangeAddress();
+                        address.SelectCity = result["SelectCity"].ToString();
+                        address.SelectCountry = result["SelectCountry"].ToString();
+                        address.AddressDetail = result["AddressDetail"].ToString();
+                        address.orgId = Convert.ToInt32(OrgId);
+                        address.UserId = Convert.ToInt32(UserId);
+                        changeAddress.Add(address);
+                    }
+                }
+            }
+            return changeAddress;
+
+        }
+
     }
 }

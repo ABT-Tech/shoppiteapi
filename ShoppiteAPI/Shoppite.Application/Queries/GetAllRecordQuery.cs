@@ -18,4 +18,6 @@ namespace Shoppite.Application.Queries
     public record GetCartDetailsQuery(int org_id,int UserId) : IRequest<List<CartResponse>>;
     public record GetMyOrderDetailsQuery(int org_id,int UserId):IRequest<List<MyOrderResponse>>;
     public record GetUserByIdQuery(int org_id, int user_id) : IRequest<List<UserResponse>>;
+    public record GetAddressByUserid(int org_id, int UserId) : IRequest<List<AddressResponse>>;
+    public record SearchProduct(int org_id,string productname):IRequest<List<ProductResponse>>;
 }

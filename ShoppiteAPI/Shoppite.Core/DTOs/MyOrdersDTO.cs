@@ -21,5 +21,6 @@ namespace Shoppite.Core.DTOs
         public DateTime OrderDate { get; set; }
         public string OrderStatus { get; set; }
         public Guid orderGuId { get; set; }
+        public int orderid { get; set; }
     }
 }

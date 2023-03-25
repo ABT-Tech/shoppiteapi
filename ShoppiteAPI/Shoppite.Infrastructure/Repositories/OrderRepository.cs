@@ -37,6 +37,7 @@ namespace Shoppite.Infrastructure.Repositories
                             {
                                 check[i].OrderStatus = "Confirmed";
                                 check[i].Qty = orders.ProductLists[j].Qty;
+                                check[i].InsertDate = DateTime.Now;
                                 _MasterContext.OrderBasics.Update(check[i]);
                                 await _MasterContext.SaveChangesAsync();
                                 orderTotal += check[i].Price * check[i].Qty;
@@ -102,6 +103,7 @@ namespace Shoppite.Infrastructure.Repositories
                         myOrderDTO.OrderStatus = result["OrderStatus"].ToString();
                         myOrderDTO.orderGuId = (Guid)result["orderGuId"];
                         myOrderDTO.UserId = Convert.ToInt32(UserId);
+                        myOrderDTO.orderid = Convert.ToInt32(result["orderid"]);
                         myOrderDTO.ProductList = ProductList;
                         OrdersDTO.Add(myOrderDTO);
                     }
