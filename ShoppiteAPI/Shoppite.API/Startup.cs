@@ -39,7 +39,7 @@ namespace Shoppite.API
 
             services.AddControllers();
             services.AddDbContext<Shoppite_masterContext>(
-                 m => m.UseSqlServer(Configuration.GetConnectionString("ShoppiteDB")), ServiceLifetime.Singleton);
+                 m => m.UseSqlServer(Configuration.GetConnectionString("ShoppiteDB")), ServiceLifetime.Transient);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Shoppite.API", Version = "v1" });
@@ -50,6 +50,7 @@ namespace Shoppite.API
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
+           
             services.AddAutoMapper(typeof(Startup));
             services.AddMediatR(typeof(CreateAuthHandler).GetTypeInfo().Assembly);
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -58,18 +59,19 @@ namespace Shoppite.API
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<ICartRepository, CartRepository>();
             services.AddTransient<IJwtAuth, AuthRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IOrderRepository, OrderRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
+            //if (env.IsDevelopment())
+            //{
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shoppite.API v1"));
-            }
+            //}
 
             app.UseCors("MyPolicy");
 

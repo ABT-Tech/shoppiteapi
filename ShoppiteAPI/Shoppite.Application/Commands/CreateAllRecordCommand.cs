@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace Shoppite.Application.Commands
 {
     public record CreateAuthCommand(UserCredential UserCredentials) : IRequest<Users_DTO>;
+    public record AddToCartCommand(CartRequest Cart) : IRequest<string>;
     public record CreateOrder(OrdersDTO orders):IRequest<string>;
     public record AddToFavourtite(Favourite favourites):IRequest<string>;
 }

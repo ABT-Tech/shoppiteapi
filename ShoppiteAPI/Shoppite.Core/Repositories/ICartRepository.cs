@@ -1,4 +1,6 @@
 ﻿using Shoppite.Core.DTOs;
+using Shoppite.Core.Model;
+using Shoppite.Core.Repositories.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +14,7 @@ namespace Shoppite.Core.Repositories
         Task<List<CartDTO>> GetCartDetails(int OrgId,int UserId);
         Task AddtoFavourite(Favourite favourite);
 
+        //custom operations here
+        Task<string> AddToCart(CartRequest Cart);
     }
 }
