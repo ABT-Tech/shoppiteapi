@@ -1,10 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Shoppite.Core.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Shoppite.Application.Commands;
+using Shoppite.Application.Queries;
 using System.Threading.Tasks;
 
 namespace Shoppite.API.Controllers
@@ -16,12 +14,17 @@ namespace Shoppite.API.Controllers
         {
             _mediator = mediator;
         }
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<string>> PlaceOrder([FromBody] OrdersDTO ordersDTO )
+        /*[HttpPost]
+        public async Task<ActionResult<string>> PlaceOrder([FromBody] CreateOrder orders)
         {
-            var result = await _mediator.Send(ordersDTO);
-            return Ok(result);
+            return await _mediator.Send(orders);
         }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetMyOrderDetails(int OrgId, int UserId)
+        {
+            return await _mediator.Send(new GetMyOrderDetailsQuery(OrgId, UserId));
+        }*/
     }
 }

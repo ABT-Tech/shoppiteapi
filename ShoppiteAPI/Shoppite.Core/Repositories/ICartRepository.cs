@@ -12,6 +12,7 @@ namespace Shoppite.Core.Repositories
    public interface ICartRepository
    {
         Task<List<CartDTO>> GetCartDetails(int OrgId,int UserId);
+        Task AddtoFavourite(Favourite favourite);
 
         //custom operations here
         Task<string> AddToCart(CartRequest Cart);
