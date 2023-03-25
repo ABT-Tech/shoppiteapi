@@ -1,4 +1,5 @@
 ﻿using Shoppite.Core.DTOs;
+using Shoppite.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Core.Repositories
 {
-   public interface ICartRepository
-   {
-        Task<List<CartDTO>> GetCartDetails(int OrgId,int UserId);
-        Task AddtoFavourite(Favourite favourite);
-
+    public interface IOrderRepository
+    {
+       Task BuyNow(OrdersDTO order);
+       Task<List<MyOrdersDTO>> GetMyOrderDetails(int OrgId, int UserId);
     }
 }
