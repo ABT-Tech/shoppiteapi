@@ -8,6 +8,7 @@ using Shoppite.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Shoppite.Infrastructure.Repositories
@@ -103,8 +104,17 @@ namespace Shoppite.Infrastructure.Repositories
                 }
             }
             return changeAddress;
-
         }
+        public async Task RemovefromFavourite(int ProductId, int UserId, int OrgId)
+        {
+            var username = _MasterContext.Users.FirstOrDefault(u => u.UserId == UserId);
+            CustomerWishlist cuswishlist = _MasterContext.CustomerWishlists.FirstOrDefault(u => u.ProductId == ProductId && u.UserName == username.Username&&u.OrgId== OrgId);
 
+            if (cuswishlist != null)
+            {
+                _MasterContext.CustomerWishlists.Remove(cuswishlist);
+                _MasterContext.SaveChanges();
+            }
+        }
     }
 }

@@ -47,5 +47,11 @@ namespace Shoppite.API.Controllers
         {
             return await _mediator.Send(new GetAddressByUserid(OrgId, UserId));
         }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<int> RemovefromFavourite(int ProductId,int Userid,int OrgId)
+        {
+            return await _mediator.Send(new RemovefromFavourite(ProductId,Userid, OrgId));
+        }
     }
 }

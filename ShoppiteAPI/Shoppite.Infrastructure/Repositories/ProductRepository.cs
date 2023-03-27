@@ -123,8 +123,8 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.Title = result["Title"].ToString();
                         productsDTO.Image = result["Image"].ToString();
                         productsDTO.Brand = result["Brand"].ToString();
-                      //  productsDTO.Price = Convert.ToDouble(result["Price"]);
-                      //  productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                        productsDTO.Price = Convert.ToDouble(result["Price"]);
+                        productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
                         productsDTO.ProductList = ProductList;
                         productsDTO.orgId = Convert.ToInt32(orgId);
                         productsDTOs.Add(productsDTO);

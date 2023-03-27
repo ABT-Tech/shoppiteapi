@@ -13,4 +13,6 @@ namespace Shoppite.Application.Commands
     public record CreateAuthCommand(UserCredential UserCredentials) : IRequest<Users_DTO>;
     public record CreateOrder(OrdersDTO orders):IRequest<string>;
     public record AddToFavourtite(Favourite favourites):IRequest<string>;
+    public record RemovefromFavourite(int ProductId,int UserId,int OrgId) : IRequest<int>;
+
 }
