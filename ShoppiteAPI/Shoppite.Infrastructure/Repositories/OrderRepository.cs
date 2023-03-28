@@ -57,10 +57,10 @@ namespace Shoppite.Infrastructure.Repositories
                         shipping.Contactnumber = orders.Contactnumber;
                         shipping.Phone = orders.Contactnumber;
                         shipping.Email = getUsername.UserName;
-                        shipping.Address = orders.Address.AddressTitle;
+                        shipping.Address = orders.Address.AddressDetail;
                         shipping.Zipcode = orders.Address.zipcode;
                         shipping.City = orders.Address.SelectCity;
-                       // shipping.Street = orders.Address.SelectStreet;
+                        shipping.Street = orders.Address.SelectState;
                         shipping.OrgId = getUsername.OrgId;
                         shipping.InsertDate = DateTime.Now;
                         _MasterContext.OrderShippings.Add(shipping);

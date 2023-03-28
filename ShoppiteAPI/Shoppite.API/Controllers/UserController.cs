@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Shoppite.Core.DTOs;
+using Shoppite.Infrastructure.Helpers;
 
 namespace Shoppite.API.Controllers
 {
@@ -16,7 +17,7 @@ namespace Shoppite.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
-     //   private EncryptionHelper eh = new EncryptionHelper();
+        private EncryptionHelper eh = new EncryptionHelper();
         public UserController(IMediator mediator)
         {
             _mediator = mediator;
@@ -29,12 +30,12 @@ namespace Shoppite.API.Controllers
             return await _mediator.Send(new GetUserByIdQuery(org_id, user_id));
         }
         [HttpPost]
-        public async Task<ActionResult<string>> UserRegistration([FromBody] UserRegistration user)
+        public async Task<ActionResult<string>> UserRegistration([FromBody] UserRegistrationDTO user)
         {
-            string Password = user.RegistrationDTO.Password;
-          //  string encryptedpassword = eh.Encrypt(Password);
-            //user.RegistrationDTO.Password = encryptedpassword;
-            return await _mediator.Send(user);
+            string Password = user.Password;
+            string encryptedpassword = eh.Encrypt(Password);
+            user.Password = encryptedpassword;
+            return await _mediator.Send(new UserRegistration(user));
         }
     }
 }

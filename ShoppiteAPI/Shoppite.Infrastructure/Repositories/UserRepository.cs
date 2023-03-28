@@ -84,6 +84,7 @@ namespace Shoppite.Infrastructure.Repositories
                 profile.ContactNumber = userRegistration.ContactNumber;
                 profile.Address = userRegistration.Address;
                 profile.City = userRegistration.city;
+                profile.State = userRegistration.State;
                 profile.Zip=userRegistration.Zipcode;
             }
             _MasterContext.UsersProfiles.Add(profile);
