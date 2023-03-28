@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shoppite.Core.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,6 @@ namespace Shoppite.Core.Repositories
     public interface IUserRepository
     {
         Task<List<DTOs.UserDTO>> GetUserById(int org_id, int user_id);
+        Task UserRegistration(UserRegistrationDTO registrationDTO);
     }
 }

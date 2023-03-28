@@ -22,7 +22,7 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task<List<CartDTO>> GetCartDetails(int OrgId, int UserId)
         {
-            List<CartDTO> cartDTOs = new List<CartDTO>();
+            List<CartDTO> cartDTOs = new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
                 string strSQL = "SP_GetCartDetails";
@@ -79,7 +79,7 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task<List<ChangeAddress>> GetAddressByUserId(int OrgId, int UserId)
         {
-            List<ChangeAddress> changeAddress = new List<ChangeAddress>();
+            List<ChangeAddress> changeAddress = new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
                 string strSQL = "SP_GetAddressBYUserId";
@@ -93,9 +93,10 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     while (await result.ReadAsync())
                     {
-                        ChangeAddress address = new ChangeAddress();
+                        ChangeAddress address = new();
                         address.SelectCity = result["SelectCity"].ToString();
-                        address.SelectCountry = result["SelectCountry"].ToString();
+                        address.zipcode = result["zipcode"].ToString();
+                        //address.SelectCountry = result["SelectCountry"].ToString();
                         address.AddressDetail = result["AddressDetail"].ToString();
                         address.orgId = Convert.ToInt32(OrgId);
                         address.UserId = Convert.ToInt32(UserId);

@@ -99,7 +99,7 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task<List<ProductsDTO>> SearchProducts(int orgId,string productname)
         {
-            List<ProductsDTO> productsDTOs = new List<ProductsDTO>();
+            List<ProductsDTO> productsDTOs = new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
                 string strSQL = "SP_SearchProduct";
