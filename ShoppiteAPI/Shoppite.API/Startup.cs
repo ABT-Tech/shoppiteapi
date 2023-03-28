@@ -63,9 +63,7 @@ namespace Shoppite.API
             services.AddTransient<IUserRepository, UserRepository>();
 
 
-=========
             services.AddTransient<IOrderRepository, OrderRepository>();
->>>>>>>>> Temporary merge branch 2
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
