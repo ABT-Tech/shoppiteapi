@@ -137,7 +137,7 @@ namespace Shoppite.Infrastructure.Repositories
                         ChangeAddress address = new();
                         address.SelectCity = result["SelectCity"].ToString();
                         address.zipcode = result["zipcode"].ToString();
-                        //address.SelectCountry = result["SelectCountry"].ToString();
+                        address.SelectState = result["SelectState"].ToString();
                         address.AddressDetail = result["AddressDetail"].ToString();
                         address.orgId = Convert.ToInt32(OrgId);
                         address.UserId = Convert.ToInt32(UserId);
