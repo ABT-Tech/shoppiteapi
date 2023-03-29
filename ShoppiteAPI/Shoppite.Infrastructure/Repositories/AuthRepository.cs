@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using Shoppite.Core.DTOs;
 using Shoppite.Core.Entities;
 using Shoppite.Core.Repositories;
+using Shoppite.Infrastructure.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,7 +18,7 @@ namespace Shoppite.Infrastructure.Repositories
     public class AuthRepository : IJwtAuth
     {
         private string key = "abcdefghijklmnopqrstuvwxyz1234567890";
-        
+        private EncryptionHelper EncryptPass = new EncryptionHelper();
         public async Task<Users_DTO> Authentication(string username, string password,int OrgId)
         {
             Users_DTO users_DTO = new Users_DTO();
@@ -30,29 +31,14 @@ namespace Shoppite.Infrastructure.Repositories
                 command.CommandType = CommandType.StoredProcedure;
                 command.CommandText = "proc_CheckUserExist";
                 command.Parameters.AddWithValue("@email", username);
-                command.Parameters.AddWithValue("@password", password);
+                command.Parameters.AddWithValue("@password", this.EncryptPass.Encrypt(password));
                 command.Parameters.AddWithValue("@org_id", OrgId);
                 var dataReader = await command.ExecuteReaderAsync();
                 if(dataReader.Read())
                 {
                     result = "success";
-                    users_DTO.id = dataReader["id"] != System.DBNull.Value? Convert.ToInt32(dataReader["id"]):0;
-                    users_DTO.org_id = dataReader["org_id"] != System.DBNull.Value ? Convert.ToInt32(dataReader["org_id"]):0;
-                    users_DTO.user_name = dataReader["user_name"] != System.DBNull.Value ? dataReader["user_name"].ToString() : "";
-                    users_DTO.f_name = dataReader["f_name"] != System.DBNull.Value ? dataReader["f_name"].ToString() : "";
-                    users_DTO.l_name = dataReader["l_name"] != System.DBNull.Value ? dataReader["l_name"].ToString() : "";
-                    users_DTO.email = dataReader["email"] != System.DBNull.Value ? dataReader["email"].ToString() : "";
-                    users_DTO.password = dataReader["password"] != System.DBNull.Value ? dataReader["password"].ToString() : "";
-                    users_DTO.phone_number = dataReader["phone_number"] != System.DBNull.Value ? dataReader["phone_number"].ToString() : "";
-                    users_DTO.address_1 = dataReader["address_1"] != System.DBNull.Value ? dataReader["address_1"].ToString() : "";
-                    users_DTO.address_2 = dataReader["address_2"] != System.DBNull.Value ? dataReader["address_2"].ToString() : "";
-                    users_DTO.area = dataReader["area"] != System.DBNull.Value ? dataReader["area"].ToString() : "";
-                    users_DTO.city = dataReader["city"] != System.DBNull.Value ? Convert.ToInt32(dataReader["city"]): 0;
-                    users_DTO.state = dataReader["state"] != System.DBNull.Value ? Convert.ToInt32(dataReader["state"]): 0;
-                    users_DTO.country = dataReader["country"] != System.DBNull.Value ? Convert.ToInt32(dataReader["country"]): 0;
-                    users_DTO.pincode = dataReader["pincode"] != System.DBNull.Value ? Convert.ToInt32(dataReader["pincode"]): 0;
-                    users_DTO.is_active = dataReader["is_active"] != System.DBNull.Value ? Convert.ToBoolean(dataReader["is_active"]): true;
-
+                    users_DTO.UserId = dataReader["UserId"] != System.DBNull.Value? Convert.ToInt32(dataReader["UserId"]):0;
+                    users_DTO.UserName = dataReader["Username"] != System.DBNull.Value ? dataReader["Username"].ToString() : "";
                 }
                 connection.Close();
             }
