@@ -63,7 +63,7 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task<List<CartDTO>> GetCartDetails(int OrgId, int UserId)
         {
-            List<CartDTO> cartDTOs = new List<CartDTO>();
+            List<CartDTO> cartDTOs = new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
                 string strSQL = "SP_GetCartDetails";
@@ -116,6 +116,46 @@ namespace Shoppite.Infrastructure.Repositories
             catch (Exception)
             {
                 throw;
+            }
+        }
+        public async Task<List<ChangeAddress>> GetAddressByUserId(int OrgId, int UserId)
+        {
+            List<ChangeAddress> changeAddress = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_GetAddressBYUserId";
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@OrgId", OrgId));
+                command.Parameters.Add(new SqlParameter("@UserId", UserId));
+                await this._MasterContext.Database.OpenConnectionAsync();
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        ChangeAddress address = new();
+                        address.SelectCity = result["SelectCity"].ToString();
+                        address.zipcode = result["zipcode"].ToString();
+                        address.SelectState = result["SelectState"].ToString();
+                        address.AddressDetail = result["AddressDetail"].ToString();
+                        address.orgId = Convert.ToInt32(OrgId);
+                        address.UserId = Convert.ToInt32(UserId);
+                        changeAddress.Add(address);
+                    }
+                }
+            }
+            return changeAddress;
+        }
+        public async Task RemovefromFavourite(int ProductId, int UserId, int OrgId)
+        {
+            var username = _MasterContext.Users.FirstOrDefault(u => u.UserId == UserId);
+            CustomerWishlist cuswishlist = _MasterContext.CustomerWishlists.FirstOrDefault(u => u.ProductId == ProductId && u.UserName == username.Username&&u.OrgId== OrgId);
+
+            if (cuswishlist != null)
+            {
+                _MasterContext.CustomerWishlists.Remove(cuswishlist);
+                _MasterContext.SaveChanges();
             }
         }
     }

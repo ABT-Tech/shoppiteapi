@@ -24,7 +24,7 @@ namespace Shoppite.Infrastructure.Repositories
         {
             try
             {
-                OrderBasic ob = new OrderBasic();
+                OrderBasic ob = new();
                 {
                     decimal? orderTotal=0;
                     var check = await _MasterContext.OrderBasics.Where(x => x.OrderGuid == orders.OrderGuid && x.OrderStatus == "Cart").ToListAsync();
@@ -37,6 +37,7 @@ namespace Shoppite.Infrastructure.Repositories
                             {
                                 check[i].OrderStatus = "Confirmed";
                                 check[i].Qty = orders.ProductLists[j].Qty;
+                                check[i].InsertDate = DateTime.Now;
                                 _MasterContext.OrderBasics.Update(check[i]);
                                 await _MasterContext.SaveChangesAsync();
                                 orderTotal += check[i].Price * check[i].Qty;
@@ -56,9 +57,10 @@ namespace Shoppite.Infrastructure.Repositories
                         shipping.Contactnumber = orders.Contactnumber;
                         shipping.Phone = orders.Contactnumber;
                         shipping.Email = getUsername.UserName;
-                        shipping.Address = orders.Address.AddressTitle;
+                        shipping.Address = orders.Address.AddressDetail;
+                        shipping.Zipcode = orders.Address.zipcode;
                         shipping.City = orders.Address.SelectCity;
-                        shipping.Street = orders.Address.SelectStreet;
+                        shipping.Street = orders.Address.SelectState;
                         shipping.OrgId = getUsername.OrgId;
                         shipping.InsertDate = DateTime.Now;
                         _MasterContext.OrderShippings.Add(shipping);
@@ -73,7 +75,7 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task<List<MyOrdersDTO>> GetMyOrderDetails(int OrgId, int UserId)
         {
-            List<MyOrdersDTO> OrdersDTO = new List<MyOrdersDTO>();
+            List<MyOrdersDTO> OrdersDTO = new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
                 string strSQL = "SP_GetMyOrderDetails";
@@ -102,6 +104,7 @@ namespace Shoppite.Infrastructure.Repositories
                         myOrderDTO.OrderStatus = result["OrderStatus"].ToString();
                         myOrderDTO.orderGuId = (Guid)result["orderGuId"];
                         myOrderDTO.UserId = Convert.ToInt32(UserId);
+                        myOrderDTO.orderid = Convert.ToInt32(result["orderid"]);
                         myOrderDTO.ProductList = ProductList;
                         OrdersDTO.Add(myOrderDTO);
                     }

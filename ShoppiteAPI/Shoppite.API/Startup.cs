@@ -59,7 +59,10 @@ namespace Shoppite.API
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<ICartRepository, CartRepository>();
             services.AddTransient<IJwtAuth, AuthRepository>();
+            services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+
+
             services.AddTransient<IOrderRepository, OrderRepository>();
         }
 

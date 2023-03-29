@@ -59,7 +59,37 @@ namespace Shoppite.Infrastructure.Repositories
             return UserDTOs;
 
         }
-    
-}
+        public async Task UserRegistration(UserRegistrationDTO userRegistration)
+        {          
+            User us = new();
+            {
+                us.Username = userRegistration.Username;
+                us.Password = userRegistration.Password;
+                userRegistration.ConfirmPassword = userRegistration.Password;
+                us.CreatedDate = DateTime.Now;
+                us.Email = userRegistration.Email;
+                us.Guid = Guid.NewGuid();
+                us.OrgId = userRegistration.OrgId;
+            }
+            _MasterContext.Users.Add(us);
+            await _MasterContext.SaveChangesAsync();
+            UsersProfile profile = new();
+            {
+                var userGuid = _MasterContext.Users.FirstOrDefault(x => x.Guid == us.Guid);
+                profile.Type = "Client";
+                profile.InsertDate = DateTime.Now;
+                profile.ProfileGuid = userGuid.Guid;
+                profile.OrgId = userRegistration.OrgId;
+                profile.UserName = userRegistration.Username;
+                profile.ContactNumber = userRegistration.ContactNumber;
+                profile.Address = userRegistration.Address;
+                profile.City = userRegistration.city;
+                profile.State = userRegistration.State;
+                profile.Zip=userRegistration.Zipcode;
+            }
+            _MasterContext.UsersProfiles.Add(profile);
+            await _MasterContext.SaveChangesAsync();
+        }
+    }
 }
  

@@ -97,5 +97,42 @@ namespace Shoppite.Infrastructure.Repositories
             return productsDTOs;
 
         }
+        public async Task<List<ProductsDTO>> SearchProducts(int orgId,string productname)
+        {
+            List<ProductsDTO> productsDTOs = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_SearchProduct";
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@OrgId", orgId));
+                command.Parameters.Add(new SqlParameter("@ProductName", productname));
+                // command.Parameters.Add(parameter);
+                await this._MasterContext.Database.OpenConnectionAsync();
+
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        ProductsDTO productsDTO = new ProductsDTO();
+                        var ProductStrList = result["ProductList"].ToString();
+                        var ProductList = ProductStrList.Split(',');
+                        productsDTO.Id = Convert.ToInt32(result["Id"]);
+                        productsDTO.Title = result["Title"].ToString();
+                        productsDTO.Image = result["Image"].ToString();
+                        productsDTO.Brand = result["Brand"].ToString();
+                        productsDTO.Price = Convert.ToDouble(result["Price"]);
+                        productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                        productsDTO.ProductList = ProductList;
+                        productsDTO.orgId = Convert.ToInt32(orgId);
+                        productsDTOs.Add(productsDTO);
+                    }
+                }
+            }
+            return productsDTOs;
+
+        }
     }
 }

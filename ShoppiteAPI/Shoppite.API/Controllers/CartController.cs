@@ -37,9 +37,9 @@ namespace Shoppite.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> PlaceOrder([FromBody]CreateOrder orders)
+        public async Task<ActionResult<string>> PlaceOrder([FromBody]OrdersDTO orders)
         {
-            return await _mediator.Send(orders);
+            return await _mediator.Send(new CreateOrder(orders));
         }
 
         [HttpGet]
@@ -49,9 +49,21 @@ namespace Shoppite.API.Controllers
             return await _mediator.Send(new GetMyOrderDetailsQuery(OrgId, UserId));
         }
         [HttpPost]
-        public async Task<ActionResult<string>> AddtoFavourite([FromBody] AddToFavourtite favourtite)
+        public async Task<string> AddtoFavourite([FromBody] Favourite favourtite)
         {
-            return await _mediator.Send(favourtite);
+            return await _mediator.Send(new AddToFavourtite(favourtite));
+        }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetAddressByUserId(int OrgId, int UserId)
+        {
+            return await _mediator.Send(new GetAddressByUserid(OrgId, UserId));
+        }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<int> RemovefromFavourite(int ProductId,int Userid,int OrgId)
+        {
+            return await _mediator.Send(new RemovefromFavourite(ProductId,Userid, OrgId));
         }
     }
 }
