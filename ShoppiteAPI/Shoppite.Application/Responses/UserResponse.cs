@@ -9,11 +9,13 @@ namespace Shoppite.Application.Responses
     public class UserResponse
     {
         public int userId { get; set; }
-
+        public int OrgId { get; set; }
         public string ChangeName { get; set; }
         public string ChangeEmail { get; set; }
         public string ChangePhoneNumber { get; set; }
-       
+        public string ChangeCity { get; set; }
+        public string ChangeState { get; set; }
         public string ChangeAddress { get; set; }
+        public string Zipcode { get; set; }
     }
 }

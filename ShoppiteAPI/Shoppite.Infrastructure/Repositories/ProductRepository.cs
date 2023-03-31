@@ -134,5 +134,149 @@ namespace Shoppite.Infrastructure.Repositories
             return productsDTOs;
 
         }
+        public async Task<List<RecentlyViewedProductDTO>> GetRecentlyViewedProductsByCategory(int orgId, int CategoryId,string IP)
+        {
+            List<RecentlyViewedProductDTO> recentlyVieweds = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_getproducts_Recentlyviewed_CategoryId";
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@orgid", orgId));
+                command.Parameters.Add(new SqlParameter("@categoryid", CategoryId));
+                command.Parameters.Add(new SqlParameter("@IP",IP ));
+                // command.Parameters.Add(parameter);
+                await this._MasterContext.Database.OpenConnectionAsync();
+
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        RecentlyViewedProductDTO product = new();
+                        product.ProductId = Convert.ToInt32(result["ProductId"]);
+                        product.ProductName= result["ProductName"].ToString();                      
+                        product.ShortDescription = result["ShortDescription"].ToString();
+                        product.Description = result["Description"].ToString();
+                        product.Urlpath = result["Urlpath"].ToString();
+                        product.ProductGuid = (Guid)result["ProductGuid"];
+                        product.IsPublished = Convert.ToBoolean(result["IsPublished"]);
+                        product.Image = result["Image"].ToString();
+                        product.Brands = result["Brands"].ToString();
+                        product.BrandId = Convert.ToInt32(result["BrandId"]);
+                        product.brandsUrlpath = result["brandsUrlpath"].ToString();
+                        product.Price = Convert.ToDouble(result["Price"]);
+                        product.OldPrice = Convert.ToDouble(result["OldPrice"]);                 
+                        product.OrgId = Convert.ToInt32(orgId);
+                        product.Category_Name = result["Category_Name"].ToString();
+                        product.CategoryUrlPath = result["CategoryUrlPath"].ToString();
+                        product.Category_Id = Convert.ToInt32(result["Category_Id"]);
+                        product.MainCatId = Convert.ToInt32(result["MainCatId"]);
+                        product.maincategoryname = result["maincategoryname"].ToString();
+                        product.maincaturlpath = result["maincaturlpath"].ToString();
+                        product.Sku = result["Sku"].ToString();                     
+                        product.ProfileId = Convert.ToInt32(result["ProfileId"]);
+                        product.productviewinsertdate = (DateTime)result["productviewinsertdate"];
+                        product.STATUS = result["STATUS"].ToString();
+                        recentlyVieweds.Add(product);
+                    }
+                }
+            }
+            return recentlyVieweds;
+        }
+        public async Task<List<RecentlyViewedProductDTO>> MostViewedProductsByCategory(int orgId, int CategoryId, string IP)
+        {
+            List<RecentlyViewedProductDTO> recentlyVieweds = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_getproducts_Mostviewed_CategoryId";
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@orgid", orgId));
+                command.Parameters.Add(new SqlParameter("@categoryid", CategoryId));
+                command.Parameters.Add(new SqlParameter("@IP", IP));
+                // command.Parameters.Add(parameter);
+                await this._MasterContext.Database.OpenConnectionAsync();
+
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        RecentlyViewedProductDTO product = new();
+                        product.ProductId = Convert.ToInt32(result["ProductId"]);
+                        product.ProductName = result["ProductName"].ToString();                       
+                        product.ShortDescription = result["ShortDescription"].ToString();
+                        product.Description = result["Description"].ToString();
+                       // product.Urlpath = result["Urlpath"].ToString();
+                        product.ProductGuid = (Guid)result["ProductGuid"];
+                        product.IsPublished = Convert.ToBoolean(result["IsPublished"]);
+                        product.Image = result["Image"].ToString();
+                        product.Brands = result["Brands"].ToString();
+                        product.BrandId = Convert.ToInt32(result["BrandId"]);
+                      //  product.brandsUrlpath = result["brandsUrlpath"].ToString();
+                        product.Price = Convert.ToDouble(result["Price"]);
+                        product.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                        product.OrgId = Convert.ToInt32(orgId);
+                        product.Category_Name = result["Category_Name"].ToString();
+                      //  product.CategoryUrlPath = result["CategoryUrlPath"].ToString();
+                        product.Category_Id = Convert.ToInt32(result["Category_Id"]);
+                        product.MainCatId = Convert.ToInt32(result["MainCatId"]);
+                        product.maincategoryname = result["maincategoryname"].ToString();
+                      //  product.maincaturlpath = result["maincaturlpath"].ToString();
+                        product.Sku = result["Sku"].ToString();
+                        product.ProfileId = Convert.ToInt32(result["ProfileId"]);                                          
+                        product.STATUS = result["STATUS"].ToString();
+                        product.NumOfViews = Convert.ToInt32(result["NumOfViews"]);
+                        recentlyVieweds.Add(product);
+                    }
+                }
+            }
+            return recentlyVieweds;
+        }
+        public async Task<List<ProductsByBestSellerDTO>> ProductByBestSellers(int orgId)
+        {
+            List<ProductsByBestSellerDTO> bestSellerDTOs= new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_getproducts_BY_BestSellers";
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@orgid", orgId));
+                await this._MasterContext.Database.OpenConnectionAsync();
+
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        ProductsByBestSellerDTO product = new();
+                        product.ProductId = Convert.ToInt32(result["ProductId"]);
+                        product.ProductName = result["ProductName"].ToString();
+                        product.ShortDescription = result["ShortDescription"].ToString();
+                        product.Description = result["Description"].ToString();
+                        product.ProductGuid = (Guid)result["ProductGuid"];
+                        product.IsPublished = Convert.ToBoolean(result["IsPublished"]);
+                        product.Image = result["Image"].ToString();
+                        product.Brands = result["Brands"].ToString();
+                        product.BrandId = Convert.ToInt32(result["BrandId"]);
+                        product.Price = Convert.ToDouble(result["Price"]);
+                        product.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                        product.OrgId = Convert.ToInt32(orgId);
+                        product.Category_Name = result["Category_Name"].ToString();
+                        product.Category_Id = Convert.ToInt32(result["Category_Id"]);
+                        product.MainCatId = Convert.ToInt32(result["MainCatId"]);
+                        product.maincategoryname = result["maincategoryname"].ToString();
+                        product.Sku = result["Sku"].ToString();
+                        product.ProductStatus = result["ProductStatus"].ToString();
+                        bestSellerDTOs.Add(product);
+                    }
+                }
+            }
+            return bestSellerDTOs;
+        }
     }
 }

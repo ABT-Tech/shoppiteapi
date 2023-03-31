@@ -20,4 +20,8 @@ namespace Shoppite.Application.Queries
     public record GetUserByIdQuery(int org_id, int user_id) : IRequest<List<UserResponse>>;
     public record GetAddressByUserid(int org_id, int UserId) : IRequest<List<AddressResponse>>;
     public record SearchProduct(int org_id,string productname):IRequest<List<ProductResponse>>;
+    public record GetRecentlyViewedProductsByCategory(int OrgId,int CategoryId,string IP):IRequest<List<RecentlyViewedProductResponse>>;
+    public record GetMostViewedProductsByCategory(int OrgId, int CategoryId, string IP) : IRequest<List<RecentlyViewedProductResponse>>;
+    public record GetProductsByBestSellers(int OrgId):IRequest<List<ProductsByBestSellerResponse>>;
+
 }

@@ -15,7 +15,7 @@ namespace Shoppite.Application.Responses
         public int Id { get; set; }
         public int orgId { get; set; }
         public string[] ProductList { get; set; }
-        public int OldPrice { get; set; }
+        public double OldPrice { get; set; }
       //  public int proId { get; set; }
         public int Quantity { get; set; }
         public int UserId { get; set; }
