@@ -65,5 +65,24 @@ namespace Shoppite.API.Controllers
         {
             return await _mediator.Send(new SearchProduct(org_Id,productname));
         }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetRecentlyViewedProductsByCategory(int org_Id, int CategoryId,string IP)
+        {
+            return await _mediator.Send(new GetRecentlyViewedProductsByCategory(org_Id, CategoryId,IP));
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetMostViewedProductsByCategory(int org_Id, int CategoryId, string IP)
+        {
+            return await _mediator.Send(new GetMostViewedProductsByCategory(org_Id, CategoryId, IP));
+        }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetProductsByBestSellers(int org_Id)
+        {
+            return await _mediator.Send(new GetProductsByBestSellers(org_Id));
+        }
     }
 }

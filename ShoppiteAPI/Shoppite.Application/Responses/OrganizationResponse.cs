@@ -11,5 +11,9 @@ namespace Shoppite.Application.Responses
         public string ShopName { get; set; }
         public int OrgId { get; set; }
         public string Image { get; set; }
+        public string VendorName { get; set; }
+        public string VendorEmail { get; set; }
+        public string VendorMobile { get; set; }
+        public string OrgDescription { get; set; }
     }
 }

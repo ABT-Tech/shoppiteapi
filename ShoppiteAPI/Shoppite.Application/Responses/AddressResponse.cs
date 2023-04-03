@@ -13,7 +13,7 @@ namespace Shoppite.Application.Responses
         public string zipcode { get; set; }
         //  public string SelectCountry { get; set; }
         public string SelectCity { get; set; }
-        public string SelectStreet { get; set; }
+        public string SelectState { get; set; }
         public string AddressDetail { get; set; }
     }
 }

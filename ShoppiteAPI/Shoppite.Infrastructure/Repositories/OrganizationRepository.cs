@@ -30,6 +30,10 @@ namespace Shoppite.Infrastructure.Repositories
             {
                 string strSQL = "SELECT organization.id AS OrgId, " +
                                 "organization.org_name AS ShopName, " +
+                                "organization.vender_name AS VenderName," +
+                                "organization.v_email AS VendorEmail," +
+                                "organization.v_mobile AS VendorMobile," +
+                                "organization.org_description AS OrgDescription," +
                                 "Logo.Logo AS IMAGE " +
                                 "FROM organization " +
                                 "JOIN logo ON organization.id = logo.orgid ";
@@ -47,6 +51,10 @@ namespace Shoppite.Infrastructure.Repositories
                         organizationDTO.OrgId =  Convert.ToInt32(result["OrgId"]);
                         organizationDTO.ShopName = result["ShopName"].ToString();
                         organizationDTO.Image = result["Image"].ToString();
+                        organizationDTO.VenderName = result["VenderName"].ToString();
+                        organizationDTO.VenderEmail = result["VendorEmail"].ToString();
+                        organizationDTO.VenderMobile = result["VenderMobile"].ToString();
+                        organizationDTO.OrgDescription = result["OrgDescription"].ToString();
                         organizationDTOs.Add(organizationDTO);
                     }
                 }

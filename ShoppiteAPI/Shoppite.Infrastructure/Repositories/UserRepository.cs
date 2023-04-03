@@ -31,14 +31,10 @@ namespace Shoppite.Infrastructure.Repositories
 
                 command.CommandText = strSQL;
                 command.CommandType = CommandType.StoredProcedure;
-                var parameter = command.CreateParameter();
-
-              
-                command.Parameters.Add(new SqlParameter("@orgid", OrgId));
-                command.Parameters.Add(new SqlParameter("@userid", UserId));
-               
-              
-               // command.Parameters.Add(parameter);
+                var parameter = command.CreateParameter();             
+                command.Parameters.Add(new SqlParameter("@OrgId", OrgId));
+                command.Parameters.Add(new SqlParameter("@UserId", UserId));
+                           
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())
@@ -47,10 +43,14 @@ namespace Shoppite.Infrastructure.Repositories
                     {
                         UserDTO userDTO = new UserDTO();
                         userDTO.userId = Convert.ToInt32(UserId);
+                        userDTO.OrgId = Convert.ToInt32(OrgId);                      
                         userDTO.ChangeName = result["ChangeName"].ToString();
                         userDTO.ChangeEmail = result["ChangeEmail"].ToString();
                         userDTO.ChangePhoneNumber = result["ChangePhoneNumber"].ToString();
                         userDTO.ChangeAddress = result["ChangeAddress"].ToString();
+                        userDTO.ChangeState = result["ChangeState"].ToString();
+                        userDTO.ChangeCity = result["ChangeCity"].ToString();
+                        userDTO.Zipcode = result["Zipcode"].ToString();
 
                         UserDTOs.Add(userDTO); 
                     }
