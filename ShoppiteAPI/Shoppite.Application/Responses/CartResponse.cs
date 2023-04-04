@@ -19,6 +19,7 @@ namespace Shoppite.Application.Responses
       //  public int proId { get; set; }
         public int Quantity { get; set; }
         public int UserId { get; set; }
+        public int orderid { get; set; }
         public Guid orderGuId { get; set; }
        // public ChangeAddress changeAddress { get; set; }
     }

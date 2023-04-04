@@ -89,6 +89,7 @@ namespace Shoppite.Infrastructure.Repositories
                         cartDTO.OldPrice = Convert.ToInt32(result["OldPrice"]);
                         cartDTO.orgId = Convert.ToInt32(OrgId);
                         cartDTO.UserId = Convert.ToInt32(UserId);
+                        cartDTO.orderid = Convert.ToInt32(result["orderid"]);
                         cartDTO.orderGuId = (Guid)result["orderGuId"];
                         cartDTO.ProductList = ProductList;
                         cartDTOs.Add(cartDTO);

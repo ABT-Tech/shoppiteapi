@@ -53,7 +53,7 @@ namespace Shoppite.Infrastructure.Repositories
                         organizationDTO.Image = result["Image"].ToString();
                         organizationDTO.VenderName = result["VenderName"].ToString();
                         organizationDTO.VenderEmail = result["VendorEmail"].ToString();
-                        organizationDTO.VenderMobile = result["VenderMobile"].ToString();
+                        organizationDTO.VenderMobile = result["VendorMobile"].ToString();
                         organizationDTO.OrgDescription = result["OrgDescription"].ToString();
                         organizationDTOs.Add(organizationDTO);
                     }
