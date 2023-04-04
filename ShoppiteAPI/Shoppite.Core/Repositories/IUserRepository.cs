@@ -11,5 +11,6 @@ namespace Shoppite.Core.Repositories
     {
         Task<List<DTOs.UserDTO>> GetUserById(int org_id, int user_id);
         Task UserRegistration(UserRegistrationDTO registrationDTO);
+        Task UpdateUserProfile(UserDTO users);
     }
 }

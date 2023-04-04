@@ -37,5 +37,10 @@ namespace Shoppite.API.Controllers
             user.Password = encryptedpassword;
             return await _mediator.Send(new UserRegistration(user));
         }
+        [HttpPost]
+        public async Task<ActionResult<string>> UpdateUserProfile([FromBody] UserDTO user)
+        {
+            return await _mediator.Send(new EditUserProfile(user));
+        }
     }
 }
