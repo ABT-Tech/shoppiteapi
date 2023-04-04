@@ -90,6 +90,33 @@ namespace Shoppite.Infrastructure.Repositories
             _MasterContext.UsersProfiles.Add(profile);
             await _MasterContext.SaveChangesAsync();
         }
+        public async Task UpdateUserProfile(UserDTO userDTO)
+        {
+            User users = await _MasterContext.Users.FindAsync(userDTO.userId);
+            var product = _MasterContext.UsersProfiles.FirstOrDefault(a => a.UserName == users.Username);
+            users.Username = userDTO.ChangeName;         
+            users.Email = userDTO.ChangeEmail;
+            if (users != null)
+            {
+                _MasterContext.Entry(users).State = EntityState.Detached;
+            }
+            _MasterContext.Entry(users).State = EntityState.Modified;
+            await _MasterContext.SaveChangesAsync();
+
+            UsersProfile profile = await _MasterContext.UsersProfiles.FindAsync(product.ProfileId);
+            profile.UserName = userDTO.ChangeName;
+            profile.ContactNumber = userDTO.ChangePhoneNumber;
+            profile.Address = userDTO.ChangeAddress;
+            profile.City = userDTO.ChangeCity;
+            profile.State = userDTO.ChangeState;
+            profile.Zip = userDTO.Zipcode;
+            if (profile != null)
+            {
+                _MasterContext.Entry(profile).State = EntityState.Detached;
+            }
+            _MasterContext.Entry(profile).State = EntityState.Modified;
+            await _MasterContext.SaveChangesAsync();
+        }
     }
 }
  
