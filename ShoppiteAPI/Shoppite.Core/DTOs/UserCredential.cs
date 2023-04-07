@@ -10,6 +10,7 @@ namespace Shoppite.Core.DTOs
     {
         public int org_id { get; set; }
         public string email { get; set; }
+        public string type { get; set; }
         public string password { get; set; }
     }
 }

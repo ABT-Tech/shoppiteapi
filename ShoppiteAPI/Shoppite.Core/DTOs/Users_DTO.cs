@@ -9,6 +9,7 @@ namespace Shoppite.Core.DTOs
     public class Users_DTO
     {
         public int id { get; set; }
+        public string type { get; set; }
         public int org_id { get; set; }
         public string user_name { get; set; }
         public string f_name { get; set; }

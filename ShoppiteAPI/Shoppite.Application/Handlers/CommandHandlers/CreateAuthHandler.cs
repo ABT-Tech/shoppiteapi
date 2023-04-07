@@ -21,7 +21,7 @@ namespace Shoppite.Application.Handlers.CommandHandlers
         }
         public async Task<Users_DTO> Handle(CreateAuthCommand request, CancellationToken cancellationToken)
         {
-            return await _jwtAuth.Authentication(request.UserCredentials.email, request.UserCredentials.password, request.UserCredentials.org_id); 
+            return await _jwtAuth.Authentication(request.UserCredentials.email, request.UserCredentials.password,request.UserCredentials.type, request.UserCredentials.org_id); 
         }
     }
 }
