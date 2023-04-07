@@ -83,7 +83,7 @@ namespace Shoppite.Infrastructure.Repositories
                 profile.InsertDate = DateTime.Now;
                 profile.ProfileGuid = userGuid.Guid;
                 profile.OrgId = userRegistration.OrgId;
-                profile.UserName = userRegistration.Username;
+                profile.UserName = userRegistration.Email;
                 profile.ContactNumber = userRegistration.ContactNumber;
                 profile.Address = userRegistration.Address;
                 profile.City = userRegistration.city;

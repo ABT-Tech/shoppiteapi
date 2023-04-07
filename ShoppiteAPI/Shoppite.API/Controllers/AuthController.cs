@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Shoppite.Core.DTOs;
+using Shoppite.Infrastructure.Helpers;
 
 namespace Shoppite.API.Controllers
 {
@@ -36,5 +37,12 @@ namespace Shoppite.API.Controllers
             return Ok(result);
         }
 
+        //[HttpGet]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //public string UserGetPassword(string Password)
+        //{
+        //    EncryptionHelper encryptionHelper = new EncryptionHelper();
+        //    return encryptionHelper.Decrypt(Password);
+        //}
     }
 }
