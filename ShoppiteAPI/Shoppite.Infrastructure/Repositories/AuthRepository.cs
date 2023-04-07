@@ -19,7 +19,7 @@ namespace Shoppite.Infrastructure.Repositories
     {
         private string key = "abcdefghijklmnopqrstuvwxyz1234567890";
         private EncryptionHelper EncryptPass = new EncryptionHelper();
-        public async Task<Users_DTO> Authentication(string username, string password,int OrgId)
+        public async Task<Users_DTO> Authentication(string username, string password,string type,int OrgId)
         {
             Users_DTO users_DTO = new Users_DTO();
             GeneralDbContext generalDbContext = new GeneralDbContext();
