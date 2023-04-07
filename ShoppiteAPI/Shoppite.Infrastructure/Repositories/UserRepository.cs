@@ -39,20 +39,23 @@ namespace Shoppite.Infrastructure.Repositories
 
                 using (var result = await command.ExecuteReaderAsync())
                 {
-                    while (await result.ReadAsync())
+                    if (result != null)
                     {
-                        UserDTO userDTO = new UserDTO();
-                        userDTO.userId = Convert.ToInt32(UserId);
-                        userDTO.OrgId = Convert.ToInt32(OrgId);                      
-                        userDTO.ChangeName = result["ChangeName"].ToString();
-                        userDTO.ChangeEmail = result["ChangeEmail"].ToString();
-                        userDTO.ChangePhoneNumber = result["ChangePhoneNumber"].ToString();
-                        userDTO.ChangeAddress = result["ChangeAddress"].ToString();
-                        userDTO.ChangeState = result["ChangeState"].ToString();
-                        userDTO.ChangeCity = result["ChangeCity"].ToString();
-                        userDTO.Zipcode = result["Zipcode"].ToString();
+                        while (await result.ReadAsync())
+                        {
+                            UserDTO userDTO = new UserDTO();
+                            userDTO.userId = Convert.ToInt32(UserId);
+                            userDTO.OrgId = Convert.ToInt32(OrgId);
+                            userDTO.ChangeName = result["ChangeName"].ToString();
+                            userDTO.ChangeEmail = result["ChangeEmail"].ToString();
+                            userDTO.ChangePhoneNumber = result["ChangePhoneNumber"].ToString();
+                            userDTO.ChangeAddress = result["ChangeAddress"].ToString();
+                            userDTO.ChangeState = result["ChangeState"].ToString();
+                            userDTO.ChangeCity = result["ChangeCity"].ToString();
+                            userDTO.Zipcode = result["Zipcode"].ToString();
 
-                        UserDTOs.Add(userDTO); 
+                            UserDTOs.Add(userDTO);
+                        }
                     }
                 }
             }

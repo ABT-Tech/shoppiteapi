@@ -9,7 +9,7 @@ namespace Shoppite.Core.Repositories
 {
     public interface IJwtAuth
     {
-        Task<Users_DTO> Authentication(string username, string password,int OrgID);
+        Task<Users_DTO> Authentication(string username, string password,string type,int OrgID);
 
     }
 }

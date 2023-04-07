@@ -32,6 +32,7 @@ namespace Shoppite.Infrastructure.Repositories
                 command.CommandText = "proc_CheckUserExist";
                 command.Parameters.AddWithValue("@email", username);
                 command.Parameters.AddWithValue("@password", this.EncryptPass.Encrypt(password));
+                command.Parameters.AddWithValue("@type", type);
                 command.Parameters.AddWithValue("@org_id", OrgId);
                 var dataReader = await command.ExecuteReaderAsync();
                 if(dataReader.Read())

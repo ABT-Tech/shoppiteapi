@@ -112,5 +112,33 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return OrdersDTO;
         }
+        public async Task<List<OrderDetails>> GetOrderDetailsByOrgId(int OrgId)
+        {
+            List<OrderDetails> Orders = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_GetOrderDetails_Vendor_ByOrgId";
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@OrgId", OrgId));
+                await this._MasterContext.Database.OpenConnectionAsync();
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        OrderDetails orderDetails= new OrderDetails();
+                      //  var productlist=orderDetails.ProductLists.ToList();
+                     //   orderDetails.Address= result["Address"].ToString();
+                        orderDetails.Date= (DateTime)result["OrderDate"];
+                        orderDetails.orgId= Convert.ToInt32(OrgId);
+                        orderDetails.userId= Convert.ToInt32(result["userId"]);
+                       // orderDetails.TotalPrice=
+                        Orders.Add(orderDetails);
+                    }
+                }
+            }
+            return Orders;
+        }
     }
 }
