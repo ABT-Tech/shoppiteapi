@@ -62,41 +62,53 @@ namespace Shoppite.Infrastructure.Repositories
             return UserDTOs;
 
         }
-        public async Task UserRegistration(UserRegistrationDTO userRegistration)
-        {          
-            User us = new();
+        public async Task<string> UserRegistration(UserRegistrationDTO userRegistration)
+        {
+            var findemail = _MasterContext.Users.FirstOrDefault(x => x.Email == userRegistration.Email);
+            if(findemail!=null)
             {
-                us.Username = userRegistration.Username;
-                us.Password = userRegistration.Password;
-                userRegistration.ConfirmPassword = userRegistration.Password;
-                us.CreatedDate = DateTime.Now;
-                us.Email = userRegistration.Email;
-                us.Guid = Guid.NewGuid();
-                us.OrgId = userRegistration.OrgId;
+              return "User Exist!! Please Try with new Email";
+                
             }
-            _MasterContext.Users.Add(us);
-            await _MasterContext.SaveChangesAsync();
-            UsersProfile profile = new();
+            else
             {
-                var userGuid = _MasterContext.Users.FirstOrDefault(x => x.Guid == us.Guid);
-                profile.Type = "Client";
-                profile.InsertDate = DateTime.Now;
-                profile.ProfileGuid = userGuid.Guid;
-                profile.OrgId = userRegistration.OrgId;
-                profile.UserName = userRegistration.Email;
-                profile.ContactNumber = userRegistration.ContactNumber;
-                profile.Address = userRegistration.Address;
-                profile.City = userRegistration.city;
-                profile.State = userRegistration.State;
-                profile.Zip=userRegistration.Zipcode;
+                User us = new();
+                {
+                    us.Username = userRegistration.Username;
+                    us.Password = userRegistration.Password;
+                    userRegistration.ConfirmPassword = userRegistration.Password;
+                    us.CreatedDate = DateTime.Now;
+                    us.Email = userRegistration.Email;
+                    us.Guid = Guid.NewGuid();
+                    us.OrgId = userRegistration.OrgId;
+                }
+                _MasterContext.Users.Add(us);
+                await _MasterContext.SaveChangesAsync();
+                UsersProfile profile = new();
+                {
+                    var userGuid = _MasterContext.Users.FirstOrDefault(x => x.Guid == us.Guid);
+                    profile.Type = "Client";
+                    profile.InsertDate = DateTime.Now;
+                    profile.ProfileGuid = userGuid.Guid;
+                    profile.OrgId = userRegistration.OrgId;
+                    profile.UserName = userRegistration.Email;
+                    profile.ContactNumber = userRegistration.ContactNumber;
+                    profile.Address = userRegistration.Address;
+                    profile.City = userRegistration.city;
+                    profile.State = userRegistration.State;
+                    profile.Zip = userRegistration.Zipcode;
+                    profile.Status = "Active";
+                }
+                _MasterContext.UsersProfiles.Add(profile);
+                await _MasterContext.SaveChangesAsync();
+                return "Success";
             }
-            _MasterContext.UsersProfiles.Add(profile);
-            await _MasterContext.SaveChangesAsync();
+            
         }
         public async Task UpdateUserProfile(UserDTO userDTO)
         {
             User users = await _MasterContext.Users.FindAsync(userDTO.userId);
-            var product = _MasterContext.UsersProfiles.FirstOrDefault(a => a.UserName == users.Username);
+            var username = _MasterContext.UsersProfiles.FirstOrDefault(a => a.UserName == users.Email);
             users.Username = userDTO.ChangeName;         
             users.Email = userDTO.ChangeEmail;
             if (users != null)
@@ -106,7 +118,7 @@ namespace Shoppite.Infrastructure.Repositories
             _MasterContext.Entry(users).State = EntityState.Modified;
             await _MasterContext.SaveChangesAsync();
 
-            UsersProfile profile = await _MasterContext.UsersProfiles.FindAsync(product.ProfileId);
+            UsersProfile profile = await _MasterContext.UsersProfiles.FindAsync(username.ProfileId);
             profile.UserName = userDTO.ChangeName;
             profile.ContactNumber = userDTO.ChangePhoneNumber;
             profile.Address = userDTO.ChangeAddress;

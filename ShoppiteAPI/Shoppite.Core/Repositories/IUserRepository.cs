@@ -10,7 +10,7 @@ namespace Shoppite.Core.Repositories
     public interface IUserRepository
     {
         Task<List<DTOs.UserDTO>> GetUserById(int org_id, int user_id);
-        Task UserRegistration(UserRegistrationDTO registrationDTO);
+        Task<string> UserRegistration(UserRegistrationDTO registrationDTO);
         Task UpdateUserProfile(UserDTO users);
     }
 }

@@ -128,12 +128,10 @@ namespace Shoppite.Infrastructure.Repositories
                     while (await result.ReadAsync())
                     {
                         OrderDetails orderDetails= new OrderDetails();
-                      //  var productlist=orderDetails.ProductLists.ToList();
-                     //   orderDetails.Address= result["Address"].ToString();
+                     // orderDetails.Address= result["Address"].ToString();
                         orderDetails.Date= (DateTime)result["OrderDate"];
                         orderDetails.orgId= Convert.ToInt32(OrgId);
                         orderDetails.userId= Convert.ToInt32(result["userId"]);
-                       // orderDetails.TotalPrice=
                         Orders.Add(orderDetails);
                     }
                 }
