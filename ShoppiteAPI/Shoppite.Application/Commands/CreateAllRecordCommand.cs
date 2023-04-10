@@ -15,7 +15,7 @@ namespace Shoppite.Application.Commands
     public record CreateOrder(OrdersDTO orders):IRequest<string>;
     public record AddToFavourtite(Favourite favourites):IRequest<string>;
     public record RemovefromFavourite(int ProductId,int UserId,int OrgId) : IRequest<int>;
-    public record UserRegistration(UserRegistrationDTO RegistrationDTO,string Message) : IRequest<string>;
+    public record UserRegistration(UserRegistrationDTO RegistrationDTO) : IRequest<string>;
     public record EditUserProfile(UserDTO UserDTO):IRequest<string>;
 
 }
