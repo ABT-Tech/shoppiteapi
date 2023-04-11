@@ -12,6 +12,7 @@ namespace Shoppite.Core.Repositories
     {
        Task BuyNow(OrdersDTO order);
        Task<List<MyOrdersDTO>> GetMyOrderDetails(int OrgId, int UserId);
-       Task<List<OrderDetails>> GetOrderDetailsByOrgId(int OrgId);
+       Task<OrderDetails> GetOrderDetailsByOrgId(int OrgId,int OrderMasterId);
+       Task<List<VendorsOrder>> GetOrdersDetailForVendor(int OrgId);
     }
 }

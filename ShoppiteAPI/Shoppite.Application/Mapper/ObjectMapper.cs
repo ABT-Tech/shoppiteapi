@@ -38,7 +38,8 @@ namespace Shoppite.Application.Mapper
             CreateMap<AddressResponse, ChangeAddress>().ReverseMap();
             CreateMap<RecentlyViewedProductResponse, RecentlyViewedProductDTO>().ReverseMap();
             CreateMap<ProductsByBestSellerResponse, ProductsByBestSellerDTO>().ReverseMap();
-            CreateMap<OrderDetailResponse, OrderDetails>().ReverseMap();
+            CreateMap<VendorsOrderResponse, VendorsOrder>().ReverseMap();
+            CreateMap<OrderDetails, OrderDetailResponse>().ReverseMap();
         }
     }
  }

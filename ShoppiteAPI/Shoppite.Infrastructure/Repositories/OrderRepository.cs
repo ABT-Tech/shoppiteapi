@@ -112,9 +112,10 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return OrdersDTO;
         }
-        public async Task<List<OrderDetails>> GetOrderDetailsByOrgId(int OrgId)
+        public async Task<OrderDetails> GetOrderDetailsByOrgId(int OrgId,int OrderMasterId)
         {
-            List<OrderDetails> Orders = new();
+            OrderDetails orderDetails = new();
+            orderDetails.ProductLists = new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
                 string strSQL = "SP_GetOrderDetails_Vendor_ByOrgId";
@@ -122,16 +123,78 @@ namespace Shoppite.Infrastructure.Repositories
                 command.CommandType = CommandType.StoredProcedure;
                 var parameter = command.CreateParameter();
                 command.Parameters.Add(new SqlParameter("@OrgId", OrgId));
+                command.Parameters.Add(new SqlParameter("@OrderMasterId", OrderMasterId));
+                await this._MasterContext.Database.OpenConnectionAsync();
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {                           
+                     OrderListModel orderListModel = new OrderListModel();
+                     orderListModel.orgId = Convert.ToInt32(result["orgId"]);
+                     orderListModel.UserId= Convert.ToInt32(result["UserId"]);
+                     orderListModel.Id = Convert.ToInt32(result["Id"]);
+                     orderListModel.Title = result["Title"].ToString();
+                     orderListModel.Image = result["Image"].ToString();
+                     orderListModel.Brand = result["Brand"].ToString();
+                     orderListModel.Quantity = Convert.ToInt32(result["Quantity"]);
+                     orderListModel.Price = Convert.ToDouble(result["Price"]);
+                     orderDetails.ProductLists.Add(orderListModel);               
+
+                    }
+                }
+            }
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SELECT Users.UserId,Users.OrgId, CONVERT(DATE, Order_Basic.InsertDate) AS OrderDate, "+
+                               "SUM(Order_Basic.Price*Order_Basic.QTY) As TotalPrice, " +
+                              "CONCAT(shiiping.Address + ''+',', shiiping.City + ''+',',shiiping.Street+ ''+',', shiiping.Zipcode) AS Address " +
+                              "FROM Order_Basic " +
+                              "Inner JOIN Users ON Order_Basic.UserName = Users.UserName " +
+                              "Inner JOIN Order_Shipping AS shiiping ON Order_Basic.OrderGuid = shiiping.OrderGuid " +
+                              "inner join Order_Master om on  Order_Basic.OrderGUID=om.OrderGUID " +
+                              "WHERE Order_Basic.OrgId= " + OrgId + " And om.OrderMasterId= " + OrderMasterId+
+                              "Group By Users.UserId,Users.OrgId, CONVERT(DATE, Order_Basic.InsertDate), " +
+                              "CONCAT(shiiping.Address + ''+',', shiiping.City + ''+',',shiiping.Street+ ''+',', shiiping.Zipcode) ";
+                             
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.Text;
+                var parameter = command.CreateParameter();
+                await this._MasterContext.Database.OpenConnectionAsync();               
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        orderDetails.Address= result["Address"].ToString();
+                        orderDetails.Date = Convert.ToDateTime(result["OrderDate"]).ToString("dd/MM/yyyy");
+                        orderDetails.TotalPrice = Convert.ToDouble(result["TotalPrice"]);
+                        orderDetails.orgId = Convert.ToInt32(result["OrgId"]);
+                        orderDetails.userId = Convert.ToInt32(result["UserId"]);
+                    }
+                }
+            }         
+            return orderDetails;
+        }
+        public async Task<List<VendorsOrder>> GetOrdersDetailForVendor(int OrgId)
+        {
+            List<VendorsOrder> Orders = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_GetOrderDetails_Vendor";
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@orgid", OrgId));
                 await this._MasterContext.Database.OpenConnectionAsync();
                 using (var result = await command.ExecuteReaderAsync())
                 {
                     while (await result.ReadAsync())
                     {
-                        OrderDetails orderDetails= new OrderDetails();
-                     // orderDetails.Address= result["Address"].ToString();
-                        orderDetails.Date= (DateTime)result["OrderDate"];
-                        orderDetails.orgId= Convert.ToInt32(OrgId);
-                        orderDetails.userId= Convert.ToInt32(result["userId"]);
+                        VendorsOrder orderDetails = new VendorsOrder();
+                        orderDetails.orgId = Convert.ToInt32(OrgId);
+                        orderDetails.userId = Convert.ToInt32(result["userId"]);
+                        orderDetails.orderId = Convert.ToInt32(result["OrderMasterId"]);
+                        orderDetails.Price = Convert.ToDouble(result["Price"]);
                         Orders.Add(orderDetails);
                     }
                 }

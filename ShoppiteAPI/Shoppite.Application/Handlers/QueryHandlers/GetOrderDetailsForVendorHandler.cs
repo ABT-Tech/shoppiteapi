@@ -13,17 +13,17 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Application.Handlers.QueryHandlers
 {
-    public class GetOrderDetailsByOrgIdHandler: IRequestHandler<GetOrdersDetailByOrgId, OrderDetailResponse>
+   public class GetOrderDetailsForVendorHandler:IRequestHandler<GetOrderDetails, List<VendorsOrderResponse>>
     {
         private readonly IOrderRepository _orderRepository;
-        public GetOrderDetailsByOrgIdHandler(IOrderRepository orderRepository)
+        public GetOrderDetailsForVendorHandler(IOrderRepository orderRepository)
         {
             _orderRepository = orderRepository;
         }
-        public async Task<OrderDetailResponse> Handle(GetOrdersDetailByOrgId request, CancellationToken cancellationToken)
+        public async Task<List<VendorsOrderResponse>> Handle(GetOrderDetails request, CancellationToken cancellationToken)
         {
-            var cart = await _orderRepository.GetOrderDetailsByOrgId(request.OrgId,request.OrderMasterId);
-            var mapper = ObjectMapper.Mapper.Map<OrderDetailResponse>(cart);
+            var cart = await _orderRepository.GetOrdersDetailForVendor(request.OrgId);
+            var mapper = ObjectMapper.Mapper.Map<List<VendorsOrderResponse>>(cart);
             return mapper;
         }
     }

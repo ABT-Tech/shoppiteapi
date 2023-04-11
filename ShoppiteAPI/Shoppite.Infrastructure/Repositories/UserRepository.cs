@@ -119,7 +119,7 @@ namespace Shoppite.Infrastructure.Repositories
             await _MasterContext.SaveChangesAsync();
 
             UsersProfile profile = await _MasterContext.UsersProfiles.FindAsync(username.ProfileId);
-            profile.UserName = userDTO.ChangeName;
+            profile.UserName = userDTO.ChangeEmail;
             profile.ContactNumber = userDTO.ChangePhoneNumber;
             profile.Address = userDTO.ChangeAddress;
             profile.City = userDTO.ChangeCity;
