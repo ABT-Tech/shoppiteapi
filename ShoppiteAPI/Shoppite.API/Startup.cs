@@ -61,9 +61,8 @@ namespace Shoppite.API
             services.AddTransient<IJwtAuth, AuthRepository>();
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
-
-
             services.AddTransient<IOrderRepository, OrderRepository>();
+            services.AddTransient<IFirebaseRepository, FirebaseRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
