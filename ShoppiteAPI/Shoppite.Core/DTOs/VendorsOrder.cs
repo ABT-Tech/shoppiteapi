@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shoppite.Core.DTOs.Mapper
+namespace Shoppite.Core.DTOs
 {
     public class VendorsOrder
     {
@@ -13,5 +13,4 @@ namespace Shoppite.Core.DTOs.Mapper
         public int orderId { get; set; }
         public double Price { get; set; }
     }
-    
 }

@@ -1,5 +1,5 @@
-﻿using Shoppite.Core.DTOs;
-using System;
+﻿
+using Shoppite.Core.DTOs;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,11 +9,11 @@ namespace Shoppite.Application.Responses
 {
     public class OrderDetailResponse
     {
-        public List<ProductsDTO> ProductLists { get; set; }
-        public DateTime Date { get; set; }
-        public string Address { get; set; }
-        public object TotalPrice { get; set; }
-        public int orgId { get; set; }
-        public int userId { get; set; }
+            public List<OrderListModel> ProductLists { get; set; }
+            public string Date { get; set; }
+            public string Address { get; set; }
+            public object TotalPrice { get; set; }
+            public int orgId { get; set; }
+            public int userId { get; set; }
     }
 }
