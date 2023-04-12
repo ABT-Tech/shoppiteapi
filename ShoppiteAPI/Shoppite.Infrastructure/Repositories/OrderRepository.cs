@@ -22,6 +22,8 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task BuyNow(OrdersDTO orders)
         {
+            int? productId = 0;
+            int? producQty = 0;
             try
             {
                 OrderBasic ob = new();
@@ -41,10 +43,19 @@ namespace Shoppite.Infrastructure.Repositories
                                 _MasterContext.OrderBasics.Update(check[i]);
                                 await _MasterContext.SaveChangesAsync();
                                 orderTotal += check[i].Price * check[i].Qty;
-                                orders.BaseTotalPrice = orderTotal;                                
+                                orders.BaseTotalPrice = orderTotal;
+                                productId = orders.ProductLists[j].Id;
+                                producQty = orders.ProductLists[j].Qty;
                             }
                         }
                     }
+                }
+                var findQty = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == productId);
+                if(findQty!=null)
+                {
+                    findQty.Qty = findQty.Qty - producQty;
+                    _MasterContext.ProductBasics.Update(findQty);
+                    await _MasterContext.SaveChangesAsync();
                 }
                 OrderShipping shipping = new();
                 {
@@ -131,6 +142,7 @@ namespace Shoppite.Infrastructure.Repositories
                     {                           
                      OrderListModel orderListModel = new OrderListModel();
                      orderListModel.orgId = Convert.ToInt32(result["orgId"]);
+                     orderListModel.OrderStatus= result["OrderStatus"].ToString();
                      orderListModel.UserId= Convert.ToInt32(result["UserId"]);
                      orderListModel.Id = Convert.ToInt32(result["Id"]);
                      orderListModel.Title = result["Title"].ToString();
@@ -156,7 +168,6 @@ namespace Shoppite.Infrastructure.Repositories
                               "Group By Users.UserId,Users.OrgId, CONVERT(DATE, Order_Basic.InsertDate), " +
                               "CONCAT(shiiping.Address + ''+',', shiiping.City + ''+',',shiiping.Street+ ''+',', shiiping.Zipcode) ";
                              
-
                 command.CommandText = strSQL;
                 command.CommandType = CommandType.Text;
                 var parameter = command.CreateParameter();
@@ -200,6 +211,19 @@ namespace Shoppite.Infrastructure.Repositories
                 }
             }
             return Orders;
+        }
+        public async Task UpdateOrderStatus(Orders orders)
+        {
+            var orderStatus = _MasterContext.OrderStatuses.FirstOrDefault(a => a.OrgId ==orders.orgId && a.OrderId==orders.OrderId);
+            if(orderStatus!=null)
+            {
+                orderStatus.Remarks = orders.Remark;
+                orderStatus.OrderStatus1 = orders.orderstatus;
+
+                _MasterContext.Entry(orderStatus).State = EntityState.Detached;
+                _MasterContext.Entry(orderStatus).State = EntityState.Modified;
+                await _MasterContext.SaveChangesAsync();
+            }
         }
     }
 }

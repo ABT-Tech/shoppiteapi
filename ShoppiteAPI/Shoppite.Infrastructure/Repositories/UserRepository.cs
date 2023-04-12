@@ -107,30 +107,31 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task UpdateUserProfile(UserDTO userDTO)
         {
-            User users = await _MasterContext.Users.FindAsync(userDTO.userId);
-            var username = _MasterContext.UsersProfiles.FirstOrDefault(a => a.UserName == users.Email);
-            users.Username = userDTO.ChangeName;         
-            users.Email = userDTO.ChangeEmail;
+            var users =  _MasterContext.Users.FirstOrDefault(u=>u.UserId==userDTO.userId & u.OrgId==userDTO.OrgId);
+            var username = _MasterContext.UsersProfiles.FirstOrDefault(a => a.UserName == users.Email & a.OrgId==users.OrgId);
             if (users != null)
             {
-                _MasterContext.Entry(users).State = EntityState.Detached;
+                users.Username = userDTO.ChangeName;         
+                users.Email = userDTO.ChangeEmail;   
+                _MasterContext.Entry(users).State = EntityState.Detached;          
+                _MasterContext.Entry(users).State = EntityState.Modified;
+                await _MasterContext.SaveChangesAsync();
             }
-            _MasterContext.Entry(users).State = EntityState.Modified;
-            await _MasterContext.SaveChangesAsync();
 
             UsersProfile profile = await _MasterContext.UsersProfiles.FindAsync(username.ProfileId);
-            profile.UserName = userDTO.ChangeEmail;
-            profile.ContactNumber = userDTO.ChangePhoneNumber;
-            profile.Address = userDTO.ChangeAddress;
-            profile.City = userDTO.ChangeCity;
-            profile.State = userDTO.ChangeState;
-            profile.Zip = userDTO.Zipcode;
             if (profile != null)
             {
-                _MasterContext.Entry(profile).State = EntityState.Detached;
+                profile.UserName = userDTO.ChangeEmail;
+                profile.ContactNumber = userDTO.ChangePhoneNumber;
+                profile.Address = userDTO.ChangeAddress;
+                profile.City = userDTO.ChangeCity;
+                profile.State = userDTO.ChangeState;
+                profile.Zip = userDTO.Zipcode;
+
+                _MasterContext.Entry(profile).State = EntityState.Detached;          
+                _MasterContext.Entry(profile).State = EntityState.Modified;
+                await _MasterContext.SaveChangesAsync();
             }
-            _MasterContext.Entry(profile).State = EntityState.Modified;
-            await _MasterContext.SaveChangesAsync();
         }
     }
 }
