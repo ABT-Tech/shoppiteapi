@@ -71,6 +71,7 @@ namespace Shoppite.Infrastructure.Data
         public virtual DbSet<SpecificationSetup> SpecificationSetups { get; set; }
         public virtual DbSet<Status> Statuses { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Notifications_Token> NotificationsTokens { get; set; }
         public virtual DbSet<UserActivation> UserActivations { get; set; }
         public virtual DbSet<UsersMembership> UsersMemberships { get; set; }
         public virtual DbSet<UsersProfile> UsersProfiles { get; set; }
@@ -1281,6 +1282,13 @@ namespace Shoppite.Infrastructure.Data
                 entity.Property(e => e.Title).HasMaxLength(50);
 
                 entity.Property(e => e.Type).HasMaxLength(30);
+            });
+
+            modelBuilder.Entity<Notifications_Token>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.ToTable("Notifications_Token");
             });
 
             OnModelCreatingPartial(modelBuilder);
