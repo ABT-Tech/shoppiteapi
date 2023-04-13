@@ -43,7 +43,7 @@ namespace Shoppite.Infrastructure.Repositories
                     {
                         while (await result.ReadAsync())
                         {
-                            UserDTO userDTO = new UserDTO();
+                            UserDTO userDTO = new();
                             userDTO.userId = Convert.ToInt32(UserId);
                             userDTO.OrgId = Convert.ToInt32(OrgId);
                             userDTO.ChangeName = result["ChangeName"].ToString();
@@ -64,7 +64,7 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task<string> UserRegistration(UserRegistrationDTO userRegistration)
         {
-            var findemail = _MasterContext.Users.FirstOrDefault(x => x.Email == userRegistration.Email);
+            var findemail = _MasterContext.Users.FirstOrDefault(x => x.Email == userRegistration.Email&&x.OrgId==userRegistration.OrgId);
             if(findemail!=null)
             {
               return "User Exist!! Please Try with new Email";

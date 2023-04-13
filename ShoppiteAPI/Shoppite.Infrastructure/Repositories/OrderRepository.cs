@@ -22,14 +22,12 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task BuyNow(OrdersDTO orders)
         {
-            int? productId = 0;
-            int? producQty = 0;
+            var check = await _MasterContext.OrderBasics.Where(x => x.OrderGuid == orders.OrderGuid && x.OrderStatus == "Cart").ToListAsync();
             try
             {
                 OrderBasic ob = new();
                 {
-                    decimal? orderTotal=0;
-                    var check = await _MasterContext.OrderBasics.Where(x => x.OrderGuid == orders.OrderGuid && x.OrderStatus == "Cart").ToListAsync();
+                    decimal? orderTotal=0;                  
                    
                     for (int i = 0; i < check.Count; i++)                       
                     {
@@ -44,18 +42,25 @@ namespace Shoppite.Infrastructure.Repositories
                                 await _MasterContext.SaveChangesAsync();
                                 orderTotal += check[i].Price * check[i].Qty;
                                 orders.BaseTotalPrice = orderTotal;
-                                productId = orders.ProductLists[j].Id;
-                                producQty = orders.ProductLists[j].Qty;
                             }
                         }
                     }
                 }
-                var findQty = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == productId);
-                if(findQty!=null)
+                for (int i = 0; i < check.Count; i++)
                 {
-                    findQty.Qty = findQty.Qty - producQty;
-                    _MasterContext.ProductBasics.Update(findQty);
-                    await _MasterContext.SaveChangesAsync();
+                    for (int j = 0; j < orders.ProductLists.Count; j++)
+                    {
+                        var findQty = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == orders.ProductLists[j].Id);
+                        if (findQty != null)
+                        {
+                            if(check[i].ProductId== orders.ProductLists[j].Id)
+                            {
+                                findQty.Qty = findQty.Qty - orders.ProductLists[j].Qty;
+                                _MasterContext.ProductBasics.Update(findQty);
+                                await _MasterContext.SaveChangesAsync();
+                            }               
+                        }
+                    }   
                 }
                 OrderShipping shipping = new();
                 {

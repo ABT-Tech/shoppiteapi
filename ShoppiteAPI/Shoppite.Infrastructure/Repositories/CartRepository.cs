@@ -1,23 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Shoppite.Core.DTOs;
 using Shoppite.Core.Model;
 using Shoppite.Core.Repositories;
 using Shoppite.Infrastructure.Data;
-using Shoppite.Infrastructure.Repositories.Base;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
 using System.Data;
-using Shoppite.Core.DTOs;
-using Shoppite.Core.Extensions;
-using Shoppite.Core.Entities;
-using Shoppite.Core.Model;
 
 namespace Shoppite.Infrastructure.Repositories
 {
@@ -56,8 +47,20 @@ namespace Shoppite.Infrastructure.Repositories
                 command.Parameters.Add(parameter);
                 await this._MasterContext.Database.OpenConnectionAsync();
 
-                await command.ExecuteNonQueryAsync();
-                
+                var finduser = _MasterContext.Users.FirstOrDefault(u => u.UserId == Cart.UserId&& u.OrgId==Cart.orgId);
+                var username = finduser.Username;
+                var cartdetails = _MasterContext.OrderBasics.FirstOrDefault(u => u.ProductId == Cart.proId && u.OrgId == Cart.orgId && u.UserName == username&&u.OrderStatus=="Cart");
+
+                if (cartdetails.ProductId == Cart.proId)
+                {
+                    cartdetails.Qty = cartdetails.Qty + Cart.Qty;
+                    _MasterContext.OrderBasics.Update(cartdetails);
+                    await _MasterContext.SaveChangesAsync();
+                }
+                else
+                {
+                    await command.ExecuteNonQueryAsync();
+                }
             }
             return "success";
         }
@@ -156,7 +159,7 @@ namespace Shoppite.Infrastructure.Repositories
             if (cuswishlist != null)
             {
                 _MasterContext.CustomerWishlists.Remove(cuswishlist);
-                _MasterContext.SaveChanges();
+                await _MasterContext.SaveChangesAsync();
             }
         }
     }
