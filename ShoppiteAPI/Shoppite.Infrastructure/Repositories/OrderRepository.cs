@@ -22,12 +22,12 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task BuyNow(OrdersDTO orders)
         {
+            var check = await _MasterContext.OrderBasics.Where(x => x.OrderGuid == orders.OrderGuid && x.OrderStatus == "Cart"&&x.OrgId==orders.orgid).ToListAsync();
             try
             {
                 OrderBasic ob = new();
                 {
-                    decimal? orderTotal=0;
-                    var check = await _MasterContext.OrderBasics.Where(x => x.OrderGuid == orders.OrderGuid && x.OrderStatus == "Cart").ToListAsync();
+                    decimal? orderTotal=0;                  
                    
                     for (int i = 0; i < check.Count; i++)                       
                     {
@@ -36,16 +36,32 @@ namespace Shoppite.Infrastructure.Repositories
                             if (check[i].OrderId == orders.ProductLists[j].OrderId)
                             {
                                 check[i].OrderStatus = "Confirmed";
-                                check[i].Qty = orders.ProductLists[j].Qty;
+                                check[i].Qty = orders.ProductLists[j].Quantity;
                                 check[i].InsertDate = DateTime.Now;
                                 _MasterContext.OrderBasics.Update(check[i]);
                                 await _MasterContext.SaveChangesAsync();
                                 orderTotal += check[i].Price * check[i].Qty;
-                                orders.BaseTotalPrice = orderTotal;                                
+                                orders.BaseTotalPrice = orderTotal;
                             }
                         }
                     }
                 }
+                for (int i = 0; i < check.Count; i++)
+                {
+                    for (int j = 0; j < orders.ProductLists.Count; j++)
+                    {
+                        var findQty = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == orders.ProductLists[j].Id);
+                        if (findQty != null)
+                        {
+                            if(check[i].ProductId== orders.ProductLists[j].Id)
+                            {
+                                findQty.Qty = findQty.Qty - orders.ProductLists[j].Quantity;
+                                _MasterContext.ProductBasics.Update(findQty);
+                                await _MasterContext.SaveChangesAsync();
+                            }               
+                        }
+                    }   
+                }              
                 OrderShipping shipping = new();
                 {
                     var OrderCheck = _MasterContext.OrderShippings.FirstOrDefault(x => x.OrderGuid == orders.OrderGuid);
@@ -131,6 +147,7 @@ namespace Shoppite.Infrastructure.Repositories
                     {                           
                      OrderListModel orderListModel = new OrderListModel();
                      orderListModel.orgId = Convert.ToInt32(result["orgId"]);
+                     orderListModel.OrderStatus= result["OrderStatus"].ToString();
                      orderListModel.UserId= Convert.ToInt32(result["UserId"]);
                      orderListModel.Id = Convert.ToInt32(result["Id"]);
                      orderListModel.Title = result["Title"].ToString();
@@ -156,7 +173,6 @@ namespace Shoppite.Infrastructure.Repositories
                               "Group By Users.UserId,Users.OrgId, CONVERT(DATE, Order_Basic.InsertDate), " +
                               "CONCAT(shiiping.Address + ''+',', shiiping.City + ''+',',shiiping.Street+ ''+',', shiiping.Zipcode) ";
                              
-
                 command.CommandText = strSQL;
                 command.CommandType = CommandType.Text;
                 var parameter = command.CreateParameter();
@@ -194,12 +210,25 @@ namespace Shoppite.Infrastructure.Repositories
                         orderDetails.orgId = Convert.ToInt32(OrgId);
                         orderDetails.userId = Convert.ToInt32(result["userId"]);
                         orderDetails.orderId = Convert.ToInt32(result["OrderMasterId"]);
-                        orderDetails.Price = Convert.ToDouble(result["Price"]);
+                      //  orderDetails.Price = Convert.ToDouble(result["Price"]);
                         Orders.Add(orderDetails);
                     }
                 }
             }
             return Orders;
+        }
+        public async Task UpdateOrderStatus(Orders orders)
+        {
+            var orderStatus = _MasterContext.OrderStatuses.FirstOrDefault(a => a.OrgId ==orders.orgId && a.OrderId==orders.OrderId);
+            if(orderStatus!=null)
+            {
+                orderStatus.Remarks = orders.Remark;
+                orderStatus.OrderStatus1 = orders.orderstatus;
+
+                _MasterContext.Entry(orderStatus).State = EntityState.Detached;
+                _MasterContext.Entry(orderStatus).State = EntityState.Modified;
+                await _MasterContext.SaveChangesAsync();
+            }
         }
     }
 }

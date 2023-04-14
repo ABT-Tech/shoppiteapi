@@ -17,6 +17,7 @@ namespace Shoppite.Core.Repositories
         Task<List<RecentlyViewedProductDTO>> GetRecentlyViewedProductsByCategory(int OrgId,int CategoryId,string IP);
         Task<List<RecentlyViewedProductDTO>> MostViewedProductsByCategory(int OrgId, int CategoryId, string IP);
         Task<List<ProductsByBestSellerDTO>> ProductByBestSellers(int OrgId);
+        Task<List<ProductsByCategory>> GetProductsByCategory(int OrgId, int CategoryId);
 
 
     }

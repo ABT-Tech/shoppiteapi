@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Core.DTOs
 {
-    public class ProductList
+    public class Orders
     {
-        public int? Id { get; set; }
+        public int UserId { get; set; }
         public int OrderId { get; set; }
-        public int? Quantity { get; set; }
-        public decimal? Price { get; set; }
+        public int orgId { get; set; }
+        public string Remark { get; set; }
+        public string orderstatus { get; set; }
     }
 }

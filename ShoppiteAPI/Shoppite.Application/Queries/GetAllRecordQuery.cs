@@ -25,5 +25,6 @@ namespace Shoppite.Application.Queries
     public record GetProductsByBestSellers(int OrgId):IRequest<List<ProductsByBestSellerResponse>>;
     public record GetOrdersDetailByOrgId(int OrgId,int OrderMasterId) :IRequest<OrderDetailResponse>;
     public record GetOrderDetails(int OrgId):IRequest<List<VendorsOrderResponse>>;
+    public record GetProductsByCategory(int OrgId,int CategoryId):IRequest<List<ProductsByCategoryResponse>>;
 
 }

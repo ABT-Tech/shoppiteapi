@@ -19,8 +19,8 @@ namespace Shoppite.Application.Handlers.CommandHandlers
         }
         public async Task<string> Handle(UserRegistration request, CancellationToken cancellationToken)
         {
-            await _userRepository.UserRegistration(request.RegistrationDTO);
-            return "Success";
+            return await _userRepository.UserRegistration(request.RegistrationDTO);
+            
         }
     }
 }

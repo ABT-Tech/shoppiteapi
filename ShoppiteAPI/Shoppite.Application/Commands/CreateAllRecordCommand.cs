@@ -18,4 +18,5 @@ namespace Shoppite.Application.Commands
     public record UserRegistration(UserRegistrationDTO RegistrationDTO) : IRequest<string>;
     public record EditUserProfile(UserDTO UserDTO):IRequest<string>;
     public record AddFirebaseToken(FireBaseToken fireBaseToken) : IRequest<string>;
+    public record UpdateOrderStatus(Orders orders):IRequest<string>;
 }
