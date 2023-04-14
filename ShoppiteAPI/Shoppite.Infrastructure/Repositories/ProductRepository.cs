@@ -72,7 +72,6 @@ namespace Shoppite.Infrastructure.Repositories
                 var parameter = command.CreateParameter();
                 command.Parameters.Add(new SqlParameter("@orgid", orgId));
                 command.Parameters.Add(new SqlParameter("@userid", userId));
-                // command.Parameters.Add(parameter);
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())
@@ -109,7 +108,6 @@ namespace Shoppite.Infrastructure.Repositories
                 var parameter = command.CreateParameter();
                 command.Parameters.Add(new SqlParameter("@OrgId", orgId));
                 command.Parameters.Add(new SqlParameter("@ProductName", productname));
-                // command.Parameters.Add(parameter);
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())
@@ -147,7 +145,6 @@ namespace Shoppite.Infrastructure.Repositories
                 command.Parameters.Add(new SqlParameter("@orgid", orgId));
                 command.Parameters.Add(new SqlParameter("@categoryid", CategoryId));
                 command.Parameters.Add(new SqlParameter("@IP",IP ));
-                // command.Parameters.Add(parameter);
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())
@@ -194,7 +191,6 @@ namespace Shoppite.Infrastructure.Repositories
                 command.Parameters.Add(new SqlParameter("@orgid", orgId));
                 command.Parameters.Add(new SqlParameter("@categoryid", CategoryId));
                 command.Parameters.Add(new SqlParameter("@IP", IP));
-                // command.Parameters.Add(parameter);
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())
@@ -206,22 +202,18 @@ namespace Shoppite.Infrastructure.Repositories
                         product.ProductName = result["ProductName"].ToString();                       
                         product.ShortDescription = result["ShortDescription"].ToString();
                         product.Description = result["Description"].ToString();
-                       // product.Urlpath = result["Urlpath"].ToString();
                         product.ProductGuid = (Guid)result["ProductGuid"];
                         product.IsPublished = Convert.ToBoolean(result["IsPublished"]);
                         product.Image = result["Image"].ToString();
                         product.Brands = result["Brands"].ToString();
                         product.BrandId = Convert.ToInt32(result["BrandId"]);
-                      //  product.brandsUrlpath = result["brandsUrlpath"].ToString();
                         product.Price = Convert.ToDouble(result["Price"]);
                         product.OldPrice = Convert.ToDouble(result["OldPrice"]);
                         product.OrgId = Convert.ToInt32(orgId);
                         product.Category_Name = result["Category_Name"].ToString();
-                      //  product.CategoryUrlPath = result["CategoryUrlPath"].ToString();
                         product.Category_Id = Convert.ToInt32(result["Category_Id"]);
                         product.MainCatId = Convert.ToInt32(result["MainCatId"]);
                         product.maincategoryname = result["maincategoryname"].ToString();
-                      //  product.maincaturlpath = result["maincaturlpath"].ToString();
                         product.Sku = result["Sku"].ToString();
                         product.ProfileId = Convert.ToInt32(result["ProfileId"]);                                          
                         product.STATUS = result["STATUS"].ToString();
@@ -274,5 +266,46 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return bestSellerDTOs;
         }
+        public async Task<List<ProductsByCategory>> GetProductsByCategory(int orgId,int CategoryId)
+        {
+            List<ProductsByCategory> productList = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_GetProducts_By_CategoryId";
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@OrgId", orgId));
+                command.Parameters.Add(new SqlParameter("@CategoryId", orgId));
+                await this._MasterContext.Database.OpenConnectionAsync();
+
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        ProductsByCategory product = new();
+                        product.Id = Convert.ToInt32(result["Id"]);
+                        product.Title = result["Title"].ToString();
+                        product.ShortDescription = result["ShortDescription"].ToString();
+                        product.Description = result["Description"].ToString();
+                        product.ProductGuid = (Guid)result["ProductGuid"];
+                        product.Image = result["Image"].ToString();
+                        product.Brands = result["Brands"].ToString();
+                        product.BrandId = Convert.ToInt32(result["BrandId"]);
+                        product.Price = Convert.ToDouble(result["Price"]);
+                        product.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                        product.OrgId = Convert.ToInt32(orgId);
+                        product.Category_Name = result["Category_Name"].ToString();
+                        product.Category_Id = Convert.ToInt32(result["Category_Id"]);
+                        product.MainCatId = Convert.ToInt32(result["MainCatId"]);
+                        product.maincategoryname = result["maincategoryname"].ToString();
+                        productList.Add(product);
+                    }
+                }
+            }
+            return productList;
+        }
+
     }
 }
