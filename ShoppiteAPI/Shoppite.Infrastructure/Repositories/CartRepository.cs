@@ -51,7 +51,7 @@ namespace Shoppite.Infrastructure.Repositories
                 var username = finduser.Username;
                 var cartdetails = _MasterContext.OrderBasics.FirstOrDefault(u => u.ProductId == Cart.proId && u.OrgId == Cart.orgId && u.UserName == username&&u.OrderStatus=="Cart");
 
-                if (cartdetails.ProductId == Cart.proId)
+                if (cartdetails !=null && cartdetails.ProductId == Cart.proId)
                 {
                     cartdetails.Qty = cartdetails.Qty + Cart.Qty;
                     _MasterContext.OrderBasics.Update(cartdetails);
@@ -89,7 +89,7 @@ namespace Shoppite.Infrastructure.Repositories
                         cartDTO.Brand = result["Brand"].ToString();
                         cartDTO.Quantity = Convert.ToInt32(result["Quantity"]);
                         cartDTO.Price = Convert.ToDouble(result["Price"]);
-                        cartDTO.OldPrice = Convert.ToInt32(result["OldPrice"]);
+                        cartDTO.OldPrice = result["OldPrice"] != DBNull.Value ? Convert.ToInt32(result["OldPrice"]):0;
                         cartDTO.orgId = Convert.ToInt32(OrgId);
                         cartDTO.UserId = Convert.ToInt32(UserId);
                         cartDTO.orderid = Convert.ToInt32(result["orderid"]);
