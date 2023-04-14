@@ -22,7 +22,7 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task BuyNow(OrdersDTO orders)
         {
-            var check = await _MasterContext.OrderBasics.Where(x => x.OrderGuid == orders.OrderGuid && x.OrderStatus == "Cart").ToListAsync();
+            var check = await _MasterContext.OrderBasics.Where(x => x.OrderGuid == orders.OrderGuid && x.OrderStatus == "Cart"&&x.OrgId==orders.orgid).ToListAsync();
             try
             {
                 OrderBasic ob = new();
@@ -36,7 +36,7 @@ namespace Shoppite.Infrastructure.Repositories
                             if (check[i].OrderId == orders.ProductLists[j].OrderId)
                             {
                                 check[i].OrderStatus = "Confirmed";
-                                check[i].Qty = orders.ProductLists[j].Qty;
+                                check[i].Qty = orders.ProductLists[j].Quantity;
                                 check[i].InsertDate = DateTime.Now;
                                 _MasterContext.OrderBasics.Update(check[i]);
                                 await _MasterContext.SaveChangesAsync();
@@ -55,13 +55,13 @@ namespace Shoppite.Infrastructure.Repositories
                         {
                             if(check[i].ProductId== orders.ProductLists[j].Id)
                             {
-                                findQty.Qty = findQty.Qty - orders.ProductLists[j].Qty;
+                                findQty.Qty = findQty.Qty - orders.ProductLists[j].Quantity;
                                 _MasterContext.ProductBasics.Update(findQty);
                                 await _MasterContext.SaveChangesAsync();
                             }               
                         }
                     }   
-                }
+                }              
                 OrderShipping shipping = new();
                 {
                     var OrderCheck = _MasterContext.OrderShippings.FirstOrDefault(x => x.OrderGuid == orders.OrderGuid);
@@ -210,7 +210,7 @@ namespace Shoppite.Infrastructure.Repositories
                         orderDetails.orgId = Convert.ToInt32(OrgId);
                         orderDetails.userId = Convert.ToInt32(result["userId"]);
                         orderDetails.orderId = Convert.ToInt32(result["OrderMasterId"]);
-                        orderDetails.Price = Convert.ToDouble(result["Price"]);
+                      //  orderDetails.Price = Convert.ToDouble(result["Price"]);
                         Orders.Add(orderDetails);
                     }
                 }
