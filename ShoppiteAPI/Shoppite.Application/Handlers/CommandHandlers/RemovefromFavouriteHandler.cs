@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Application.Handlers.CommandHandlers
 {
-    public class RemovefromFavouriteHandler: IRequestHandler<RemovefromFavourite,int>
+    public class RemovefromFavouriteHandler: IRequestHandler<RemovefromFavourite,string>
     {
         private readonly ICartRepository _cartRepository;
 
@@ -14,10 +14,10 @@ namespace Shoppite.Application.Handlers.CommandHandlers
         {
             _cartRepository = cartRepository;
         }
-        public async Task<int> Handle(RemovefromFavourite request, CancellationToken cancellationToken)
+        public async Task<string> Handle(RemovefromFavourite request, CancellationToken cancellationToken)
         {
              await _cartRepository.RemovefromFavourite(request.ProductId,request.UserId,request.OrgId);
-             return 0;
+             return "Success";
         }
 
     }

@@ -61,7 +61,26 @@ namespace Shoppite.Infrastructure.Repositories
                             }               
                         }
                     }   
-                }              
+                }
+                foreach(var order in check)
+                {
+                    var StatusCheck = await _MasterContext.OrderStatuses.FirstOrDefaultAsync(x => x.OrderId == order.OrderId&&x.OrgId==order.OrgId);
+                    if (StatusCheck == null)
+                    {
+                        OrderStatus orderStatus = new OrderStatus
+                        {
+                            OrderId = order.OrderId,
+                            OrderStatus1 = "Pending",
+                            StatusDate = DateTime.Now,
+                            Remarks = string.Empty,
+                            Insertby = DateTime.Now.ToString(),
+                            OrgId = order.OrgId,
+                        };
+                        _MasterContext.OrderStatuses.Add(orderStatus);
+                    }
+                    await _MasterContext.SaveChangesAsync();                   
+                }
+                
                 OrderShipping shipping = new();
                 {
                     var OrderCheck = _MasterContext.OrderShippings.FirstOrDefault(x => x.OrderGuid == orders.OrderGuid);
@@ -210,7 +229,7 @@ namespace Shoppite.Infrastructure.Repositories
                         orderDetails.orgId = Convert.ToInt32(OrgId);
                         orderDetails.userId = Convert.ToInt32(result["userId"]);
                         orderDetails.orderId = Convert.ToInt32(result["OrderMasterId"]);
-                      //  orderDetails.Price = Convert.ToDouble(result["Price"]);
+                        orderDetails.Price = Convert.ToDouble(result["Price"]);
                         Orders.Add(orderDetails);
                     }
                 }
