@@ -50,13 +50,15 @@ namespace Shoppite.Infrastructure.Repositories
                 var finduser = _MasterContext.Users.FirstOrDefault(u => u.UserId == Cart.UserId&& u.OrgId==Cart.orgId);
                 var username = finduser.Username;
                 var cartdetails = _MasterContext.OrderBasics.FirstOrDefault(u => u.ProductId == Cart.proId && u.OrgId == Cart.orgId && u.UserName == username&&u.OrderStatus=="Cart");
-
-                if (cartdetails.ProductId == Cart.proId)
+                if(cartdetails != null)
                 {
-                    cartdetails.Qty = cartdetails.Qty + Cart.Qty;
-                    _MasterContext.OrderBasics.Update(cartdetails);
-                    await _MasterContext.SaveChangesAsync();
-                }
+                    if (cartdetails.ProductId == Cart.proId)
+                    {
+                        cartdetails.Qty = cartdetails.Qty + Cart.Qty;
+                        _MasterContext.OrderBasics.Update(cartdetails);
+                        await _MasterContext.SaveChangesAsync();
+                    }
+                }               
                 else
                 {
                     await command.ExecuteNonQueryAsync();
@@ -159,6 +161,17 @@ namespace Shoppite.Infrastructure.Repositories
             if (cuswishlist != null)
             {
                 _MasterContext.CustomerWishlists.Remove(cuswishlist);
+                await _MasterContext.SaveChangesAsync();
+            }
+        }
+        public async Task RemoveFromCart(int userId, int proId, int orgId)
+        {
+            var username = _MasterContext.Users.FirstOrDefault(u => u.UserId == userId);
+            OrderBasic cart = _MasterContext.OrderBasics.FirstOrDefault(u => u.ProductId == proId && u.UserName == username.Username && u.OrgId == orgId);
+
+            if (cart != null)
+            {
+                _MasterContext.OrderBasics.Remove(cart);
                 await _MasterContext.SaveChangesAsync();
             }
         }
