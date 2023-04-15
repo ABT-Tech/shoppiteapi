@@ -13,6 +13,7 @@ using Shoppite.Core.DTOs;
 using Shoppite.Core.Extensions;
 using Shoppite.Core.Entities;
 using Shoppite.Core.Model;
+using ReadSharp;
 
 namespace Shoppite.Infrastructure.Repositories
 {
@@ -47,6 +48,7 @@ namespace Shoppite.Infrastructure.Repositories
                         var ProductList = ProductStrList.Split(',');
                         productsDTO.Id = Convert.ToInt32(result["Id"]);
                         productsDTO.Title = result["Title"].ToString();
+                        productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
                         productsDTO.Image = result["Image"].ToString();
                         productsDTO.Brand = result["Brand"].ToString();
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
@@ -83,6 +85,7 @@ namespace Shoppite.Infrastructure.Repositories
                         var ProductList = ProductStrList.Split(',');
                         productsDTO.Id = Convert.ToInt32(result["Id"]);
                         productsDTO.Title = result["Title"].ToString();
+                        productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString().Replace("\r\n", "")).Replace("\r\n", "");
                         productsDTO.Image = result["Image"].ToString();
                         productsDTO.Brand = result["Brand"].ToString();
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
@@ -119,6 +122,7 @@ namespace Shoppite.Infrastructure.Repositories
                         var ProductList = ProductStrList.Split(',');
                         productsDTO.Id = Convert.ToInt32(result["Id"]);
                         productsDTO.Title = result["Title"].ToString();
+                        productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString().Replace("\r\n", "")).Replace("\r\n", "");
                         productsDTO.Image = result["Image"].ToString();
                         productsDTO.Brand = result["Brand"].ToString();
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
@@ -266,12 +270,12 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return bestSellerDTOs;
         }
-        public async Task<List<ProductsByCategory>> GetProductsByCategory(int orgId,int CategoryId)
+        public async Task<List<ProductsDTO>> GetProductsByCategory(int orgId,int CategoryId)
         {
-            List<ProductsByCategory> productList = new();
+            List<ProductsDTO> productsDTOs = new List<ProductsDTO>();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
-                string strSQL = "SP_GetProducts_By_CategoryId";
+                string strSQL = "SP_GetProductList_By_CategoryId";
 
                 command.CommandText = strSQL;
                 command.CommandType = CommandType.StoredProcedure;
@@ -284,27 +288,23 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     while (await result.ReadAsync())
                     {
-                        ProductsByCategory product = new();
-                        product.Id = Convert.ToInt32(result["Id"]);
-                        product.Title = result["Title"].ToString();
-                        product.ShortDescription = result["ShortDescription"].ToString();
-                        product.Description = result["Description"].ToString();
-                        product.ProductGuid = (Guid)result["ProductGuid"];
-                        product.Image = result["Image"].ToString();
-                        product.Brands = result["Brands"].ToString();
-                        product.BrandId = Convert.ToInt32(result["BrandId"]);
-                        product.Price = Convert.ToDouble(result["Price"]);
-                        product.OldPrice = Convert.ToDouble(result["OldPrice"]);
-                        product.OrgId = Convert.ToInt32(orgId);
-                        product.Category_Name = result["Category_Name"].ToString();
-                        product.Category_Id = Convert.ToInt32(result["Category_Id"]);
-                        product.MainCatId = Convert.ToInt32(result["MainCatId"]);
-                        product.maincategoryname = result["maincategoryname"].ToString();
-                        productList.Add(product);
+                        ProductsDTO productsDTO = new ProductsDTO();
+                        var ProductStrList = result["ProductList"].ToString();
+                        var ProductList = ProductStrList.Split(',');
+                        productsDTO.Id = Convert.ToInt32(result["Id"]);
+                        productsDTO.Title = result["Title"].ToString();
+                        productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
+                        productsDTO.Image = result["Image"].ToString();
+                        productsDTO.Brand = result["Brand"].ToString();
+                        productsDTO.Price = Convert.ToDouble(result["Price"]);
+                        productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                        productsDTO.ProductList = ProductList;
+                        productsDTO.orgId = Convert.ToInt32(orgId);
+                        productsDTOs.Add(productsDTO);
                     }
                 }
             }
-            return productList;
+            return productsDTOs;
         }
 
     }
