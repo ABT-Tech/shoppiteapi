@@ -25,7 +25,11 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task<List<CategoryMaster>> GetAllCategory(int OrgId) 
         {
-            return await _MasterContext.CategoryMasters.Where(x => x.OrgId == OrgId).ToListAsync();
+            var categoryList = from c in _MasterContext.CategoryMasters
+                               join p in _MasterContext.ProductCategories on c.CategoryId equals p.CategoryId
+                               where c.OrgId == OrgId && c.ParentCategoryId != 0
+                               select c;
+            return await categoryList.Distinct().ToListAsync();
 
         }
     }

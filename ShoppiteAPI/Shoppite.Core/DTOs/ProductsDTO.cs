@@ -9,6 +9,7 @@ namespace Shoppite.Core.DTOs
     public class ProductsDTO
     {
         public string Title { get; set; }
+        public string Description { get; set; }
         public string Brand { get; set; }
         public string Image { get; set; }
         public string Description { get; set; }

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Application.Handlers.QueryHandlers
 {
-    public class GetProductsByCategoryHandler:IRequestHandler<GetProductsByCategory, List<ProductsByCategoryResponse>>
+    public class GetProductsByCategoryHandler:IRequestHandler<GetProductsByCategory, List<ProductResponse>>
     {
         private readonly IProductRepository _productRepository;
 
@@ -21,10 +21,10 @@ namespace Shoppite.Application.Handlers.QueryHandlers
         {
             _productRepository = productRepository;
         }
-        public async Task<List<ProductsByCategoryResponse>> Handle(GetProductsByCategory request, CancellationToken cancellationToken)
+        public async Task<List<ProductResponse>> Handle(GetProductsByCategory request, CancellationToken cancellationToken)
         {
             var products = await _productRepository.GetProductsByCategory(request.OrgId,request.CategoryId);
-            var mapper = ObjectMapper.Mapper.Map<List<ProductsByCategoryResponse>>(products);
+            var mapper = ObjectMapper.Mapper.Map<List<ProductResponse>>(products);
             return mapper;
         }
     }
