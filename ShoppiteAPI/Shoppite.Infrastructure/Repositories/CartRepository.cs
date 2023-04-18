@@ -168,14 +168,14 @@ namespace Shoppite.Infrastructure.Repositories
         public async Task RemoveFromCart(int userId, int proId, int orgId)
         {
             var username = _MasterContext.Users.FirstOrDefault(u => u.UserId == userId);
-            OrderBasic cart = _MasterContext.OrderBasics.FirstOrDefault(u => u.ProductId == proId && u.UserName == username.Username && u.OrgId == orgId);
+            var cart = _MasterContext.OrderBasics.FirstOrDefault(u => u.ProductId == proId && u.UserName == username.Username && u.OrgId == orgId&&u.OrderStatus=="Cart");
             OrderMaster details = await _MasterContext.OrderMasters.FirstOrDefaultAsync(a => a.OrderGuid == cart.OrderGuid && a.OrgId == orgId);
             if (cart != null)
             {
                 _MasterContext.OrderBasics.Remove(cart);
                 await _MasterContext.SaveChangesAsync();
             }
-            var cartdetails = _MasterContext.OrderBasics.FirstOrDefault(u => u.ProductId == proId && u.UserName == username.Username && u.OrgId == orgId);
+            var cartdetails = _MasterContext.OrderBasics.FirstOrDefault(u=>u.UserName == username.Username && u.OrgId == orgId);
             if (cart == null)
             {
                 _MasterContext.OrderMasters.Remove(details);
