@@ -14,6 +14,7 @@ namespace Shoppite.Core.DTOs
         public object TotalPrice { get; set; }
         public int orgId { get; set; }
         public int userId { get; set; }
+        public string orderstatus { get; set; }
 
     }
 }

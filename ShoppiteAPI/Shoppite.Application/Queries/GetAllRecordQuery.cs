@@ -12,7 +12,7 @@ namespace Shoppite.Application.Queries
     public record GetAllCategoriesQuery(int org_id) : IRequest<List<CategoryResponse>>;
     public record GetAllCarosolCategories(int org_id) : IRequest<List<CategoryResponse>>;
     public record GetAllOrganizationQuery() : IRequest<List<OrganizationResponse>>;
-    public record GetAllProductsByOrganizationsQuery(int org_id) : IRequest<List<ProductResponse>>;
+    public record GetAllProductsByOrganizationsQuery(int org_id,int? UserId) : IRequest<List<ProductResponse>>;
     public record GetWishlistByUserQuery(int org_id, int user_id) : IRequest<List<ProductResponse>>;
     public record GetMostSellerProductsByOrganizationsQuery(int org_id) : IRequest<List<ProductResponse>>;
     public record GetLastVisitedProductsByOrganizationsQuery(int org_id) : IRequest<List<ProductResponse>>;
@@ -24,7 +24,7 @@ namespace Shoppite.Application.Queries
     public record GetRecentlyViewedProductsByCategory(int OrgId,int CategoryId,string IP):IRequest<List<RecentlyViewedProductResponse>>;
     public record GetMostViewedProductsByCategory(int OrgId, int CategoryId, string IP) : IRequest<List<RecentlyViewedProductResponse>>;
     public record GetProductsByBestSellers(int OrgId):IRequest<List<ProductsByBestSellerResponse>>;
-    public record GetOrdersDetailByOrgId(int OrgId,int OrderMasterId) :IRequest<OrderDetailResponse>;
+    public record GetOrdersDetailByOrgId(int OrgId,int OrderMasterId,int? UserId) :IRequest<OrderDetailResponse>;
     public record GetOrderDetails(int OrgId):IRequest<List<VendorsOrderResponse>>;
     public record GetProductsByCategory(int OrgId,int CategoryId):IRequest<List<ProductResponse>>;
     public record GetNotificationDetails(int NotificationID) : IRequest<List<NotificationsDataDTO>>;

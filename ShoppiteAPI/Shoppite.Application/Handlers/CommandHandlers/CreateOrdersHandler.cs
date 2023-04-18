@@ -25,7 +25,7 @@ namespace Shoppite.Application.Handlers.CommandHandlers
         public async Task<string> Handle(CreateOrder request, CancellationToken cancellationToken)
         {                 
              await _orderRepository.BuyNow(request.orders);
-             return "Success"; 
+             return "Success";
         }
         
     }

@@ -20,8 +20,7 @@ namespace Shoppite.Application.Handlers.CommandHandlers
         }
         public async Task<string> Handle(UpdateOrderStatus request, CancellationToken cancellationToken)
         {
-            await _orderRepository.UpdateOrderStatus(request.orders);
-            return "Success";
+           return await _orderRepository.UpdateOrderStatus(request.orders);
         }
     }
 }

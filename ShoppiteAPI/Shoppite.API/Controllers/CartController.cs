@@ -67,9 +67,9 @@ namespace Shoppite.API.Controllers
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetOrderDetailsByOrderMasterId(int OrgId,int OrderMasterId)
+        public async Task<object> GetOrderDetailsByOrderMasterId(int OrgId,int OrderMasterId,int? UserId)
         {
-            return await _mediator.Send(new GetOrdersDetailByOrgId(OrgId,OrderMasterId));
+            return await _mediator.Send(new GetOrdersDetailByOrgId(OrgId,OrderMasterId,UserId));
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]

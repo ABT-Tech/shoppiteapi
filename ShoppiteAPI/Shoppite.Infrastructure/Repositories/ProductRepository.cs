@@ -24,7 +24,7 @@ namespace Shoppite.Infrastructure.Repositories
         {
             _MasterContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-        public async Task<List<ProductsDTO>> GetAllProductsByOrganizations(int orgId)
+        public async Task<List<ProductsDTO>> GetAllProductsByOrganizations(int orgId,int? UserId)
         {
             List<ProductsDTO> productsDTOs = new List<ProductsDTO>();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
@@ -54,13 +54,25 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
                         productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
                         productsDTO.ProductList = ProductList;
+                        productsDTO.Quantity = Convert.ToInt32(result["Quantity"]);
                         productsDTO.orgId = Convert.ToInt32(orgId);
                         productsDTOs.Add(productsDTO);
                     }
                 }
             }
+            /*var getusername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == UserId);
+            var wishlistList = await _MasterContext.CustomerWishlists.Where(x=>x.UserName== getusername.Username).ToListAsync();
+            for(int i=0;i<productsDTOs.Count;i++)
+            {
+                for(int j = 0; j<wishlistList.Count; j++)
+                {
+                    if (productsDTOs[i].Id == wishlistList[j].ProductId)
+                    {
+                        
+                    }
+                }              
+            }*/
             return productsDTOs;
-
         }
         public async Task<List<ProductsDTO>> GetWishlistByUser(int orgId, int userId) 
         {

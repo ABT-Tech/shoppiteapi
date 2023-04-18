@@ -15,5 +15,6 @@ namespace Shoppite.Application.Responses
             public object TotalPrice { get; set; }
             public int orgId { get; set; }
             public int userId { get; set; }
+            public string OrderStatus { get; set; }
     }
 }
