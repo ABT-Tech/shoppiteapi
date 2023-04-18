@@ -201,10 +201,9 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return OrdersDTO;
         }
-        public async Task<OrderDetails> GetOrderDetailsByOrgId(int OrgId,int OrderMasterId,int? userId)
+        public async Task<OrderDetails> GetOrderDetailsByOrgId(int OrgId,int OrderMasterId)
         {
-            if (userId==null)
-            {
+            
                 OrderDetails orderDetails = new();
                 orderDetails.ProductLists = new();
                 using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
@@ -231,7 +230,6 @@ namespace Shoppite.Infrastructure.Repositories
                             orderListModel.Quantity = Convert.ToInt32(result["Quantity"]);
                             orderListModel.Price = Convert.ToDouble(result["Price"]);
                             orderDetails.ProductLists.Add(orderListModel);
-
                         }
                     }
                 }
@@ -265,73 +263,6 @@ namespace Shoppite.Infrastructure.Repositories
                     }
                 }
                 return orderDetails;
-            }
-            else
-            {
-                OrderDetails orderDetails = new();
-                orderDetails.ProductLists = new();
-                using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
-                {
-                    string strSQL = "SP_GetOrderDetails_User_ByUserId";
-                    command.CommandText = strSQL;
-                    command.CommandType = CommandType.StoredProcedure;
-                    var parameter = command.CreateParameter();
-                    command.Parameters.Add(new SqlParameter("@OrgId", OrgId));
-                    command.Parameters.Add(new SqlParameter("@OrderMasterId", OrderMasterId));
-                    command.Parameters.Add(new SqlParameter("@UserId", userId));
-                    await this._MasterContext.Database.OpenConnectionAsync();
-                    using (var result = await command.ExecuteReaderAsync())
-                    {
-                        while (await result.ReadAsync())
-                        {
-                            OrderListModel orderListModel = new OrderListModel();
-                            orderListModel.orgId = Convert.ToInt32(result["orgId"]);
-                            //orderListModel.OrderStatus = result["OrderStatus"].ToString();
-                            orderListModel.UserId = Convert.ToInt32(result["UserId"]);
-                            orderListModel.Id = Convert.ToInt32(result["Id"]);
-                            orderListModel.Title = result["Title"].ToString();
-                            orderListModel.Image = result["Image"].ToString();
-                            orderListModel.Brand = result["Brand"].ToString();
-                            orderListModel.Quantity = Convert.ToInt32(result["Quantity"]);
-                            orderListModel.Price = Convert.ToDouble(result["Price"]);
-                            orderDetails.ProductLists.Add(orderListModel);
-
-                        }
-                    }
-                }
-                using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
-                {
-                    string strSQL = "SELECT Users.UserId,Users.OrgId, CONVERT(DATE, Order_Basic.InsertDate) AS OrderDate, " + "os.OrderStatus,"+
-                                   "SUM(Order_Basic.Price*Order_Basic.QTY) As TotalPrice, " +
-                                  "CONCAT(shiiping.Address + ''+',', shiiping.City + ''+',',shiiping.Street+ ''+',', shiiping.Zipcode) AS Address " +
-                                  "FROM Order_Basic " +
-                                  "Inner JOIN Users ON Order_Basic.UserName = Users.UserName " +
-                                  "Inner JOIN Order_Shipping AS shiiping ON Order_Basic.OrderGuid = shiiping.OrderGuid " +
-                                  "inner join Order_Master om on  Order_Basic.OrderGUID=om.OrderGUID " +
-                                   "inner join Order_Status os on  om.OrderMasterId=os.OrderId " +
-                                  "WHERE Order_Basic.OrgId= " + OrgId + " And om.OrderMasterId= " + OrderMasterId + " And Users.UserId= " + userId +
-                                  "Group By Users.UserId,Users.OrgId, CONVERT(DATE, Order_Basic.InsertDate), " + "os.OrderStatus,"+
-                                  "CONCAT(shiiping.Address + ''+',', shiiping.City + ''+',',shiiping.Street+ ''+',', shiiping.Zipcode) ";
-
-                    command.CommandText = strSQL;
-                    command.CommandType = CommandType.Text;
-                    var parameter = command.CreateParameter();
-                    await this._MasterContext.Database.OpenConnectionAsync();
-                    using (var result = await command.ExecuteReaderAsync())
-                    {
-                        while (await result.ReadAsync())
-                        {
-                            //orderDetails.Address = result["Address"].ToString();
-                            orderDetails.Date = Convert.ToDateTime(result["OrderDate"]).ToString("dd/MM/yyyy");
-                            orderDetails.orderstatus = result["orderstatus"].ToString();
-                            orderDetails.TotalPrice = Convert.ToDouble(result["TotalPrice"]);
-                            orderDetails.orgId = Convert.ToInt32(result["OrgId"]);
-                            orderDetails.userId = Convert.ToInt32(result["UserId"]);
-                        }
-                    }
-                }
-                return orderDetails;
-            }
         }
         public async Task<List<VendorsOrder>> GetOrdersDetailForVendor(int OrgId)
         {
