@@ -654,7 +654,8 @@ namespace Shoppite.Infrastructure.Data
 
             modelBuilder.Entity<OrderMaster>(entity =>
             {
-                entity.HasKey(e => e.OrderGuid);
+                entity.HasKey(e => e.OrderMasterId);
+                entity.Property(e => e.OrderGuid);
 
                 entity.ToTable("Order_Master");
 

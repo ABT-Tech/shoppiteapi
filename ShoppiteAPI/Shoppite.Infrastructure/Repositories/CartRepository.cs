@@ -54,6 +54,7 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     if (cartdetails.ProductId == Cart.proId)
                     {
+                        cartdetails.InsertDate = DateTime.Now;
                         cartdetails.Qty = cartdetails.Qty + Cart.Qty;
                         _MasterContext.OrderBasics.Update(cartdetails);
                         await _MasterContext.SaveChangesAsync();
@@ -168,12 +169,21 @@ namespace Shoppite.Infrastructure.Repositories
         {
             var username = _MasterContext.Users.FirstOrDefault(u => u.UserId == userId);
             OrderBasic cart = _MasterContext.OrderBasics.FirstOrDefault(u => u.ProductId == proId && u.UserName == username.Username && u.OrgId == orgId);
-
+            OrderMaster details = await _MasterContext.OrderMasters.FirstOrDefaultAsync(a => a.OrderGuid == cart.OrderGuid && a.OrgId == orgId);
             if (cart != null)
             {
                 _MasterContext.OrderBasics.Remove(cart);
                 await _MasterContext.SaveChangesAsync();
             }
+            var cartdetails = _MasterContext.OrderBasics.FirstOrDefault(u => u.ProductId == proId && u.UserName == username.Username && u.OrgId == orgId);
+            if (cart == null)
+            {
+                _MasterContext.OrderMasters.Remove(details);
+                await _MasterContext.SaveChangesAsync();
+
+            }
+
+
         }
     }
 }

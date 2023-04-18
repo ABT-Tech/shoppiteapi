@@ -54,12 +54,13 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
                         productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
                         productsDTO.ProductList = ProductList;
+                        productsDTO.Quantity = Convert.ToInt32(result["Quantity"]);
                         productsDTO.orgId = Convert.ToInt32(orgId);
                         productsDTOs.Add(productsDTO);
                     }
                 }
             }
-            var getusername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == UserId);
+            /*var getusername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == UserId);
             var wishlistList = await _MasterContext.CustomerWishlists.Where(x=>x.UserName== getusername.Username).ToListAsync();
             for(int i=0;i<productsDTOs.Count;i++)
             {
@@ -70,7 +71,7 @@ namespace Shoppite.Infrastructure.Repositories
                         
                     }
                 }              
-            }
+            }*/
             return productsDTOs;
         }
         public async Task<List<ProductsDTO>> GetWishlistByUser(int orgId, int userId) 

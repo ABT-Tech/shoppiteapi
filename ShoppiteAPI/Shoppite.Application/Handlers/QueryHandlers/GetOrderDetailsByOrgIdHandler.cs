@@ -22,7 +22,7 @@ namespace Shoppite.Application.Handlers.QueryHandlers
         }
         public async Task<OrderDetailResponse> Handle(GetOrdersDetailByOrgId request, CancellationToken cancellationToken)
         {
-            var cart = await _orderRepository.GetOrderDetailsByOrgId(request.OrgId,request.OrderMasterId);
+            var cart = await _orderRepository.GetOrderDetailsByOrgId(request.OrgId,request.OrderMasterId,request.UserId);
             var mapper = ObjectMapper.Mapper.Map<OrderDetailResponse>(cart);
             return mapper;
         }
