@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Shoppite.Application.Responses;
+using Shoppite.Core.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,5 +27,7 @@ namespace Shoppite.Application.Queries
     public record GetOrdersDetailByOrgId(int OrgId,int OrderMasterId) :IRequest<OrderDetailResponse>;
     public record GetOrderDetails(int OrgId):IRequest<List<VendorsOrderResponse>>;
     public record GetProductsByCategory(int OrgId,int CategoryId):IRequest<List<ProductResponse>>;
+    public record GetNotificationDetails(int NotificationID) : IRequest<List<NotificationsDataDTO>>;
+    public record GetDeviceListToSendNotifications(string Type, int UserID) : IRequest<List<DeviceListDTO>>;
 
 }

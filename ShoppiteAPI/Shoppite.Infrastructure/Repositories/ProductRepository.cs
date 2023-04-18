@@ -281,7 +281,7 @@ namespace Shoppite.Infrastructure.Repositories
                 command.CommandType = CommandType.StoredProcedure;
                 var parameter = command.CreateParameter();
                 command.Parameters.Add(new SqlParameter("@OrgId", orgId));
-                command.Parameters.Add(new SqlParameter("@CategoryId", orgId));
+                command.Parameters.Add(new SqlParameter("@CategoryId", CategoryId));
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())

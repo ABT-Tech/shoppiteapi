@@ -12,5 +12,6 @@ namespace Shoppite.Core.Model
         public int UserId { get; set; }
         public string MacID { get; set; }
         public string Token { get; set; }
+        public DateTime InsertedAt { get; set; }
     }
 }

@@ -1,0 +1,27 @@
+﻿using MediatR;
+using Shoppite.Application.Commands;
+using Shoppite.Core.DTOs;
+using Shoppite.Core.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Shoppite.Application.Handlers.CommandHandlers
+{
+    public class UpdateNotificationStatusHandler : IRequestHandler<UpdateNotificationStatus, string>
+    {
+        private readonly IFirebaseRepository _firebase;
+
+        public UpdateNotificationStatusHandler(IFirebaseRepository firebase)
+        {
+            _firebase = firebase;
+        }
+        public async Task<string> Handle(UpdateNotificationStatus request, CancellationToken cancellationToken)
+        {
+            return await _firebase.UpdateNotificationStatus(request.NotificationId); 
+        }
+    }
+}

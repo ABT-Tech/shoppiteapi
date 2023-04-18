@@ -20,4 +20,5 @@ namespace Shoppite.Application.Commands
     public record AddFirebaseToken(FireBaseToken fireBaseToken) : IRequest<string>;
     public record UpdateOrderStatus(Orders orders):IRequest<string>;
     public record RemoveFromCart(int userid, int proid, int orgid) : IRequest<string>;
+    public record UpdateNotificationStatus(int NotificationId) : IRequest<string>;
 }

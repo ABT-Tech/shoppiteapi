@@ -71,6 +71,7 @@ namespace Shoppite.Infrastructure.Data
         public virtual DbSet<SpecificationSetup> SpecificationSetups { get; set; }
         public virtual DbSet<Status> Statuses { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Notifications> Notifications { get; set; }
         public virtual DbSet<Notifications_Token> NotificationsTokens { get; set; }
         public virtual DbSet<UserActivation> UserActivations { get; set; }
         public virtual DbSet<UsersMembership> UsersMemberships { get; set; }
@@ -1290,7 +1291,12 @@ namespace Shoppite.Infrastructure.Data
 
                 entity.ToTable("Notifications_Token");
             });
+            modelBuilder.Entity<Notifications>(entity =>
+            {
+                entity.HasKey(e => e.Id);
 
+                entity.ToTable("Notifications");
+            });
             OnModelCreatingPartial(modelBuilder);
         }
 
