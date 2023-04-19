@@ -109,19 +109,21 @@ namespace Shoppite.Infrastructure.Repositories
         {
             try
             {
-                var notificationData = _MasterContext.Notifications.Where(x => x.Id == NotifyID).FirstOrDefault();
-                notificationData.Sent = true;
-                notificationData.SentDate = DateTime.Now;
-                _MasterContext.Entry(notificationData.Id).State = EntityState.Detached;
-                _MasterContext.Entry(notificationData.Id).State = EntityState.Modified;
-                await _MasterContext.SaveChangesAsync();
+                using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+                {
+                    string strSQL = "Proc_UpdateNotificationDetails";
+                    command.CommandText = strSQL;
+                    command.CommandType = CommandType.StoredProcedure;
+                    var parameter = command.CreateParameter();
+                    command.Parameters.Add(new SqlParameter("@NotificationID", NotifyID));
+                    await this._MasterContext.Database.OpenConnectionAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
             }
             catch (Exception ex)
             {
-
                 throw;
             }
-           
             return "success";
         }
     }
