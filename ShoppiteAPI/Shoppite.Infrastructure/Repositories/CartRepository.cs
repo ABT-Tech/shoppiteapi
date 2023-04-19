@@ -175,15 +175,12 @@ namespace Shoppite.Infrastructure.Repositories
                 _MasterContext.OrderBasics.Remove(cart);
                 await _MasterContext.SaveChangesAsync();
             }
-            var cartdetails = _MasterContext.OrderBasics.FirstOrDefault(u=>u.UserName == username.Username && u.OrgId == orgId);
-            if (cart == null)
+            var cartdetails = _MasterContext.OrderBasics.FirstOrDefault(u=>u.UserName == username.Username &&u.OrderStatus=="Cart"&& u.OrgId == orgId);
+            if (cartdetails == null)
             {
                 _MasterContext.OrderMasters.Remove(details);
                 await _MasterContext.SaveChangesAsync();
-
             }
-
-
         }
     }
 }

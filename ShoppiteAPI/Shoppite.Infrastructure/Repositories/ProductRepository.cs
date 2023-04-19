@@ -24,7 +24,7 @@ namespace Shoppite.Infrastructure.Repositories
         {
             _MasterContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-        public async Task<List<ProductsDTO>> GetAllProductsByOrganizations(int orgId,int? UserId)
+        public async Task<List<ProductsDTO>> GetAllProductsByOrganizations(int orgId)
         {
             List<ProductsDTO> productsDTOs = new List<ProductsDTO>();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
