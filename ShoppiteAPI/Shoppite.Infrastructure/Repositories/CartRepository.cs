@@ -91,6 +91,7 @@ namespace Shoppite.Infrastructure.Repositories
                         cartDTO.Image = result["Image"].ToString();
                         cartDTO.Brand = result["Brand"].ToString();
                         cartDTO.Quantity = Convert.ToInt32(result["Quantity"]);
+                        cartDTO.ProductQty = Convert.ToInt32(result["qty"]);
                         cartDTO.Price = Convert.ToDouble(result["Price"]);
                         cartDTO.OldPrice = result["OldPrice"] != DBNull.Value ? Convert.ToInt32(result["OldPrice"]):0;
                         cartDTO.orgId = Convert.ToInt32(OrgId);
