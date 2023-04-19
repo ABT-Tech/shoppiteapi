@@ -15,5 +15,6 @@ namespace Shoppite.Core.Repositories
        Task<OrderDetails> GetOrderDetailsByOrgId(int OrgId,int OrderMasterId);
        Task<List<VendorsOrder>> GetOrdersDetailForVendor(int OrgId);
        Task<string> UpdateOrderStatus(Orders orders);
+       Task<string> cancelOrder(CancelOrders orders);
     }
 }

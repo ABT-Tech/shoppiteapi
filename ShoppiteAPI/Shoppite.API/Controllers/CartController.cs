@@ -88,5 +88,11 @@ namespace Shoppite.API.Controllers
         {
             return await _mediator.Send(new RemoveFromCart(userId, proId, orgId));
         }
+        [HttpPost]
+        public async Task<string> CancelOrder([FromBody] CancelOrders cancelOrder)
+        {
+            return await _mediator.Send(new CancelOrder(cancelOrder));
+        }
+
     }
 }
