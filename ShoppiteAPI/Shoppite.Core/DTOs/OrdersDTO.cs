@@ -6,6 +6,7 @@ namespace Shoppite.Core.DTOs
     {     
         public int? orgid { get; set; }
         public Guid? OrderGuid { get; set; }
+        public int UserId { get; set; }
         public string UserName { get; set; }
         public string Contactnumber { get; set; }
         public List<ProductList> ProductLists { get; set; }

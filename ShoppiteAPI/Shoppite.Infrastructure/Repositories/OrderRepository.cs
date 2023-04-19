@@ -22,6 +22,7 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task BuyNow(OrdersDTO orders)
         {
+            var getUsername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == orders.UserId && u.OrgId == orders.orgid);
             if (orders.OrderGuid == Guid.Empty)
             {
                 OrderMaster orderMaster = new();
@@ -34,14 +35,13 @@ namespace Shoppite.Infrastructure.Repositories
 
                 int p = 0;
                 var productDetail = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == orders.ProductLists[p].Id);
-                var Price = _MasterContext.ProductPrices.FirstOrDefault(x => x.ProductGuid == productDetail.ProductGuid);
-
+                var Price = _MasterContext.ProductPrices.FirstOrDefault(x => x.ProductGuid == productDetail.ProductGuid);              
                 OrderBasic buynow = new();
                 buynow.OrderGuid = orderMaster.OrderGuid;
                 buynow.ProductId = orders.ProductLists[p].Id;
                 buynow.Qty = orders.ProductLists[p].Quantity;
                 buynow.Price = Price.Price;
-                buynow.UserName = orders.UserName;
+                buynow.UserName = getUsername.Username;
                 buynow.InsertDate = DateTime.Now;
                 buynow.OrderStatus = "Confirmed";
                 buynow.PaymentMode = "COD";
@@ -69,19 +69,16 @@ namespace Shoppite.Infrastructure.Repositories
                     orderStatus.Remarks = string.Empty;
                     orderStatus.Insertby = DateTime.Now.ToString();
                     orderStatus.OrgId = orderMaster.OrgId;
-
                     _MasterContext.OrderStatuses.Add(orderStatus);
                     await _MasterContext.SaveChangesAsync();
                 }               
-
                 var OrderCheck = _MasterContext.OrderShippings.FirstOrDefault(x => x.OrderGuid == orderMaster.OrderGuid && x.OrgId == orders.orgid);
-                var getUsername = _MasterContext.OrderBasics.FirstOrDefault(x => x.OrderGuid == orderMaster.OrderGuid && x.OrgId == orders.orgid);
-                var getemail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.Username == getUsername.UserName && x.OrgId == orders.orgid);        
+                var getemail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.Username == getUsername.Username && x.OrgId == orders.orgid);        
                 if(OrderCheck==null)
                 {
                     OrderShipping shipping = new();
                     shipping.OrderGuid = orderMaster.OrderGuid;
-                    shipping.UserName = getUsername.UserName;
+                    shipping.UserName = getUsername.Username;
                     shipping.Contactnumber = orders.Contactnumber;
                     shipping.Phone = orders.Contactnumber;
                     shipping.Email = getemail.Email;
@@ -142,28 +139,24 @@ namespace Shoppite.Infrastructure.Repositories
                     if (StatusCheck == null)
                     {
                         OrderStatus orderStatus = new OrderStatus();
-
                         orderStatus.OrderId = ordersdetail.OrderMasterId;
                         orderStatus.OrderStatus1 = "Pending";
                         orderStatus.StatusDate = DateTime.Now;
                         orderStatus.Remarks = string.Empty;
                         orderStatus.Insertby = DateTime.Now.ToString();
                         orderStatus.OrgId = order.OrgId;
-
                         _MasterContext.OrderStatuses.Add(orderStatus);
                     }
                     await _MasterContext.SaveChangesAsync();
-                }
-
-                OrderShipping shipping = new();
-                {
+                }              
                     var OrderCheck = _MasterContext.OrderShippings.FirstOrDefault(x => x.OrderGuid == orders.OrderGuid && x.OrgId == orders.orgid);
-                    var getUsername = _MasterContext.OrderBasics.FirstOrDefault(x => x.OrderGuid == orders.OrderGuid && x.OrgId == orders.orgid);
-                    var getemail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.Username == getUsername.UserName && x.OrgId == orders.orgid);
+                   // var getUsername = _MasterContext.OrderBasics.FirstOrDefault(x => x.OrderGuid == orders.OrderGuid && x.OrgId == orders.orgid);
+                    var getemail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.Username == getUsername.Username && x.OrgId == orders.orgid);
                     if (OrderCheck == null)
                     {
+                        OrderShipping shipping = new();
                         shipping.OrderGuid = orders.OrderGuid;
-                        shipping.UserName = getUsername.UserName;
+                        shipping.UserName = getUsername.Username;
                         shipping.Contactnumber = orders.Contactnumber;
                         shipping.Phone = orders.Contactnumber;
                         shipping.Email = getemail.Email;
@@ -175,7 +168,6 @@ namespace Shoppite.Infrastructure.Repositories
                         shipping.InsertDate = DateTime.Now;
                         _MasterContext.OrderShippings.Add(shipping);
                         await _MasterContext.SaveChangesAsync();
-                    }
                 }
             }        
         }
