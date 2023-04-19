@@ -43,7 +43,7 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     while (await result.ReadAsync())
                     {
-                        ProductsDTO productsDTO = new ProductsDTO();
+                        ProductsDTO productsDTO = new  ProductsDTO();
                         var ProductStrList = result["ProductList"].ToString();
                         var ProductList = ProductStrList.Split(',');
                         productsDTO.Id = Convert.ToInt32(result["Id"]);
@@ -54,7 +54,7 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
                         productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
                         productsDTO.ProductList = ProductList;
-                        productsDTO.Quantity = Convert.ToInt32(result["Quantity"]);
+                        productsDTO.Quantity = Convert.ToInt32(result["quantity"]);
                         productsDTO.orgId = Convert.ToInt32(orgId);
                         productsDTOs.Add(productsDTO);
                     }
@@ -140,6 +140,7 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
                         productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
                         productsDTO.ProductList = ProductList;
+                        productsDTO.Quantity = Convert.ToInt32(result["qty"]);
                         productsDTO.orgId = Convert.ToInt32(orgId);
                         productsDTOs.Add(productsDTO);
                     }
@@ -188,6 +189,7 @@ namespace Shoppite.Infrastructure.Repositories
                         product.ProfileId = Convert.ToInt32(result["ProfileId"]);
                         product.productviewinsertdate = (DateTime)result["productviewinsertdate"];
                         product.STATUS = result["STATUS"].ToString();
+                        product.Quantity = Convert.ToInt32(result["qty"]);
                         recentlyVieweds.Add(product);
                     }
                 }
@@ -234,6 +236,7 @@ namespace Shoppite.Infrastructure.Repositories
                         product.ProfileId = Convert.ToInt32(result["ProfileId"]);                                          
                         product.STATUS = result["STATUS"].ToString();
                         product.NumOfViews = Convert.ToInt32(result["NumOfViews"]);
+                        product.Quantity = Convert.ToInt32(result["qty"]);
                         recentlyVieweds.Add(product);
                     }
                 }
@@ -276,6 +279,7 @@ namespace Shoppite.Infrastructure.Repositories
                         product.maincategoryname = result["maincategoryname"].ToString();
                         product.Sku = result["Sku"].ToString();
                         product.ProductStatus = result["ProductStatus"].ToString();
+                        product.Quantity = Convert.ToInt32(result["Quantity"]);
                         bestSellerDTOs.Add(product);
                     }
                 }
@@ -311,6 +315,7 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
                         productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
                         productsDTO.ProductList = ProductList;
+                        productsDTO.Quantity = Convert.ToInt32(result["Qty"]);
                         productsDTO.orgId = Convert.ToInt32(orgId);
                         productsDTOs.Add(productsDTO);
                     }

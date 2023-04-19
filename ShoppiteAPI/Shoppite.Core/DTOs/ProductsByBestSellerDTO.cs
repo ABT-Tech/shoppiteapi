@@ -26,5 +26,6 @@ namespace Shoppite.Core.DTOs
         public int BrandId { get; set; }
         public int? MainCatId { get; set; }
         public string ProductStatus { get; set; }
+        public int Quantity { get; set; }
     }
 }

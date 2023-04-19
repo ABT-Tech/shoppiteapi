@@ -31,5 +31,7 @@ namespace Shoppite.Core.DTOs
         public DateTime productviewinsertdate { get; set; }
         public string STATUS { get; set; }
         public int NumOfViews { get; set; }
+        public int Quantity { get; set; }
+
     }
 }

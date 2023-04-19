@@ -19,6 +19,7 @@ namespace Shoppite.Core.DTOs
         public int UserId { get; set; }
         //  public int proId { get; set; }
         public int Quantity { get; set; }
+        public int ProductQty { get; set; }
         public int orderid { get; set; }
         public Guid orderGuId { get; set; }
     }
