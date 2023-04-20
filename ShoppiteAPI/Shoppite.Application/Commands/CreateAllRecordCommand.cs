@@ -21,4 +21,5 @@ namespace Shoppite.Application.Commands
     public record UpdateOrderStatus(Orders orders):IRequest<string>;
     public record RemoveFromCart(int userid, int proid, int orgid) : IRequest<string>;
     public record UpdateNotificationStatus(int NotificationId) : IRequest<string>;
+    public record CancelOrder(CancelOrders cancelOrder):IRequest<string>;
 }

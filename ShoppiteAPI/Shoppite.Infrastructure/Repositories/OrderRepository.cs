@@ -22,6 +22,7 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task BuyNow(OrdersDTO orders)
         {
+            var getUsername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == orders.UserId && u.OrgId == orders.orgid);
             if (orders.OrderGuid == Guid.Empty)
             {
                 OrderMaster orderMaster = new();
@@ -34,14 +35,13 @@ namespace Shoppite.Infrastructure.Repositories
 
                 int p = 0;
                 var productDetail = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == orders.ProductLists[p].Id);
-                var Price = _MasterContext.ProductPrices.FirstOrDefault(x => x.ProductGuid == productDetail.ProductGuid);
-
+                var Price = _MasterContext.ProductPrices.FirstOrDefault(x => x.ProductGuid == productDetail.ProductGuid);              
                 OrderBasic buynow = new();
                 buynow.OrderGuid = orderMaster.OrderGuid;
                 buynow.ProductId = orders.ProductLists[p].Id;
                 buynow.Qty = orders.ProductLists[p].Quantity;
                 buynow.Price = Price.Price;
-                buynow.UserName = orders.UserName;
+                buynow.UserName = getUsername.Email;
                 buynow.InsertDate = DateTime.Now;
                 buynow.OrderStatus = "Confirmed";
                 buynow.PaymentMode = "COD";
@@ -49,6 +49,14 @@ namespace Shoppite.Infrastructure.Repositories
 
                 _MasterContext.OrderBasics.Add(buynow);
                 await _MasterContext.SaveChangesAsync();
+
+                var findQty = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == buynow.ProductId);
+                if(findQty!=null)
+                {
+                    findQty.Qty = findQty.Qty - buynow.Qty;
+                    _MasterContext.ProductBasics.Update(findQty);
+                    await _MasterContext.SaveChangesAsync();
+                }
 
                 var ordersdetail = await _MasterContext.OrderMasters.FirstOrDefaultAsync(x => x.OrderGuid == orderMaster.OrderGuid && x.OrgId == orderMaster.OrgId);
                 var StatusCheck = await _MasterContext.OrderStatuses.FirstOrDefaultAsync(x => x.OrderId == ordersdetail.OrderMasterId && x.OrgId == orderMaster.OrgId);
@@ -61,20 +69,16 @@ namespace Shoppite.Infrastructure.Repositories
                     orderStatus.Remarks = string.Empty;
                     orderStatus.Insertby = DateTime.Now.ToString();
                     orderStatus.OrgId = orderMaster.OrgId;
-
                     _MasterContext.OrderStatuses.Add(orderStatus);
                     await _MasterContext.SaveChangesAsync();
                 }               
-
                 var OrderCheck = _MasterContext.OrderShippings.FirstOrDefault(x => x.OrderGuid == orderMaster.OrderGuid && x.OrgId == orders.orgid);
-                var getUsername = _MasterContext.OrderBasics.FirstOrDefault(x => x.OrderGuid == orderMaster.OrderGuid && x.OrgId == orders.orgid);
-                var getemail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.Username == getUsername.UserName && x.OrgId == orders.orgid);
-                OrderShipping shipping = new();
-
+                var getemail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.Username == getUsername.Username && x.OrgId == orders.orgid);        
                 if(OrderCheck==null)
                 {
+                    OrderShipping shipping = new();
                     shipping.OrderGuid = orderMaster.OrderGuid;
-                    shipping.UserName = getUsername.UserName;
+                    shipping.UserName = getUsername.Username;
                     shipping.Contactnumber = orders.Contactnumber;
                     shipping.Phone = orders.Contactnumber;
                     shipping.Email = getemail.Email;
@@ -135,28 +139,24 @@ namespace Shoppite.Infrastructure.Repositories
                     if (StatusCheck == null)
                     {
                         OrderStatus orderStatus = new OrderStatus();
-
                         orderStatus.OrderId = ordersdetail.OrderMasterId;
                         orderStatus.OrderStatus1 = "Pending";
                         orderStatus.StatusDate = DateTime.Now;
                         orderStatus.Remarks = string.Empty;
                         orderStatus.Insertby = DateTime.Now.ToString();
                         orderStatus.OrgId = order.OrgId;
-
                         _MasterContext.OrderStatuses.Add(orderStatus);
                     }
                     await _MasterContext.SaveChangesAsync();
-                }
-
-                OrderShipping shipping = new();
-                {
+                }              
                     var OrderCheck = _MasterContext.OrderShippings.FirstOrDefault(x => x.OrderGuid == orders.OrderGuid && x.OrgId == orders.orgid);
-                    var getUsername = _MasterContext.OrderBasics.FirstOrDefault(x => x.OrderGuid == orders.OrderGuid && x.OrgId == orders.orgid);
-                    var getemail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.Username == getUsername.UserName && x.OrgId == orders.orgid);
+                   // var getUsername = _MasterContext.OrderBasics.FirstOrDefault(x => x.OrderGuid == orders.OrderGuid && x.OrgId == orders.orgid);
+                    var getemail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.Username == getUsername.Email && x.OrgId == orders.orgid);
                     if (OrderCheck == null)
                     {
+                        OrderShipping shipping = new();
                         shipping.OrderGuid = orders.OrderGuid;
-                        shipping.UserName = getUsername.UserName;
+                        shipping.UserName = getUsername.Username;
                         shipping.Contactnumber = orders.Contactnumber;
                         shipping.Phone = orders.Contactnumber;
                         shipping.Email = getemail.Email;
@@ -168,7 +168,6 @@ namespace Shoppite.Infrastructure.Repositories
                         shipping.InsertDate = DateTime.Now;
                         _MasterContext.OrderShippings.Add(shipping);
                         await _MasterContext.SaveChangesAsync();
-                    }
                 }
             }        
         }
@@ -306,6 +305,41 @@ namespace Shoppite.Infrastructure.Repositories
             {
                 return "Something went Wrong..";
             }
+        }
+        public async Task<string> cancelOrder(CancelOrders orders)
+        {
+            var orderDetails = await _MasterContext.OrderStatuses.FirstOrDefaultAsync(a => a.OrgId == orders.orgId && a.OrderId == orders.OrderId);
+            if(orderDetails.OrderStatus1=="Pending")
+            {
+                var orderMasterDetails = _MasterContext.OrderMasters.Where(u => u.OrderMasterId == orderDetails.OrderId && u.OrgId == orderDetails.OrgId).FirstOrDefault();
+                var orderBasicdetails = await _MasterContext.OrderBasics.Where(o => o.OrderGuid == orderMasterDetails.OrderGuid && o.OrgId == orders.orgId).ToListAsync();
+                if (orderDetails != null)
+                {
+                    orderDetails.Remarks = orders.Reason;
+                    orderDetails.OrderStatus1 = "Cancelled";
+                    _MasterContext.Entry(orderDetails).State = EntityState.Detached;
+                    _MasterContext.Entry(orderDetails).State = EntityState.Modified;
+                    await _MasterContext.SaveChangesAsync();
+
+                    for (int i = 0; i < orderBasicdetails.Count; i++)
+                    {
+                        var productDetails = await _MasterContext.ProductBasics.FirstOrDefaultAsync(p => p.ProductId == orderBasicdetails[i].ProductId && p.OrgId == orders.orgId);
+                        productDetails.Qty = productDetails.Qty + orderBasicdetails[i].Qty;
+                        _MasterContext.Entry(productDetails).State = EntityState.Detached;
+                        _MasterContext.Entry(productDetails).State = EntityState.Modified;
+                        await _MasterContext.SaveChangesAsync();
+                    }
+                    return "Cancellation Confirmed";
+                }
+                else
+                {
+                    return "Something went Wrong.";
+                }
+            }
+            else
+            {
+                return "Can't cancelled Your order";
+            }          
         }
     }
 }
