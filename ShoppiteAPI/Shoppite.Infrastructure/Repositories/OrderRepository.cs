@@ -238,7 +238,7 @@ namespace Shoppite.Infrastructure.Repositories
                                    "SUM(Order_Basic.Price*Order_Basic.QTY) As TotalPrice, " +
                                   "CONCAT(shiiping.Address + ''+',', shiiping.City + ''+',',shiiping.Street+ ''+',', shiiping.Zipcode) AS Address " +
                                   "FROM Order_Basic " +
-                                  "Inner JOIN Users ON Order_Basic.UserName = Users.UserName " +
+                                  "Inner JOIN Users ON Order_Basic.UserName = Users.Email " +
                                   "Inner JOIN Order_Shipping AS shiiping ON Order_Basic.OrderGuid = shiiping.OrderGuid " +
                                   "inner join Order_Master om on  Order_Basic.OrderGUID=om.OrderGUID " +
                                   "WHERE Order_Basic.OrgId= " + OrgId + " And om.OrderMasterId= " + OrderMasterId +
