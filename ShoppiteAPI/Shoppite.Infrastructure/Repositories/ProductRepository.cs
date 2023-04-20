@@ -65,7 +65,7 @@ namespace Shoppite.Infrastructure.Repositories
             if(UserId!=null)
             {
                 var getusername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == UserId&&u.OrgId== orgId);
-                var wishlistList = await _MasterContext.CustomerWishlists.Where(x => x.UserName == getusername.Username&&x.OrgId==orgId).ToListAsync();
+                var wishlistList = await _MasterContext.CustomerWishlists.Where(x => x.UserName == getusername.Email&&x.OrgId==orgId).ToListAsync();
                 for (int i = 0; i < productsDTOs.Count; i++)
                 {
                     for (int j = 0; j < wishlistList.Count; j++)

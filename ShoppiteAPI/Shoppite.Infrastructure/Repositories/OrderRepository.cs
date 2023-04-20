@@ -151,7 +151,7 @@ namespace Shoppite.Infrastructure.Repositories
                 }              
                     var OrderCheck = _MasterContext.OrderShippings.FirstOrDefault(x => x.OrderGuid == orders.OrderGuid && x.OrgId == orders.orgid);
                    // var getUsername = _MasterContext.OrderBasics.FirstOrDefault(x => x.OrderGuid == orders.OrderGuid && x.OrgId == orders.orgid);
-                    var getemail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.Username == getUsername.Email && x.OrgId == orders.orgid);
+                    var getemail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.UserId == orders.UserId && x.OrgId == orders.orgid);
                     if (OrderCheck == null)
                     {
                         OrderShipping shipping = new();
