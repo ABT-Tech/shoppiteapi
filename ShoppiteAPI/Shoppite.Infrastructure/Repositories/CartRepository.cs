@@ -48,7 +48,7 @@ namespace Shoppite.Infrastructure.Repositories
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 var finduser = _MasterContext.Users.FirstOrDefault(u => u.UserId == Cart.UserId&& u.OrgId==Cart.orgId);
-                var username = finduser.Username;
+                var username = finduser.Email;
                 var cartdetails = _MasterContext.OrderBasics.FirstOrDefault(u => u.ProductId == Cart.proId && u.OrgId == Cart.orgId && u.UserName == username&&u.OrderStatus=="Cart");
                 if(cartdetails != null)
                 {
@@ -113,7 +113,7 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     cw.ProductId = favourite.proId;
                     cw.InsertDate = DateTime.Now;
-                    cw.UserName = username.Username;
+                    cw.UserName = username.Email;
                     cw.Ip = null;
                     cw.OrgId = favourite.orgId;
                     _MasterContext.CustomerWishlists.Add(cw);
