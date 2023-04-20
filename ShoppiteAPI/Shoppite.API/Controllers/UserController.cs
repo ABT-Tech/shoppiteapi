@@ -42,5 +42,10 @@ namespace Shoppite.API.Controllers
         {
             return await _mediator.Send(new EditUserProfile(user));
         }
+        [HttpPost]
+        public async Task<string> ForgetPassword([FromBody] ForgetPassword password)
+        {
+            return await _mediator.Send(new Forgetpassword(password));
+        }
     }
 }

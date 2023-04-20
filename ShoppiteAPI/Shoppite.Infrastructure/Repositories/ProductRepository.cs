@@ -102,6 +102,7 @@ namespace Shoppite.Infrastructure.Repositories
                         var ProductList = ProductStrList.Split(',');
                         productsDTO.Id = Convert.ToInt32(result["Id"]);
                         productsDTO.Title = result["Title"].ToString();
+                        productsDTO.Quantity = Convert.ToInt32(result["Qty"]);
                         productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString().Replace("\r\n", "")).Replace("\r\n", "");
                         productsDTO.Image = result["Image"].ToString();
                         productsDTO.Brand = result["Brand"].ToString();
@@ -113,8 +114,19 @@ namespace Shoppite.Infrastructure.Repositories
                     }
                 }
             }
+                var getusername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == userId && u.OrgId == orgId);
+                var wishlistList = await _MasterContext.CustomerWishlists.Where(x => x.UserName == getusername.Email && x.OrgId == orgId).ToListAsync();
+                for (int i = 0; i < productsDTOs.Count; i++)
+                {
+                    for (int j = 0; j < wishlistList.Count; j++)
+                    {
+                        if (productsDTOs[i].Id == wishlistList[j].ProductId)
+                        {
+                            productsDTOs[i].WishlistedProduct = true;
+                        }
+                    }
+                }           
             return productsDTOs;
-
         }
         public async Task<List<ProductsDTO>> SearchProducts(int orgId,string productname)
         {

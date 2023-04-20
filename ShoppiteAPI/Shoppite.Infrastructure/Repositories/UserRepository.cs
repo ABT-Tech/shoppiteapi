@@ -133,6 +133,32 @@ namespace Shoppite.Infrastructure.Repositories
                 await _MasterContext.SaveChangesAsync();
             }
         }
+        public async Task<string> ForgetPassword(ForgetPassword password)
+        {
+
+            var userDetails =  _MasterContext.Users.Where(u => u.Email == password.Email && u.OrgId == password.OrgId).FirstOrDefault();
+
+                if (userDetails.Email == password.Email && userDetails.Password == password.Password)
+                {
+                    if (userDetails.Password == password.Password && userDetails.Password == password.ConfirmPassword)
+                    {
+                        userDetails.Password = password.Password;
+                        _MasterContext.Entry(userDetails).State = EntityState.Detached;
+                        _MasterContext.Entry(userDetails).State = EntityState.Modified;
+                        await _MasterContext.SaveChangesAsync();
+                        return "Password Changed Successfully!!";
+                    }
+                    else
+                    {
+                        return "Password and Confirm Password Should match";
+                    }
+                }
+            else
+            {
+                return "Invalid Password Or Username";
+
+            }     
+        }
     }
 }
  
