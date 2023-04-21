@@ -101,7 +101,7 @@ namespace Shoppite.Infrastructure.Repositories
                 }
                 _MasterContext.UsersProfiles.Add(profile);
                 await _MasterContext.SaveChangesAsync();
-                return "Success";
+                return "You are Registered!!";
             }
             
         }
@@ -135,29 +135,26 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task<string> ForgetPassword(ForgetPassword password)
         {
-
             var userDetails =  _MasterContext.Users.Where(u => u.Email == password.Email && u.OrgId == password.OrgId).FirstOrDefault();
-
-                if (userDetails.Email == password.Email && userDetails.Password == password.Password)
+            if(userDetails!=null)
+            {
+                if ( password.Password == password.ConfirmPassword)
                 {
-                    if (userDetails.Password == password.Password && userDetails.Password == password.ConfirmPassword)
-                    {
-                        userDetails.Password = password.Password;
-                        _MasterContext.Entry(userDetails).State = EntityState.Detached;
-                        _MasterContext.Entry(userDetails).State = EntityState.Modified;
-                        await _MasterContext.SaveChangesAsync();
-                        return "Password Changed Successfully!!";
-                    }
-                    else
-                    {
-                        return "Password and Confirm Password Should match";
-                    }
+                    userDetails.Password = password.Password;
+                    _MasterContext.Entry(userDetails).State = EntityState.Detached;
+                    _MasterContext.Entry(userDetails).State = EntityState.Modified;
+                    await _MasterContext.SaveChangesAsync();
+                    return "Password Changed Successfully!!";
                 }
+                else
+                {
+                    return "Password and Confirm Password Should match";
+                }
+            }
             else
             {
-                return "Invalid Password Or Username";
-
-            }     
+                return "User Not Found!!";
+            }
         }
     }
 }
