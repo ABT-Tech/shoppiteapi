@@ -45,6 +45,10 @@ namespace Shoppite.API.Controllers
         [HttpPost]
         public async Task<string> ForgetPassword([FromBody] ForgetPassword password)
         {
+            string enpassword = eh.Encrypt(password.Password);
+            string enConfirmpassword = eh.Encrypt(password.ConfirmPassword);
+            password.Password = enpassword;
+            password.ConfirmPassword = enConfirmpassword;
             return await _mediator.Send(new Forgetpassword(password));
         }
     }

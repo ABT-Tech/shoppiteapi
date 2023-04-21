@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 namespace Shoppite.Core.DTOs
 {
     public class ForgetPassword
-    {
-        public int userId { get; set; }
+    {       
         public int OrgId { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
