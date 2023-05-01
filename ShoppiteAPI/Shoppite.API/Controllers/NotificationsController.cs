@@ -85,6 +85,8 @@ namespace Shoppite.API.Controllers
                                 Data = new Dictionary<string, string> {
                                     { "ID", notifID.ToString() },
                                     { "Title", notifInfo.Title },
+                                    { "OrgId", notifInfo.OrgId.ToString() },
+                                    { "Logo", notifInfo.logo.ToString() },
                                     { "priority", "high" },
                                 },
                                 Notification = new IOSNotification()
@@ -119,6 +121,8 @@ namespace Shoppite.API.Controllers
                                 Data = new Dictionary<string, string> {
                                     { "ID", notifID.ToString() },
                                     { "Title", notifInfo.Title },
+                                    { "OrgId", notifInfo.OrgId.ToString() },
+                                    { "Logo", notifInfo.logo.ToString() },
                                     { "priority", "high" }
                                 },
                                 Notification = new AndroidNotification()

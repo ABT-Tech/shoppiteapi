@@ -14,5 +14,6 @@ namespace Shoppite.Core.DTOs
         public int UserID { get; set; }
         public string org_name { get; set; }
         public string Details { get; set; }
+        public string logo { get; set; }
     }
 }

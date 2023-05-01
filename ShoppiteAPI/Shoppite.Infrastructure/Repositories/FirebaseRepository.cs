@@ -72,6 +72,7 @@ namespace Shoppite.Infrastructure.Repositories
                         notificationsData.UserID = result["UserID"]!=DBNull.Value? Convert.ToInt32(result["UserID"].ToString()):0;
                         notificationsData.org_name = result["org_name"].ToString();
                         notificationsData.Details = result["Details"].ToString();
+                        notificationsData.logo = result["logo"].ToString();
                         notificationsDataDTOs.Add(notificationsData);
                     }
                 }
