@@ -36,7 +36,8 @@ namespace Shoppite.Infrastructure.Repositories
                                 "organization.org_description AS OrgDescription," +
                                 "Logo.Logo AS IMAGE " +
                                 "FROM organization " +
-                                "JOIN logo ON organization.id = logo.orgid ";
+                                "JOIN logo ON organization.id = logo.orgid "+
+                                "WHERE IsActive=1 ";
 
                 command.CommandText = strSQL;
                 command.CommandType = CommandType.Text;
