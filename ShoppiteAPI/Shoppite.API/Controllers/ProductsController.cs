@@ -54,9 +54,9 @@ namespace Shoppite.API.Controllers
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetRecentlyViewedProductsByCategory(int org_Id, int CategoryId,string IP)
+        public async Task<object> GetRecentlyViewedProductsByCategory(int org_Id,string IP)
         {
-            return await _mediator.Send(new GetRecentlyViewedProductsByCategory(org_Id, CategoryId,IP));
+            return await _mediator.Send(new GetRecentlyViewedProductsByCategory(org_Id,IP));
         }
 
         [HttpGet]
@@ -67,9 +67,9 @@ namespace Shoppite.API.Controllers
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetProductsByBestSellers(int org_Id)
+        public async Task<object> GetProductsByBestSellers(int org_Id, string type)
         {
-            return await _mediator.Send(new GetProductsByBestSellers(org_Id));
+            return await _mediator.Send(new GetProductsByBestSellers(org_Id,type));
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
