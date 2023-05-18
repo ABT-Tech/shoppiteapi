@@ -155,7 +155,7 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.Image = result["Image"].ToString();
                         productsDTO.Brand = result["Brand"].ToString();
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
-                        productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                        productsDTO.OldPrice = result["OldPrice"] !=DBNull.Value ? Convert.ToDouble(result["OldPrice"]):0;
                         productsDTO.ProductList = ProductList;
                         productsDTO.Quantity = Convert.ToInt32(result["qty"]);
                         productsDTO.orgId = Convert.ToInt32(orgId);
@@ -166,7 +166,7 @@ namespace Shoppite.Infrastructure.Repositories
             return productsDTOs;
 
         }
-        public async Task<List<RecentlyViewedProductDTO>> GetRecentlyViewedProductsByCategory(int orgId, int CategoryId,string IP)
+        public async Task<List<RecentlyViewedProductDTO>> GetRecentlyViewedProductsByCategory(int orgId,string IP)
         {
             List<RecentlyViewedProductDTO> recentlyVieweds = new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
@@ -177,7 +177,7 @@ namespace Shoppite.Infrastructure.Repositories
                 command.CommandType = CommandType.StoredProcedure;
                 var parameter = command.CreateParameter();
                 command.Parameters.Add(new SqlParameter("@orgid", orgId));
-                command.Parameters.Add(new SqlParameter("@categoryid", CategoryId));
+                /*command.Parameters.Add(new SqlParameter("@categoryid", CategoryId));*/
                 command.Parameters.Add(new SqlParameter("@IP",IP ));
                 await this._MasterContext.Database.OpenConnectionAsync();
 
@@ -196,7 +196,7 @@ namespace Shoppite.Infrastructure.Repositories
                         product.Brands = result["Brands"].ToString();
                         product.BrandId = Convert.ToInt32(result["BrandId"]);
                         product.Price = Convert.ToDouble(result["Price"]);
-                        product.OldPrice = Convert.ToDouble(result["OldPrice"]);                 
+                        product.OldPrice = result["OldPrice"] != DBNull.Value ? Convert.ToDouble(result["OldPrice"]) : 0;
                         product.OrgId = Convert.ToInt32(orgId);
                         product.Category_Name = result["Category_Name"].ToString();
                         product.Category_Id = Convert.ToInt32(result["Category_Id"]);
@@ -243,7 +243,7 @@ namespace Shoppite.Infrastructure.Repositories
                         product.Brands = result["Brands"].ToString();
                         product.BrandId = Convert.ToInt32(result["BrandId"]);
                         product.Price = Convert.ToDouble(result["Price"]);
-                        product.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                        product.OldPrice = result["OldPrice"] != DBNull.Value ? Convert.ToDouble(result["OldPrice"]) : 0;
                         product.OrgId = Convert.ToInt32(orgId);
                         product.Category_Name = result["Category_Name"].ToString();
                         product.Category_Id = Convert.ToInt32(result["Category_Id"]);
@@ -260,7 +260,7 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return recentlyVieweds;
         }
-        public async Task<List<ProductsByBestSellerDTO>> ProductByBestSellers(int orgId)
+        public async Task<List<ProductsByBestSellerDTO>> ProductByBestSellers(int orgId,string type)
         {
             List<ProductsByBestSellerDTO> bestSellerDTOs= new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
@@ -271,6 +271,7 @@ namespace Shoppite.Infrastructure.Repositories
                 command.CommandType = CommandType.StoredProcedure;
                 var parameter = command.CreateParameter();
                 command.Parameters.Add(new SqlParameter("@orgid", orgId));
+                command.Parameters.Add(new SqlParameter("@type", type));
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())
@@ -296,7 +297,7 @@ namespace Shoppite.Infrastructure.Repositories
                         product.maincategoryname = result["maincategoryname"].ToString();
                         product.Sku = result["Sku"].ToString();
                         product.ProductStatus = result["ProductStatus"].ToString();
-                        product.Quantity = Convert.ToInt32(result["Quantity"]);
+                        product.Quantity = Convert.ToInt32(result["Qty"]);
                         bestSellerDTOs.Add(product);
                     }
                 }

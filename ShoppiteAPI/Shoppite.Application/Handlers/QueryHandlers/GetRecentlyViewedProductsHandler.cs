@@ -23,7 +23,7 @@ namespace Shoppite.Application.Handlers.QueryHandlers
         }
         public async Task<List<RecentlyViewedProductResponse>> Handle(GetRecentlyViewedProductsByCategory request, CancellationToken cancellationToken)
         {
-            var products = await _productRepository.GetRecentlyViewedProductsByCategory(request.OrgId,request.CategoryId,request.IP);
+            var products = await _productRepository.GetRecentlyViewedProductsByCategory(request.OrgId,request.IP);
             var mapper = ObjectMapper.Mapper.Map<List<RecentlyViewedProductResponse>>(products);
             return mapper;
         }
