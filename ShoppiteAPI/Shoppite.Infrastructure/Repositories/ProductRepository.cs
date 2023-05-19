@@ -265,24 +265,17 @@ namespace Shoppite.Infrastructure.Repositories
                     while (await result.ReadAsync())
                     {
                         ProductsByBestSellerDTO product = new();
-                        product.ProductId = Convert.ToInt32(result["ProductId"]);
-                        product.ProductName = result["ProductName"].ToString();
-                        product.ShortDescription = result["ShortDescription"].ToString();
+                        var ProductStrList = result["ProductList"].ToString();
+                        var ProductList = ProductStrList.Split(',');
+                        product.Id = Convert.ToInt32(result["ProductId"]);
+                        product.Title = result["ProductName"].ToString();
                         product.Description = result["Description"].ToString();
-                        product.ProductGuid = (Guid)result["ProductGuid"];
-                        product.IsPublished = Convert.ToBoolean(result["IsPublished"]);
                         product.Image = result["Image"].ToString();
-                        product.Brands = result["Brands"].ToString();
-                        product.BrandId = Convert.ToInt32(result["BrandId"]);
+                        product.ProductList = ProductList;
+                        product.Brand = result["Brands"].ToString();
                         product.Price = Convert.ToDouble(result["Price"]);
                         product.OldPrice = result["OldPrice"] != DBNull.Value ? Convert.ToDouble(result["OldPrice"]) : 0;
-                        product.OrgId = Convert.ToInt32(orgId);
-                        product.Category_Name = result["Category_Name"].ToString();
-                        product.Category_Id = Convert.ToInt32(result["Category_Id"]);
-                        product.MainCatId = Convert.ToInt32(result["MainCatId"]);
-                        product.maincategoryname = result["maincategoryname"].ToString();
-                        product.Sku = result["Sku"].ToString();
-                        product.ProductStatus = result["ProductStatus"].ToString();
+                        product.orgId = Convert.ToInt32(orgId);
                         product.Quantity = Convert.ToInt32(result["Qty"]);
                         bestSellerDTOs.Add(product);
                     }
