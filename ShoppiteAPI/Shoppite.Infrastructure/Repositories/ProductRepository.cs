@@ -186,24 +186,16 @@ namespace Shoppite.Infrastructure.Repositories
                     while (await result.ReadAsync())
                     {
                         RecentlyViewedProductDTO product = new();
-                        product.ProductId = Convert.ToInt32(result["ProductId"]);
-                        product.ProductName= result["ProductName"].ToString();                      
-                        product.ShortDescription = result["ShortDescription"].ToString();
+                        product.Id = Convert.ToInt32(result["ProductId"]);
+                        product.Title= result["ProductName"].ToString();                      
                         product.Description = result["Description"].ToString();
                         product.ProductGuid = (Guid)result["ProductGuid"];
-                        product.IsPublished = Convert.ToBoolean(result["IsPublished"]);
                         product.Image = result["Image"].ToString();
-                        product.Brands = result["Brands"].ToString();
-                        product.BrandId = Convert.ToInt32(result["BrandId"]);
+                        product.Ip = result["Ip"].ToString();
+                        product.Brand = result["Brands"].ToString();
                         product.Price = Convert.ToDouble(result["Price"]);
                         product.OldPrice = result["OldPrice"] != DBNull.Value ? Convert.ToDouble(result["OldPrice"]) : 0;
                         product.OrgId = Convert.ToInt32(orgId);
-                        product.Category_Name = result["Category_Name"].ToString();
-                        product.Category_Id = Convert.ToInt32(result["Category_Id"]);
-                        product.MainCatId = Convert.ToInt32(result["MainCatId"]);
-                        product.maincategoryname = result["maincategoryname"].ToString();
-                        product.Sku = result["Sku"].ToString();                     
-                        product.ProfileId = Convert.ToInt32(result["ProfileId"]);
                         product.productviewinsertdate = (DateTime)result["productviewinsertdate"];
                         product.STATUS = result["STATUS"].ToString();
                         product.Quantity = Convert.ToInt32(result["qty"]);
@@ -233,26 +225,20 @@ namespace Shoppite.Infrastructure.Repositories
                     while (await result.ReadAsync())
                     {
                         RecentlyViewedProductDTO product = new();
-                        product.ProductId = Convert.ToInt32(result["ProductId"]);
-                        product.ProductName = result["ProductName"].ToString();                       
-                        product.ShortDescription = result["ShortDescription"].ToString();
+                        product.Id = Convert.ToInt32(result["ProductId"]);
+                        product.Title = result["ProductName"].ToString();
+                        product.Ip = result["Ip"].ToString();
                         product.Description = result["Description"].ToString();
                         product.ProductGuid = (Guid)result["ProductGuid"];
-                        product.IsPublished = Convert.ToBoolean(result["IsPublished"]);
+
                         product.Image = result["Image"].ToString();
-                        product.Brands = result["Brands"].ToString();
-                        product.BrandId = Convert.ToInt32(result["BrandId"]);
+                        product.Brand = result["Brands"].ToString();
                         product.Price = Convert.ToDouble(result["Price"]);
                         product.OldPrice = result["OldPrice"] != DBNull.Value ? Convert.ToDouble(result["OldPrice"]) : 0;
                         product.OrgId = Convert.ToInt32(orgId);
-                        product.Category_Name = result["Category_Name"].ToString();
-                        product.Category_Id = Convert.ToInt32(result["Category_Id"]);
-                        product.MainCatId = Convert.ToInt32(result["MainCatId"]);
-                        product.maincategoryname = result["maincategoryname"].ToString();
-                        product.Sku = result["Sku"].ToString();
-                        product.ProfileId = Convert.ToInt32(result["ProfileId"]);                                          
+                                       
                         product.STATUS = result["STATUS"].ToString();
-                        product.NumOfViews = Convert.ToInt32(result["NumOfViews"]);
+                        //product.NumOfViews = Convert.ToInt32(result["NumOfViews"]);
                         product.Quantity = Convert.ToInt32(result["qty"]);
                         recentlyVieweds.Add(product);
                     }
