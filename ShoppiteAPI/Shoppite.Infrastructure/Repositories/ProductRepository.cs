@@ -191,6 +191,7 @@ namespace Shoppite.Infrastructure.Repositories
                         product.Description = result["Description"].ToString();
                         product.ProductGuid = (Guid)result["ProductGuid"];
                         product.Image = result["Image"].ToString();
+                        product.Ip = result["Ip"].ToString();
                         product.Brand = result["Brands"].ToString();
                         product.Price = Convert.ToDouble(result["Price"]);
                         product.OldPrice = result["OldPrice"] != DBNull.Value ? Convert.ToDouble(result["OldPrice"]) : 0;
