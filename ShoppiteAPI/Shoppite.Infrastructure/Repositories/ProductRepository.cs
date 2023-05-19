@@ -275,7 +275,7 @@ namespace Shoppite.Infrastructure.Repositories
                         product.Brands = result["Brands"].ToString();
                         product.BrandId = Convert.ToInt32(result["BrandId"]);
                         product.Price = Convert.ToDouble(result["Price"]);
-                        product.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                        product.OldPrice = result["OldPrice"] != DBNull.Value ? Convert.ToDouble(result["OldPrice"]) : 0;
                         product.OrgId = Convert.ToInt32(orgId);
                         product.Category_Name = result["Category_Name"].ToString();
                         product.Category_Id = Convert.ToInt32(result["Category_Id"]);

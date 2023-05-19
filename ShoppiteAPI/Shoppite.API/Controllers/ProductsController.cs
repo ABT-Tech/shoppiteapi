@@ -30,7 +30,7 @@ namespace Shoppite.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<object> GetMostSellerProductsByOrganizations(int org_Id,int? UserId)
         {
-            return await _mediator.Send(new GetAllProductsByOrganizationsQuery(org_Id,UserId));
+            return await _mediator.Send(new GetProductsByBestSellers(org_Id, "Best Deals"));
         }
 
         [HttpGet]
