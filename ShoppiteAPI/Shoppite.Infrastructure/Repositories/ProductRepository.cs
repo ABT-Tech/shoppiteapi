@@ -269,7 +269,7 @@ namespace Shoppite.Infrastructure.Repositories
                         var ProductList = ProductStrList.Split(',');
                         product.Id = Convert.ToInt32(result["ProductId"]);
                         product.Title = result["ProductName"].ToString();
-                        product.Description = result["Description"].ToString();
+                        product.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
                         product.Image = result["Image"].ToString();
                         product.ProductList = ProductList;
                         product.Brand = result["Brands"].ToString();
