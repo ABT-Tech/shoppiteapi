@@ -29,5 +29,6 @@ namespace Shoppite.Application.Queries
     public record GetProductsByCategory(int OrgId,int CategoryId):IRequest<List<ProductResponse>>;
     public record GetNotificationDetails(int NotificationID) : IRequest<List<NotificationsDataDTO>>;
     public record GetDeviceListToSendNotifications(string Type, int UserID) : IRequest<List<DeviceListDTO>>;
+    public record GetAllProductForVendor(int OrgId,int Id): IRequest<ProductDetailsForVendorResponse>;
 
 }
