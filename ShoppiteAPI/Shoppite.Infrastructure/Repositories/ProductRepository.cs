@@ -269,7 +269,7 @@ namespace Shoppite.Infrastructure.Repositories
                         var ProductList = ProductStrList.Split(',');
                         product.Id = Convert.ToInt32(result["ProductId"]);
                         product.Title = result["ProductName"].ToString();
-                        product.Description = result["Description"].ToString();
+                        product.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
                         product.Image = result["Image"].ToString();
                         product.ProductList = ProductList;
                         product.Brand = result["Brands"].ToString();
@@ -320,6 +320,61 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return productsDTOs;
         }
+        public async Task<string> UpdateProductDetailsForVendor(UpdateProductDetail products)
+        {
+            var productDetails = await _MasterContext.ProductBasics.FirstOrDefaultAsync(a => a.OrgId ==products.OrgId&&a.ProductId==products.Id);
+            var productPrice=await _MasterContext.ProductPrices.FirstOrDefaultAsync(a=>a.OrgId==products.OrgId && a.ProductGuid==productDetails.ProductGuid);
+            if (productDetails != null&&productPrice!=null)
+            {
+                productDetails.Qty = products.Quantity;                
+                _MasterContext.Entry(productDetails).State = EntityState.Detached;
+                _MasterContext.Entry(productDetails).State = EntityState.Modified;
 
+                productPrice.Price = products.Price;
+                _MasterContext.Entry(productDetails).State = EntityState.Detached;
+                _MasterContext.Entry(productDetails).State = EntityState.Modified;
+
+                await _MasterContext.SaveChangesAsync();
+                return "Success";
+            }
+            else
+            {
+                return "Something went Wrong..";
+            }
+        }
+        public async Task<ProductDetailsForVendor> GetAllProductsForVendor(int orgId,int Id)
+        {
+            ProductDetailsForVendor productsDTO = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "GetAllProductsForVendor";
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@orgid", orgId));
+                command.Parameters.Add(new SqlParameter("@Id", Id));
+                await this._MasterContext.Database.OpenConnectionAsync();
+
+                using var result = await command.ExecuteReaderAsync();
+                while (await result.ReadAsync())
+                {                  
+                    var ProductStrList = result["ProductList"].ToString();
+                    var ProductList = ProductStrList.Split(',');
+                    productsDTO.Id = Convert.ToInt32(result["Id"]);
+                    productsDTO.Title = result["Title"].ToString();
+                    productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
+                    productsDTO.Image = result["Image"].ToString();
+                    productsDTO.Brand = result["Brand"].ToString();
+                    productsDTO.Price = Convert.ToDouble(result["Price"]);
+                    productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                    productsDTO.ProductList = ProductList;
+                    productsDTO.Quantity = Convert.ToInt32(result["quantity"]);
+                    productsDTO.orgId = Convert.ToInt32(orgId);
+                    productsDTO.ProductGuid = (Guid)result["ProductGuid"];                  
+                }
+            }          
+            return productsDTO;
+        }
     }
 }

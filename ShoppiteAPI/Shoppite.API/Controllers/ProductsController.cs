@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shoppite.Application.Commands;
 using Shoppite.Application.Queries;
+using Shoppite.Core.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,6 +78,19 @@ namespace Shoppite.API.Controllers
         public async Task<object> GetAllProductsByCategory(int OrgId, int CategoryId)
         {
             return await _mediator.Send(new GetProductsByCategory(OrgId, CategoryId));
+        }
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> UpdateProductDetail([FromBody] UpdateProductDetail productDetails)
+        {
+            return await _mediator.Send(new UpdateProductDetails(productDetails));
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetAllProductDetailsForVendor(int OrgId,int Id)
+        {
+            return await _mediator.Send(new GetAllProductForVendor(OrgId,Id));
         }
     }
 }

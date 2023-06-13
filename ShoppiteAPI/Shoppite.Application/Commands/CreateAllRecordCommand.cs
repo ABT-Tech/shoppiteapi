@@ -23,4 +23,5 @@ namespace Shoppite.Application.Commands
     public record UpdateNotificationStatus(int NotificationId) : IRequest<string>;
     public record CancelOrder(CancelOrders cancelOrder):IRequest<string>;
     public record Forgetpassword(ForgetPassword Password):IRequest<string>;
+    public record UpdateProductDetails(UpdateProductDetail Products):IRequest<string>;
 }
