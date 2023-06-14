@@ -156,6 +156,40 @@ namespace Shoppite.Infrastructure.Repositories
                 return "User Not Found!!";
             }
         }
+        public async Task<List<CustomerInfo>> GetCustomerDetails(int OrgId)
+        {
+            List<CustomerInfo> customerInfo = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_GetCustomerDetailsByOrgId";
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@OrgId", OrgId));
+
+                await this._MasterContext.Database.OpenConnectionAsync();
+                using var result = await command.ExecuteReaderAsync();
+                if (result != null)
+                {
+                    while (await result.ReadAsync())
+                    {
+                        CustomerInfo info = new();
+                        info.userId = Convert.ToInt32(result["UserId"]);
+                        info.orgId = Convert.ToInt32(OrgId);
+                        info.Username = result["Username"].ToString();
+                        info.Email = result["Email"].ToString();
+                        info.Status = result["Status"].ToString();
+                        if (info.Status == "Active")
+                        {
+                            info.Active = true;
+                        }
+                        customerInfo.Add(info);
+                    }
+                }
+            }
+            return customerInfo;
+        }
     }
 }
  

@@ -51,5 +51,17 @@ namespace Shoppite.API.Controllers
             password.ConfirmPassword = enConfirmpassword;
             return await _mediator.Send(new Forgetpassword(password));
         }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetCustomerDetails(int OrgId)
+        {
+            return await _mediator.Send(new GetCustomerDetails(OrgId));
+        }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetTotalorderDetails(int OrgId)
+        {
+            return await _mediator.Send(new GetTotalOrderDetails(OrgId));
+        }
     }
 }
