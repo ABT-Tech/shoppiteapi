@@ -21,5 +21,7 @@ namespace Shoppite.Application.Responses
         public DateTime productviewinsertdate { get; set; }
         public string STATUS { get; set; }
         public int Quantity { get; set; }
+        public int BrandId { get; set; }
+        public int CategoryId { get; set; }
     }
 }

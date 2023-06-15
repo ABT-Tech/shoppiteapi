@@ -18,6 +18,8 @@ namespace Shoppite.Core.DTOs
         public int orgId { get; set; }
         public string[] ProductList { get; set; }
         public Double OldPrice { get; set; }
+        public int BrandId { get; set; }
+        public int CategoryId { get; set; }
         //public Boolean WishlistedProduct { get; set; }
     }
 }

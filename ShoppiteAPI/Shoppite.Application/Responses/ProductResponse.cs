@@ -19,5 +19,7 @@ namespace Shoppite.Application.Responses
         public string[] ProductList { get; set; }
         public int OldPrice { get; set; }
         public Boolean WishlistedProduct { get; set; }
+        public int BrandId { get; set; }
+        public int CategoryId { get; set; }
     }
 }
