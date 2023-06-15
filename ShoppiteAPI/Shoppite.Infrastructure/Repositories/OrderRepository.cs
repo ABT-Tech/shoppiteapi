@@ -341,5 +341,30 @@ namespace Shoppite.Infrastructure.Repositories
                 return "Can't cancelled Your order";
             }          
         }
+        public async Task<List<Report>> GetTotalOrderDetails(int OrgId)
+        {
+            List<Report> details = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_CustomerReport";
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@OrgId", OrgId));
+                await this._MasterContext.Database.OpenConnectionAsync();
+                using var result = await command.ExecuteReaderAsync();
+                while (await result.ReadAsync())
+                {
+                    Report report = new();
+                    report.UserName = result["UserName"].ToString();
+                    report.TtlOrder = Convert.ToInt32(result["TtlOrder"]);
+                    report.orgId = Convert.ToInt32(OrgId);
+                    report.userId = Convert.ToInt32(result["userId"]);
+                    report.Date = result["LastOrderDate"]!= DBNull.Value ? Convert.ToDateTime(result["LastOrderDate"]).ToString("dd/MM/yyyy") : "";
+                    details.Add(report);
+                }
+            }           
+            return details;
+        }
     }
 }

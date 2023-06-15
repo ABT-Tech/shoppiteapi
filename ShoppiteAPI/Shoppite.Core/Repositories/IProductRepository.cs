@@ -20,6 +20,6 @@ namespace Shoppite.Core.Repositories
         Task<List<ProductsDTO>> GetProductsByCategory(int OrgId, int CategoryId);
         Task<string> UpdateProductDetailsForVendor(UpdateProductDetail products);
         Task<ProductDetailsForVendor> GetAllProductsForVendor(int OrgId,int Id);
-
+        Task<List<ProductsDTO>> GetSimilarProducts(int OrgId, int CategoryId,int BrandId);
     }
 }
