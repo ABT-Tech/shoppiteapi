@@ -376,5 +376,41 @@ namespace Shoppite.Infrastructure.Repositories
             }          
             return productsDTO;
         }
+        public async Task<List<ProductsDTO>> GetSimilarProducts(int orgId, int CategoryId,int  BrandId)
+        {
+            List<ProductsDTO> productsDTOs = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_GetSimilarProducts";
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@OrgId", orgId));
+                command.Parameters.Add(new SqlParameter("@CategoryId", CategoryId));
+                command.Parameters.Add(new SqlParameter("@BrandId", BrandId));
+                await this._MasterContext.Database.OpenConnectionAsync();
+
+                using var result = await command.ExecuteReaderAsync();
+                while (await result.ReadAsync())
+                {
+                    ProductsDTO productsDTO = new();
+                    var ProductStrList = result["ProductList"].ToString();
+                    var ProductList = ProductStrList.Split(',');
+                    productsDTO.Id = Convert.ToInt32(result["Id"]);
+                    productsDTO.Title = result["Title"].ToString();
+                    productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
+                    productsDTO.Image = result["Image"].ToString();
+                    productsDTO.Brand = result["Brand"].ToString();
+                    productsDTO.Price = Convert.ToDouble(result["Price"]);
+                    productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                    productsDTO.ProductList = ProductList;
+                    productsDTO.Quantity = Convert.ToInt32(result["Qty"]);
+                    productsDTO.orgId = Convert.ToInt32(orgId);
+                    productsDTOs.Add(productsDTO);
+                }
+            }
+            return productsDTOs;
+        }
     }
 }
