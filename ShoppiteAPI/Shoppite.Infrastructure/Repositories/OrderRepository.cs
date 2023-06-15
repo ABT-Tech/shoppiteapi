@@ -361,7 +361,7 @@ namespace Shoppite.Infrastructure.Repositories
                     report.orgId = Convert.ToInt32(OrgId);
                     report.userId = Convert.ToInt32(result["userId"]);
                     report.Date = result["LastOrderDate"]!= DBNull.Value ? Convert.ToDateTime(result["LastOrderDate"]).ToString("dd/MM/yyyy") : "";
-                    details.Add(report);
+                    if (report.TtlOrder != 0) { details.Add(report); }
                 }
             }           
             return details;
