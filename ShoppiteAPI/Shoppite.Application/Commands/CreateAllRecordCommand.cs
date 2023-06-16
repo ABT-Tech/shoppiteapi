@@ -24,4 +24,5 @@ namespace Shoppite.Application.Commands
     public record CancelOrder(CancelOrders cancelOrder):IRequest<string>;
     public record Forgetpassword(ForgetPassword Password):IRequest<string>;
     public record UpdateProductDetails(UpdateProductDetail Products):IRequest<string>;
+    public record UpdateUserStatus(CustomerInfo cinfo):IRequest<string>;
 }

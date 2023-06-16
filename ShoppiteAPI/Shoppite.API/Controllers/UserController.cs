@@ -63,5 +63,10 @@ namespace Shoppite.API.Controllers
         {
             return await _mediator.Send(new GetTotalOrderDetails(OrgId));
         }
+        [HttpPost]
+        public async Task<object> UpdateUserStatus(CustomerInfo info)
+        {
+            return await _mediator.Send(new UpdateUserStatus(info));
+        }
     }
 }

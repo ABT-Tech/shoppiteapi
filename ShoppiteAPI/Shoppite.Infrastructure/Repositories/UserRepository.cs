@@ -190,6 +190,32 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return customerInfo;
         }
+        public async Task<string> UpdateUserStatus(CustomerInfo cinfo)
+        {
+            var CustomerInfo = await _MasterContext.Users.Where(x=>x.UserId==cinfo.userId&&x.OrgId==cinfo.orgId&&x.Email==cinfo.Email).FirstOrDefaultAsync();
+            var statusDetail = await _MasterContext.UsersProfiles.Where(c => c.OrgId == cinfo.orgId && c.UserName == CustomerInfo.Email).FirstOrDefaultAsync();
+            if (statusDetail != null)
+            {
+                if(statusDetail.Status=="Active")
+                {
+                    statusDetail.Status = "InActive";
+                    _MasterContext.Entry(statusDetail).State = EntityState.Detached;
+                    _MasterContext.Entry(statusDetail).State = EntityState.Modified;
+                }
+                else
+                {
+                    statusDetail.Status = "Active";
+                    _MasterContext.Entry(statusDetail).State = EntityState.Detached;
+                    _MasterContext.Entry(statusDetail).State = EntityState.Modified;
+                }
+                await _MasterContext.SaveChangesAsync();
+                return "Succses";
+            }
+            else
+            {
+                return "Something Went wrong..";
+            }
+        }
     }
 }
  

@@ -4,10 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Shoppite.Application.Commands;
 using Shoppite.Application.Queries;
 using Shoppite.Core.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Shoppite.Core.Model;
 using System.Threading.Tasks;
 
 namespace Shoppite.API.Controllers
@@ -92,6 +88,12 @@ namespace Shoppite.API.Controllers
         public async Task<string> CancelOrder([FromBody] CancelOrders cancelOrder)
         {
             return await _mediator.Send(new CancelOrder(cancelOrder));
+        }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetNumOfItemsInCart(int OrgId, int UserId)
+        {
+            return await _mediator.Send(new GetNumOfItemsInCart(OrgId, UserId));
         }
 
     }

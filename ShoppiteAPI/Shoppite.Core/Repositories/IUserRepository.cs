@@ -14,5 +14,6 @@ namespace Shoppite.Core.Repositories
         Task UpdateUserProfile(UserDTO users);
         Task<string> ForgetPassword(ForgetPassword password);
         Task<List<CustomerInfo>> GetCustomerDetails(int OrgId);
+        Task<string> UpdateUserStatus(CustomerInfo customerInfo);
     }
 }

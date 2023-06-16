@@ -183,5 +183,27 @@ namespace Shoppite.Infrastructure.Repositories
                 await _MasterContext.SaveChangesAsync();
             }
         }
+        public async Task<CartDTO> GetNoOfItemsInCart(int OrgId, int UserId)
+        {
+            CartDTO cartDTOs = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_GetNumOfItems_InCart";
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@OrgId", OrgId));
+                command.Parameters.Add(new SqlParameter("@UserId", UserId));
+                await this._MasterContext.Database.OpenConnectionAsync();
+                using var result = await command.ExecuteReaderAsync();
+                while (await result.ReadAsync())
+                {
+                    cartDTOs.orgId = Convert.ToInt32(OrgId);
+                    cartDTOs.UserId = Convert.ToInt32(UserId);
+                    cartDTOs.NumOfItems = Convert.ToInt32(result["NumOfProduct"]);
+                }
+            }
+            return cartDTOs;
+        }
     }
 }
