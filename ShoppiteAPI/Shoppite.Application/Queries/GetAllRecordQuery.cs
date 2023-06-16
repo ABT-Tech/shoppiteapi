@@ -1,11 +1,7 @@
 ﻿using MediatR;
 using Shoppite.Application.Responses;
 using Shoppite.Core.DTOs;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shoppite.Application.Queries
 {
@@ -33,5 +29,6 @@ namespace Shoppite.Application.Queries
     public record GetCustomerDetails(int OrgId) : IRequest<List<CustomerInfoResponse>>;
     public record GetTotalOrderDetails(int OrgId):IRequest<List<ReportResponse>>;
     public record GetSimilarProducts(int OrgId, int CategoryId,int BrandId) : IRequest<List<ProductResponse>>;
+    public record GetNumOfItemsInCart(int OrgId,int UserId):IRequest<NumberOfCartItemResponse>;
 
 }
