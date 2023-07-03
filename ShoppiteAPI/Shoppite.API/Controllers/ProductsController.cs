@@ -94,9 +94,15 @@ namespace Shoppite.API.Controllers
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetSimilarProducts(int OrgId, int CategoryId,int BrandId)
+        public async Task<object> GetSimilarProducts(int OrgId, int CategoryId, int BrandId)
         {
             return await _mediator.Send(new GetSimilarProducts(OrgId, CategoryId, BrandId));
+        }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetProductVariation(int OrgId, int Id)
+        {
+            return await _mediator.Send(new GetProductVariationQuery(OrgId,Id));
         }
     }
 }

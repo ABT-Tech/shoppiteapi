@@ -30,5 +30,6 @@ namespace Shoppite.Application.Queries
     public record GetTotalOrderDetails(int OrgId):IRequest<List<ReportResponse>>;
     public record GetSimilarProducts(int OrgId, int CategoryId,int BrandId) : IRequest<List<ProductResponse>>;
     public record GetNumOfItemsInCart(int OrgId,int UserId):IRequest<NumberOfCartItemResponse>;
+    public record GetProductVariationQuery(int OrgId, int Id) : IRequest<ProductVariationResponse>;
 
 }
