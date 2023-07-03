@@ -55,6 +55,7 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
                         productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
                         productsDTO.ProductList = ProductList;
+                        productsDTO.ProductGUID = (Guid)result["ProductGUID"];
                         productsDTO.Quantity = Convert.ToInt32(result["quantity"]);
                         productsDTO.orgId = Convert.ToInt32(orgId);
                         productsDTO.WishlistedProduct = productsDTO.WishlistedProduct;
@@ -429,5 +430,52 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return productsDTOs;
         }
+        public async Task<ProductVariationDTO> GetProductVariationDetail(int OrgId, int Id)
+        {
+            ProductVariationDTO productVariation = new();
+            productVariation.VariationDetails = new();
+            using (var command = _MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_GetProductVariations";
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@OrgId", OrgId));
+                command.Parameters.Add(new SqlParameter("@ProductId", Id));
+                await _MasterContext.Database.OpenConnectionAsync();
+
+                using var result = await command.ExecuteReaderAsync();
+                while (await result.ReadAsync())
+                {
+                    ProductVariationDetails productVariationdetails = new();
+                    productVariationdetails.SpecificationName = result["SpecificationName"].ToString();
+                    productVariationdetails.SubSpecificationName = result["SubSpecificationName"].ToString();
+                    productVariationdetails.Price = Convert.ToDouble(result["Price"]);
+                    productVariation.VariationDetails.Add(productVariationdetails);
+                }
+            }
+            using (var command = _MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SELECT Product_Variant.ORGID,product.ProductId as Id FROM Product_Variant " +
+                                "LEFT JOIN PRODUCT_BASIC  product ON  product.ORGID=Product_Variant.ORGID AND product.ProductGUID=Product_Variant.ProductGUID " +
+                                "Left JOIN Specification_Setup spec ON spec.SpecificationId=Product_Variant.SpecificationId AND spec.ORGID=Product_Variant.ORGID " +
+                                "Left JOIN Specification_Setup AS spec2 ON spec2.SpecificationId=Product_Variant.SubSpecificationId AND spec2.ORGID=Product_Variant.ORGID " +
+                                "WHERE product.OrgId = " + OrgId + " And product.ProductId = " + Id;
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.Text;
+                var parameter = command.CreateParameter();
+                await this._MasterContext.Database.OpenConnectionAsync();
+                using var result = await command.ExecuteReaderAsync();
+                while (await result.ReadAsync())
+                {
+                    productVariation.OrgId = Convert.ToInt32(result["OrgId"]);
+                    productVariation.Id = Convert.ToInt32(result["Id"]);
+                }
+            }
+            return productVariation;
+        }
+
     }
 }

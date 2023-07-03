@@ -45,6 +45,7 @@ namespace Shoppite.Application.Mapper
             CreateMap<CustomerInfo, CustomerInfoResponse>().ReverseMap();
             CreateMap<Report, ReportResponse>().ReverseMap();
             CreateMap<CartDTO, NumberOfCartItemResponse>().ReverseMap();
+            CreateMap<ProductVariationDTO, ProductVariationResponse>().ReverseMap();
         }
     }
  }
