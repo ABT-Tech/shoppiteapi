@@ -347,7 +347,8 @@ namespace Shoppite.Infrastructure.Repositories
                 productPrice.Price = products.Price;
                 _MasterContext.Entry(productDetails).State = EntityState.Detached;
                 _MasterContext.Entry(productDetails).State = EntityState.Modified;
-
+                _MasterContext.ProductBasics.Update(productDetails);
+                _MasterContext.ProductPrices.Update(productPrice);
                 await _MasterContext.SaveChangesAsync();
                 return "Success";
             }
