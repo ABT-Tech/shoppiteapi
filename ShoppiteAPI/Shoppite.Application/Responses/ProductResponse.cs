@@ -9,6 +9,7 @@ namespace Shoppite.Application.Responses
     public class ProductResponse
     {
         public string Title { get; set; }
+        public Guid ProductGUID { get; set; }
         public int Quantity { get; set; }
         public string Description { get; set; }
         public string Brand { get; set; }
