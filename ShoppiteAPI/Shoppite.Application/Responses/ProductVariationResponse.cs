@@ -9,8 +9,10 @@ namespace Shoppite.Application.Responses
 {
     public class ProductVariationResponse
     {
-        public int Id { get; set; }
+        public string SpecificationNames { get; set; }
+        public int SpecificationIds { get; set; }
+        public bool IsSpecificationExist { get; set; }
+        public Guid ProductGUId { get; set; }
         public int OrgId { get; set; }
-        public List<ProductVariationDetails> VariationDetails { get; set; }
     }
 }

@@ -431,52 +431,91 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return productsDTOs;
         }
-        public async Task<ProductVariationDTO> GetProductVariationDetail(int OrgId, int Id)
+        public async Task<List<ProductVariationDTO>> GetProductVariationDetail(int OrgId, Guid ProductGUID)
         {
-            ProductVariationDTO productVariation = new();
-            productVariation.VariationDetails = new();
+            List<ProductVariationDTO> productVariation = new();
+           // productVariation.VariationDetails = new();
             using (var command = _MasterContext.Database.GetDbConnection().CreateCommand())
             {
-                string strSQL = "SP_GetProductVariations";
+                string strSQL = "SP_GetProductSpecifications";
 
                 command.CommandText = strSQL;
                 command.CommandType = CommandType.StoredProcedure;
                 var parameter = command.CreateParameter();
                 command.Parameters.Add(new SqlParameter("@OrgId", OrgId));
-                command.Parameters.Add(new SqlParameter("@ProductId", Id));
+                command.Parameters.Add(new SqlParameter("@ProductGUID", ProductGUID));
                 await _MasterContext.Database.OpenConnectionAsync();
 
                 using var result = await command.ExecuteReaderAsync();
                 while (await result.ReadAsync())
                 {
-                    ProductVariationDetails productVariationdetails = new();
-                    productVariationdetails.SpecificationName = result["SpecificationName"].ToString();
-                    productVariationdetails.SubSpecificationName = result["SubSpecificationName"].ToString();
-                    productVariationdetails.Price = Convert.ToDouble(result["Price"]);
-                    productVariation.VariationDetails.Add(productVariationdetails);
+                    ProductVariationDTO productVariationdetails = new();
+                    productVariationdetails.SpecificationNames = result["SpecificationNames"].ToString();
+                    productVariationdetails.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
+                    productVariationdetails.ProductGUId = (Guid)ProductGUID;
+                    productVariationdetails.OrgId = Convert.ToInt32(OrgId);
+                    productVariationdetails.IsSpecificationExist = Convert.ToBoolean(result["IsSpecificationExist"]);
+                    productVariation.Add(productVariationdetails);
                 }
             }
+           
+            return productVariation;
+        }
+        public async Task<List<ProductsDTO>> GetProductDetailsBySpecification(int OrgId, Guid ProductGUID,int SpecificationId, int? UserId)
+        {
+            List<ProductsDTO> productVariation = new();
+            // productVariation.VariationDetails = new();
             using (var command = _MasterContext.Database.GetDbConnection().CreateCommand())
             {
-                string strSQL = "SELECT Product_Variant.ORGID,product.ProductId as Id FROM Product_Variant " +
-                                "LEFT JOIN PRODUCT_BASIC  product ON  product.ORGID=Product_Variant.ORGID AND product.ProductGUID=Product_Variant.ProductGUID " +
-                                "Left JOIN Specification_Setup spec ON spec.SpecificationId=Product_Variant.SpecificationId AND spec.ORGID=Product_Variant.ORGID " +
-                                "Left JOIN Specification_Setup AS spec2 ON spec2.SpecificationId=Product_Variant.SubSpecificationId AND spec2.ORGID=Product_Variant.ORGID " +
-                                "WHERE product.OrgId = " + OrgId + " And product.ProductId = " + Id;
+                string strSQL = "SP_GetProductDetails";
 
                 command.CommandText = strSQL;
-                command.CommandType = CommandType.Text;
+                command.CommandType = CommandType.StoredProcedure;
                 var parameter = command.CreateParameter();
-                await this._MasterContext.Database.OpenConnectionAsync();
+                command.Parameters.Add(new SqlParameter("@OrgId", OrgId));
+                command.Parameters.Add(new SqlParameter("@ProductGUID", ProductGUID));
+                command.Parameters.Add(new SqlParameter("@SpecificationId", SpecificationId));
+                await _MasterContext.Database.OpenConnectionAsync();
+
                 using var result = await command.ExecuteReaderAsync();
                 while (await result.ReadAsync())
                 {
-                    productVariation.OrgId = Convert.ToInt32(result["OrgId"]);
-                    productVariation.Id = Convert.ToInt32(result["Id"]);
+                    ProductsDTO productsDTO = new();
+                    var ProductStrList = result["ProductList"].ToString();
+                    var ProductList = ProductStrList.Split(',');
+                    productsDTO.ProductGUID= (Guid)ProductGUID;
+                    productsDTO.Id = Convert.ToInt32(result["Id"]);
+                    productsDTO.Title = result["Title"].ToString();
+                    productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
+                    productsDTO.Image = result["Image"].ToString();
+                    productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
+                    productsDTO.SpecificationImage = result["SpecificationImage"].ToString();
+                    productsDTO.SpecificationIds= Convert.ToInt32(result["SpecificationIds"]);
+                    productsDTO.Brand = result["Brand"].ToString();
+                    productsDTO.Price = Convert.ToDouble(result["Price"]);
+                    productsDTO.ProductList = ProductList;
+                    productsDTO.Quantity = Convert.ToInt32(result["Quantity"]);
+                    productsDTO.orgId = Convert.ToInt32(OrgId);
+                    productsDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
+                    productVariation.Add(productsDTO);
+                }
+            }
+            if (UserId != null)
+            {
+                var getusername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == UserId && u.OrgId == OrgId);
+                var wishlistList = await _MasterContext.CustomerWishlists.Where(x => x.UserName == getusername.Email && x.OrgId == OrgId).ToListAsync();
+                for (int i = 0; i < productVariation.Count; i++)
+                {
+                    for (int j = 0; j < wishlistList.Count; j++)
+                    {
+                        if (productVariation[i].Id == wishlistList[j].ProductId)
+                        {
+                            productVariation[i].WishlistedProduct = true;
+                        }
+                    }
                 }
             }
             return productVariation;
         }
-
     }
 }

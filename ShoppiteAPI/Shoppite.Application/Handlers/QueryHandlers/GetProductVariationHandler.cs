@@ -13,17 +13,17 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Application.Handlers.QueryHandlers
 {
-    public class GetProductVariationHandler : IRequestHandler<GetProductVariationQuery, ProductVariationResponse>
+    public class GetProductVariationHandler : IRequestHandler<GetProductVariationQuery, List<ProductVariationResponse>>
     {
         private readonly IProductRepository _productRepository;
         public GetProductVariationHandler(IProductRepository productRepository)
         {
             _productRepository = productRepository;
         }
-        public async Task<ProductVariationResponse> Handle(GetProductVariationQuery request, CancellationToken cancellationToken)
+        public async Task<List<ProductVariationResponse>> Handle(GetProductVariationQuery request, CancellationToken cancellationToken)
         {
-            var products = await _productRepository.GetProductVariationDetail(request.OrgId, request.Id);
-            var mapper = ObjectMapper.Mapper.Map<ProductVariationResponse>(products);
+            var products = await _productRepository.GetProductVariationDetail(request.OrgId, request.ProductGUId);
+            var mapper = ObjectMapper.Mapper.Map<List<ProductVariationResponse>>(products);
             return mapper;
         }
     }
