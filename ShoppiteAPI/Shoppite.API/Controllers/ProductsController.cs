@@ -100,9 +100,15 @@ namespace Shoppite.API.Controllers
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetProductVariation(int OrgId, int Id)
+        public async Task<object> GetProductVariation(int OrgId, Guid ProductGUId)
         {
-            return await _mediator.Send(new GetProductVariationQuery(OrgId,Id));
+            return await _mediator.Send(new GetProductVariationQuery(OrgId, ProductGUId));
+        }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetProductDetailsBySpecifcation(int OrgId, Guid ProductGUID,int SpecificationId,int? UserId)
+        {
+            return await _mediator.Send(new GetProductDetailsBySpecification(OrgId, ProductGUID, SpecificationId, UserId));
         }
     }
 }
