@@ -126,8 +126,12 @@ namespace Shoppite.Infrastructure.Repositories
                     cw.UserName = username.Email;
                     cw.Ip = null;
                     cw.OrgId = favourite.orgId;
-                    cw.ProductSpecificationId = ProductSpecificationId.ProductSpecificationId;
-                    _MasterContext.CustomerWishlists.Add(cw);
+                    if(favourite.SpecificationId!=0)
+                    {
+                        cw.ProductSpecificationId = ProductSpecificationId.ProductSpecificationId;
+                    }
+                 
+                   _MasterContext.CustomerWishlists.Add(cw);
                     await _MasterContext.SaveChangesAsync();
                 }
             }
