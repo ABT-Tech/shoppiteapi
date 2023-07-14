@@ -109,6 +109,10 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString().Replace("\r\n", "")).Replace("\r\n", "");
                         productsDTO.Image = result["Image"].ToString();
                         productsDTO.Brand = result["Brand"].ToString();
+                        productsDTO.ProductGUID = (Guid)result["ProductGUID"];
+                        productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
+                        productsDTO.SpecificationImage = result["SpecificationImage"].ToString();
+                        productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
                         productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
                         productsDTO.ProductList = ProductList;
@@ -323,6 +327,7 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.Brand = result["Brand"].ToString();
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
                         productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                        productsDTO.ProductGUID = (Guid)result["ProductGUID"];
                         productsDTO.ProductList = ProductList;
                         productsDTO.Quantity = Convert.ToInt32(result["Qty"]);
                         productsDTO.orgId = Convert.ToInt32(orgId);

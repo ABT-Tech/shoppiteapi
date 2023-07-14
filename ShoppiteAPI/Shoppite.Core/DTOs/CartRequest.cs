@@ -12,5 +12,6 @@ namespace Shoppite.Core.DTOs
         public int orgId { get; set; }
         public int proId { get; set; }
         public int? Qty { get; set; }
+        public int SpecificationId { get; set; }
     }
 }

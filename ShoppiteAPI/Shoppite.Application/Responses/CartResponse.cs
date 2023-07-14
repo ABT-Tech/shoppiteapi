@@ -16,12 +16,14 @@ namespace Shoppite.Application.Responses
         public int orgId { get; set; }
         public string[] ProductList { get; set; }
         public double OldPrice { get; set; }
-      //  public int proId { get; set; }
         public int Quantity { get; set; }
         public int ProductQty { get; set; }
         public int UserId { get; set; }
         public int orderid { get; set; }
         public Guid orderGuId { get; set; }
-       // public ChangeAddress changeAddress { get; set; }
+        public string SpecificationNames { get; set; }
+        public int SpecificationIds { get; set; }
+        public string SpecificationImage { get; set; }
+
     }
 }

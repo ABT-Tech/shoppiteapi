@@ -9,6 +9,7 @@ namespace Shoppite.Core.DTOs
     public class ProductList
     {
         public int? Id { get; set; }
+        public int SpecificationId { get; set; }
         public int OrderId { get; set; }
         public int? Quantity { get; set; }
         public decimal? Price { get; set; }

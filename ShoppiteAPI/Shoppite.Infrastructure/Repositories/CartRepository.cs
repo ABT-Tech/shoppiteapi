@@ -45,6 +45,10 @@ namespace Shoppite.Infrastructure.Repositories
                 parameter.ParameterName = "@Qty";
                 parameter.Value = Cart.Qty;
                 command.Parameters.Add(parameter);
+                parameter = command.CreateParameter();
+                parameter.ParameterName = "@SpecificationId";
+                parameter.Value = Cart.SpecificationId;
+                command.Parameters.Add(parameter);
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 var finduser = _MasterContext.Users.FirstOrDefault(u => u.UserId == Cart.UserId&& u.OrgId==Cart.orgId);
@@ -90,6 +94,9 @@ namespace Shoppite.Infrastructure.Repositories
                         cartDTO.Title = result["Title"].ToString();
                         cartDTO.Image = result["Image"].ToString();
                         cartDTO.Brand = result["Brand"].ToString();
+                        cartDTO.SpecificationNames = result["SpecificationNames"].ToString();
+                        cartDTO.SpecificationImage = result["SpecificationImage"].ToString();
+                        cartDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
                         cartDTO.Quantity = Convert.ToInt32(result["Quantity"]);
                         cartDTO.ProductQty = Convert.ToInt32(result["qty"]);
                         cartDTO.Price = Convert.ToDouble(result["Price"]);
@@ -107,7 +114,9 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task AddtoFavourite(Favourite favourite)
         {
-            var username = await _MasterContext.Users.FirstOrDefaultAsync(x => x.UserId==favourite.UserId);
+            var username = await _MasterContext.Users.FirstOrDefaultAsync(x => x.UserId==favourite.UserId&&x.OrgId==favourite.orgId);
+            var ProductId = await _MasterContext.ProductBasics.FirstOrDefaultAsync(x => x.ProductId == favourite.proId && x.OrgId == favourite.orgId);
+            var ProductSpecificationId = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(p => p.ProductGuid == ProductId.ProductGuid && p.OrgId == favourite.orgId&&p.SpecificationId==favourite.SpecificationId);
             try
             {          
                 CustomerWishlist cw = new();
@@ -117,6 +126,7 @@ namespace Shoppite.Infrastructure.Repositories
                     cw.UserName = username.Email;
                     cw.Ip = null;
                     cw.OrgId = favourite.orgId;
+                    cw.ProductSpecificationId = ProductSpecificationId.ProductSpecificationId;
                     _MasterContext.CustomerWishlists.Add(cw);
                     await _MasterContext.SaveChangesAsync();
                 }
