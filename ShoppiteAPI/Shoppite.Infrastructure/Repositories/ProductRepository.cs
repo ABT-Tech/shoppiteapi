@@ -56,6 +56,9 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
                         productsDTO.ProductList = ProductList;
                         productsDTO.ProductGUID = (Guid)result["ProductGUID"];
+                        productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
+                        productsDTO.SpecificationImage = result["SpecificationImage"].ToString();
+                        productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
                         productsDTO.Quantity = Convert.ToInt32(result["quantity"]);
                         productsDTO.orgId = Convert.ToInt32(orgId);
                         productsDTO.WishlistedProduct = productsDTO.WishlistedProduct;
@@ -167,6 +170,10 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.OldPrice = result["OldPrice"] !=DBNull.Value ? Convert.ToDouble(result["OldPrice"]):0;
                         productsDTO.ProductList = ProductList;
                         productsDTO.Quantity = Convert.ToInt32(result["qty"]);
+                        productsDTO.ProductGUID = (Guid)result["ProductGUID"];
+                        productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
+                        productsDTO.SpecificationImage = result["SpecificationImage"].ToString();
+                        productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
                         productsDTO.orgId = Convert.ToInt32(orgId);
                         productsDTO.BrandId = Convert.ToInt32(result["BrandId"]);
                         productsDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
@@ -243,7 +250,9 @@ namespace Shoppite.Infrastructure.Repositories
                         product.Ip = result["Ip"].ToString();
                         product.Description = result["Description"].ToString();
                         product.ProductGuid = (Guid)result["ProductGuid"];
-
+                        product.SpecificationNames = result["SpecificationNames"].ToString();
+                        product.SpecificationImage = result["SpecificationImage"].ToString();
+                        product.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
                         product.Image = result["Image"].ToString();
                         product.Brand = result["Brands"].ToString();
                         product.Price = Convert.ToDouble(result["Price"]);
@@ -329,6 +338,9 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
                         productsDTO.ProductGUID = (Guid)result["ProductGUID"];
                         productsDTO.ProductList = ProductList;
+                        productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
+                        productsDTO.SpecificationImage = result["SpecificationImage"].ToString();
+                        productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
                         productsDTO.Quantity = Convert.ToInt32(result["Qty"]);
                         productsDTO.orgId = Convert.ToInt32(orgId);
                         productsDTO.BrandId = Convert.ToInt32(result["BrandId"]);
@@ -389,6 +401,9 @@ namespace Shoppite.Infrastructure.Repositories
                     productsDTO.Price = Convert.ToDouble(result["Price"]);
                     productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
                     productsDTO.ProductList = ProductList;
+                    productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
+                    productsDTO.SpecificationImage = result["SpecificationImage"].ToString();
+                    productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
                     productsDTO.Quantity = Convert.ToInt32(result["quantity"]);
                     productsDTO.orgId = Convert.ToInt32(orgId);
                     productsDTO.BrandId = Convert.ToInt32(result["BrandId"]);
@@ -426,6 +441,9 @@ namespace Shoppite.Infrastructure.Repositories
                     productsDTO.Brand = result["Brand"].ToString();
                     productsDTO.Price = Convert.ToDouble(result["Price"]);
                     productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                    productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
+                    productsDTO.SpecificationImage = result["SpecificationImage"].ToString();
+                    productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
                     productsDTO.ProductList = ProductList;
                     productsDTO.Quantity = Convert.ToInt32(result["Qty"]);
                     productsDTO.orgId = Convert.ToInt32(orgId);

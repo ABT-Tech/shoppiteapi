@@ -20,6 +20,9 @@ namespace Shoppite.Application.Responses
         public int BrandId { get; set; }
         public int CategoryId { get; set; }
         public int OldPrice { get; set; }
+        public string SpecificationNames { get; set; }
+        public int SpecificationIds { get; set; }
+        public string SpecificationImage { get; set; }
         //public Boolean WishlistedProduct { get; set; }
     }
 }
