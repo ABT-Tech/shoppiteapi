@@ -23,5 +23,8 @@ namespace Shoppite.Core.DTOs
         public int orderid { get; set; }
         public Guid orderGuId { get; set; }
         public int NumOfItems { get; set; }
+        public string SpecificationNames { get; set; }
+        public int SpecificationIds { get; set; }
+        public string SpecificationImage { get; set; }
     }
 }

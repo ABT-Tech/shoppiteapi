@@ -46,8 +46,16 @@ namespace Shoppite.Infrastructure.Repositories
                 buynow.OrderStatus = "Confirmed";
                 buynow.PaymentMode = "COD";
                 buynow.OrgId = orders.orgid;
-
                 _MasterContext.OrderBasics.Add(buynow);
+                await _MasterContext.SaveChangesAsync();
+
+                var getspecId = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == orders.ProductLists[p].SpecificationId&&x.OrgId==orders.orgid&&x.ProductGuid==productDetail.ProductGuid);
+                OrderVariation variation = new();
+                variation.OrderGuid = buynow.OrderGuid;
+                variation.OrgId = buynow.OrgId;
+                variation.ProductSpecificationId = getspecId.ProductSpecificationId;
+
+                _MasterContext.OrderVariations.Add(variation);
                 await _MasterContext.SaveChangesAsync();
 
                 var findQty = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == buynow.ProductId);
@@ -224,6 +232,9 @@ namespace Shoppite.Infrastructure.Repositories
                             orderListModel.UserId = Convert.ToInt32(result["UserId"]);
                             orderListModel.Id = Convert.ToInt32(result["Id"]);
                             orderListModel.Title = result["Title"].ToString();
+                            orderListModel.SpecificationNames = result["SpecificationNames"].ToString();
+                            orderListModel.SpecificationImage = result["SpecificationImage"].ToString();
+                            orderListModel.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
                             orderListModel.Image = result["Image"].ToString();
                             orderListModel.Brand = result["Brand"].ToString();
                             orderListModel.Quantity = Convert.ToInt32(result["Quantity"]);

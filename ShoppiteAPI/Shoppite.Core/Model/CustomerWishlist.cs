@@ -13,5 +13,6 @@ namespace Shoppite.Core.Model
         public DateTime? InsertDate { get; set; }
         public string Ip { get; set; }
         public int? OrgId { get; set; }
+        public int ProductSpecificationId { get; set; }
     }
 }
