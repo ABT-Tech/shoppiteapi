@@ -57,9 +57,9 @@ namespace Shoppite.API.Controllers
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<string> RemovefromFavourite(int ProductId,int Userid,int OrgId)
+        public async Task<string> RemovefromFavourite(int ProductId,int Userid,int OrgId,int? SpecificationId)
         {
-            return await _mediator.Send(new RemovefromFavourite(ProductId,Userid, OrgId));
+            return await _mediator.Send(new RemovefromFavourite(ProductId,Userid, OrgId,SpecificationId));
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -80,9 +80,9 @@ namespace Shoppite.API.Controllers
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<string> RemoveFromCart(int userId, int proId, int orgId)
+        public async Task<string> RemoveFromCart(int userId, int proId, int orgId,int? SpecificationId)
         {
-            return await _mediator.Send(new RemoveFromCart(userId, proId, orgId));
+            return await _mediator.Send(new RemoveFromCart(userId, proId, orgId, SpecificationId));
         }
         [HttpPost]
         public async Task<string> CancelOrder([FromBody] CancelOrders cancelOrder)

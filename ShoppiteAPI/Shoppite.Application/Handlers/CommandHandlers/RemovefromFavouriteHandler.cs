@@ -16,7 +16,7 @@ namespace Shoppite.Application.Handlers.CommandHandlers
         }
         public async Task<string> Handle(RemovefromFavourite request, CancellationToken cancellationToken)
         {
-             await _cartRepository.RemovefromFavourite(request.ProductId,request.UserId,request.OrgId);
+             await _cartRepository.RemovefromFavourite(request.ProductId,request.UserId,request.OrgId,request.SpecificationId);
              return "Success";
         }
 

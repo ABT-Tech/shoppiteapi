@@ -195,18 +195,30 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return changeAddress;
         }
-        public async Task RemovefromFavourite(int ProductId, int UserId, int OrgId)
+        public async Task RemovefromFavourite(int ProductId, int UserId, int OrgId,int? SpecificationId)
         {
             var username = _MasterContext.Users.FirstOrDefault(u => u.UserId == UserId);
             CustomerWishlist cuswishlist = _MasterContext.CustomerWishlists.FirstOrDefault(u => u.ProductId == ProductId && u.UserName == username.Email &&u.OrgId== OrgId);
-
-            if (cuswishlist != null)
+        
+            if (cuswishlist != null&&SpecificationId==0)
             {
                 _MasterContext.CustomerWishlists.Remove(cuswishlist);
                 await _MasterContext.SaveChangesAsync();
             }
+            else
+            {
+                var getspecId = _MasterContext.SpecificationSetups.FirstOrDefault(s => s.SpecificationId == SpecificationId && s.OrgId == OrgId);
+                var productId = _MasterContext.ProductBasics.FirstOrDefault(p => p.ProductId == ProductId && p.OrgId == OrgId);
+                var productSpecId = _MasterContext.ProductSpecifications.FirstOrDefault(ps => ps.SpecificationId == getspecId.SpecificationId && ps.OrgId == OrgId&&ps.ProductGuid==productId.ProductGuid);
+                CustomerWishlist wishlist = _MasterContext.CustomerWishlists.FirstOrDefault(u => u.ProductId == ProductId && u.UserName == username.Email && u.OrgId == OrgId&&u.ProductSpecificationId== productSpecId.ProductSpecificationId);
+                if (wishlist != null)
+                {
+                    _MasterContext.CustomerWishlists.Remove(wishlist);
+                    await _MasterContext.SaveChangesAsync();
+                }
+            }
         }
-        public async Task RemoveFromCart(int userId, int proId, int orgId)
+        public async Task RemoveFromCart(int userId, int proId, int orgId,int? SpecificationId)
         {
             var username = _MasterContext.Users.FirstOrDefault(u => u.UserId == userId);
             var cart = _MasterContext.OrderBasics.FirstOrDefault(u => u.ProductId == proId && u.UserName == username.Email && u.OrgId == orgId&&u.OrderStatus=="Cart");
@@ -222,7 +234,16 @@ namespace Shoppite.Infrastructure.Repositories
                 _MasterContext.OrderMasters.Remove(details);
                 await _MasterContext.SaveChangesAsync();
             }
-        }
+
+            var productId = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == x.ProductId && x.OrgId == orgId);
+            var productsepcId = _MasterContext.ProductSpecifications.FirstOrDefault(x => x.ProductGuid == productId.ProductGuid&&x.OrgId == orgId);
+            var ordervariation = _MasterContext.OrderVariations.FirstOrDefault(ov => ov.OrderGuid == cart.OrderGuid && ov.OrgId == orgId&&ov.ProductSpecificationId==productsepcId.ProductSpecificationId);
+            if (ordervariation != null)
+            {
+                _MasterContext.OrderVariations.Remove(ordervariation);
+                await _MasterContext.SaveChangesAsync();
+            }
+         }
         public async Task<CartDTO> GetNoOfItemsInCart(int OrgId, int UserId)
         {
             CartDTO cartDTOs = new();
