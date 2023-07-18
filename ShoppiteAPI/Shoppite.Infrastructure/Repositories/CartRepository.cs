@@ -234,15 +234,18 @@ namespace Shoppite.Infrastructure.Repositories
                 _MasterContext.OrderMasters.Remove(details);
                 await _MasterContext.SaveChangesAsync();
             }
-
-            var productId = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == x.ProductId && x.OrgId == orgId);
-            var productsepcId = _MasterContext.ProductSpecifications.FirstOrDefault(x => x.ProductGuid == productId.ProductGuid&&x.OrgId == orgId);
-            var ordervariation = _MasterContext.OrderVariations.FirstOrDefault(ov => ov.OrderGuid == cart.OrderGuid && ov.OrgId == orgId&&ov.ProductSpecificationId==productsepcId.ProductSpecificationId);
-            if (ordervariation != null)
+            if(SpecificationId!=0)
             {
-                _MasterContext.OrderVariations.Remove(ordervariation);
-                await _MasterContext.SaveChangesAsync();
-            }
+                var productId = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == x.ProductId && x.OrgId == orgId);
+                var productsepcId = _MasterContext.ProductSpecifications.FirstOrDefault(x => x.ProductGuid == productId.ProductGuid && x.OrgId == orgId);
+                var ordervariation = _MasterContext.OrderVariations.FirstOrDefault(ov => ov.OrderGuid == cart.OrderGuid && ov.OrgId == orgId && ov.ProductSpecificationId == productsepcId.ProductSpecificationId);
+                if (ordervariation != null)
+                {
+                    _MasterContext.OrderVariations.Remove(ordervariation);
+                    await _MasterContext.SaveChangesAsync();
+                }
+
+            }            
          }
         public async Task<CartDTO> GetNoOfItemsInCart(int OrgId, int UserId)
         {

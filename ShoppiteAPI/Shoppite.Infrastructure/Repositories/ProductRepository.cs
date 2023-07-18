@@ -477,14 +477,16 @@ namespace Shoppite.Infrastructure.Repositories
                     productVariation.Add(productVariationdetails);
                 }
             }
-            var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == ProductGUID && x.OrgId == OrgId);
-            var specification = await _MasterContext.SpecificationSetups.FirstAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == OrgId);
+            
             for (int i = 0; i < productVariation.Count; i++)
             {
-                productVariation[i].DefaultSpecification = specification.SpecificationId;
-            }
-                
-            
+                if(productVariation[i].IsSpecificationExist==true)
+                {
+                    var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == ProductGUID && x.OrgId == OrgId);
+                    var specification = await _MasterContext.SpecificationSetups.FirstAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == OrgId);
+                    productVariation[i].DefaultSpecification = specification.SpecificationId;
+                }             
+            }                         
             return productVariation;
         }
         public async Task<List<ProductsDTO>> GetProductDetailsBySpecification(int OrgId, Guid ProductGUID,int? SpecificationId, int? UserId)
