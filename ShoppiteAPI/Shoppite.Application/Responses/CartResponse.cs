@@ -23,7 +23,6 @@ namespace Shoppite.Application.Responses
         public Guid orderGuId { get; set; }
         public string SpecificationNames { get; set; }
         public int SpecificationIds { get; set; }
-        public string SpecificationImage { get; set; }
 
     }
 }

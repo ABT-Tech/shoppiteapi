@@ -22,6 +22,6 @@ namespace Shoppite.Core.Repositories
         Task<ProductDetailsForVendor> GetAllProductsForVendor(int OrgId,int Id);
         Task<List<ProductsDTO>> GetSimilarProducts(int OrgId, int CategoryId,int BrandId);
         Task<List<ProductVariationDTO>> GetProductVariationDetail(int OrgId, Guid Id);
-        Task<List<ProductsDTO>> GetProductDetailsBySpecification(int OrgId, Guid ProductGUID, int SpecificationId,int? UserId);
+        Task<List<ProductsDTO>> GetProductDetailsBySpecification(int OrgId, Guid ProductGUID, int? SpecificationId,int? UserId);
     }
 }

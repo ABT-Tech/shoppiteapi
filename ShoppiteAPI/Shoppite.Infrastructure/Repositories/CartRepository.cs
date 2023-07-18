@@ -53,17 +53,44 @@ namespace Shoppite.Infrastructure.Repositories
 
                 var finduser = _MasterContext.Users.FirstOrDefault(u => u.UserId == Cart.UserId&& u.OrgId==Cart.orgId);
                 var username = finduser.Email;
+                var productsdetail = _MasterContext.ProductBasics.FirstOrDefault(p => p.ProductId == Cart.proId && p.OrgId == Cart.orgId);
                 var cartdetails = _MasterContext.OrderBasics.FirstOrDefault(u => u.ProductId == Cart.proId && u.OrgId == Cart.orgId && u.UserName == username&&u.OrderStatus=="Cart");
+                var getSpecId = _MasterContext.ProductSpecifications.FirstOrDefault(p => p.SpecificationId == Cart.SpecificationId&& p.ProductGuid== productsdetail.ProductGuid && p.OrgId == Cart.orgId);
+                
                 if(cartdetails != null)
                 {
-                    if (cartdetails.ProductId == Cart.proId)
+                    var getProductSpecId = _MasterContext.OrderVariations.FirstOrDefault(ps => ps.ProductSpecificationId == getSpecId.ProductSpecificationId && ps.OrderGuid == cartdetails.OrderGuid);
+                    if (getProductSpecId!=null)
+                    {
+                        if (cartdetails.ProductId == Cart.proId&&getSpecId.ProductSpecificationId==getProductSpecId.ProductSpecificationId)
+                        {
+                            cartdetails.InsertDate = DateTime.Now;
+                            cartdetails.Qty = cartdetails.Qty + Cart.Qty;
+                            _MasterContext.OrderBasics.Update(cartdetails);
+                            await _MasterContext.SaveChangesAsync();
+                        }
+                    }
+                    else
+                    {
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+                else if(Cart.SpecificationId==0)
+                {
+                    if (cartdetails != null && cartdetails.ProductId == Cart.proId)
                     {
                         cartdetails.InsertDate = DateTime.Now;
                         cartdetails.Qty = cartdetails.Qty + Cart.Qty;
                         _MasterContext.OrderBasics.Update(cartdetails);
                         await _MasterContext.SaveChangesAsync();
                     }
-                }               
+                    else
+                    {
+                        await command.ExecuteNonQueryAsync();
+                    }
+
+                }
+                
                 else
                 {
                     await command.ExecuteNonQueryAsync();
@@ -95,7 +122,6 @@ namespace Shoppite.Infrastructure.Repositories
                         cartDTO.Image = result["Image"].ToString();
                         cartDTO.Brand = result["Brand"].ToString();
                         cartDTO.SpecificationNames = result["SpecificationNames"].ToString();
-                        cartDTO.SpecificationImage = result["SpecificationImage"].ToString();
                         cartDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
                         cartDTO.Quantity = Convert.ToInt32(result["Quantity"]);
                         cartDTO.ProductQty = Convert.ToInt32(result["qty"]);

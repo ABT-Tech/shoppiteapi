@@ -13,5 +13,6 @@ namespace Shoppite.Core.DTOs
         public bool IsSpecificationExist { get; set; }
         public Guid ProductGUId { get; set; }
         public int OrgId { get; set; }
+        public int DefaultSpecification { get; set; }
     }
 }
