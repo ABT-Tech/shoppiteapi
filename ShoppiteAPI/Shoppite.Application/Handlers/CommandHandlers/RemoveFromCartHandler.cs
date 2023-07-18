@@ -20,7 +20,7 @@ namespace Shoppite.Application.Handlers.CommandHandlers
         }
         public async Task<string> Handle(RemoveFromCart request, CancellationToken cancellationToken)
         {
-            await _cartRepository.RemoveFromCart(request.userid, request.proid, request.orgid);
+            await _cartRepository.RemoveFromCart(request.userid, request.proid, request.orgid,request.SpecificationId);
             return "Success";
         }
     }

@@ -14,12 +14,12 @@ namespace Shoppite.Application.Commands
     public record AddToCartCommand(CartRequest Cart) : IRequest<string>;
     public record CreateOrder(OrdersDTO orders):IRequest<string>;
     public record AddToFavourtite(Favourite favourites):IRequest<string>;
-    public record RemovefromFavourite(int ProductId,int UserId,int OrgId) : IRequest<string>;
+    public record RemovefromFavourite(int ProductId,int UserId, int OrgId, int? SpecificationId) : IRequest<string>;
     public record UserRegistration(UserRegistrationDTO RegistrationDTO) : IRequest<string>;
     public record EditUserProfile(UserDTO UserDTO):IRequest<string>;
     public record AddFirebaseToken(FireBaseToken fireBaseToken) : IRequest<string>;
     public record UpdateOrderStatus(Orders orders):IRequest<string>;
-    public record RemoveFromCart(int userid, int proid, int orgid) : IRequest<string>;
+    public record RemoveFromCart(int userid, int proid, int orgid,int? SpecificationId) : IRequest<string>;
     public record UpdateNotificationStatus(int NotificationId) : IRequest<string>;
     public record CancelOrder(CancelOrders cancelOrder):IRequest<string>;
     public record Forgetpassword(ForgetPassword Password):IRequest<string>;

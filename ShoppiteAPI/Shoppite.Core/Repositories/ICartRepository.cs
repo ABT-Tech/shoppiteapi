@@ -17,8 +17,8 @@ namespace Shoppite.Core.Repositories
         //custom operations here
         Task<string> AddToCart(CartRequest Cart);
         Task<List<ChangeAddress>> GetAddressByUserId(int OrgId, int UserId);
-        Task RemovefromFavourite(int ProductId,int UserId,int OrgId);
-        Task RemoveFromCart(int userid, int proid, int orgid);
+        Task RemovefromFavourite(int ProductId,int UserId,int OrgId, int? SpecificationId);
+        Task RemoveFromCart(int userid, int proid, int orgid, int? SpecificationId);
         Task<CartDTO> GetNoOfItemsInCart(int UserId, int OrgId);
     }
 }
