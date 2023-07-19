@@ -57,7 +57,7 @@ namespace Shoppite.Infrastructure.Repositories
                 var cartdetails = _MasterContext.OrderBasics.FirstOrDefault(u => u.ProductId == Cart.proId && u.OrgId == Cart.orgId && u.UserName == username&&u.OrderStatus=="Cart");
                 var getSpecId = _MasterContext.ProductSpecifications.FirstOrDefault(p => p.SpecificationId == Cart.SpecificationId&& p.ProductGuid== productsdetail.ProductGuid && p.OrgId == Cart.orgId);
                 
-                if(cartdetails != null)
+                if(cartdetails != null & Cart.SpecificationId != 0)
                 {
                     var getProductSpecId = _MasterContext.OrderVariations.FirstOrDefault(ps => ps.ProductSpecificationId == getSpecId.ProductSpecificationId && ps.OrderGuid == cartdetails.OrderGuid);
                     if (getProductSpecId!=null)
@@ -151,10 +151,14 @@ namespace Shoppite.Infrastructure.Repositories
                     cw.InsertDate = DateTime.Now;
                     cw.UserName = username.Email;
                     cw.Ip = null;
-                    cw.OrgId = favourite.orgId;
+                    cw.OrgId = favourite.orgId;       
                     if(favourite.SpecificationId!=0)
                     {
                         cw.ProductSpecificationId = ProductSpecificationId.ProductSpecificationId;
+                    }
+                    else
+                    {
+                        cw.ProductSpecificationId = 0;
                     }
                  
                    _MasterContext.CustomerWishlists.Add(cw);
@@ -223,28 +227,44 @@ namespace Shoppite.Infrastructure.Repositories
             var username = _MasterContext.Users.FirstOrDefault(u => u.UserId == userId);
             var cart = _MasterContext.OrderBasics.FirstOrDefault(u => u.ProductId == proId && u.UserName == username.Email && u.OrgId == orgId&&u.OrderStatus=="Cart");
             OrderMaster details = await _MasterContext.OrderMasters.FirstOrDefaultAsync(a => a.OrderGuid == cart.OrderGuid && a.OrgId == orgId);
-            if (cart != null)
+            if (SpecificationId == 0)
             {
-                _MasterContext.OrderBasics.Remove(cart);
-                await _MasterContext.SaveChangesAsync();
-            }
-            var cartdetails = _MasterContext.OrderBasics.FirstOrDefault(u=>u.UserName == username.Email &&u.OrderStatus=="Cart"&& u.OrgId == orgId);
-            if (cartdetails == null)
-            {
-                _MasterContext.OrderMasters.Remove(details);
-                await _MasterContext.SaveChangesAsync();
-            }
-            if(SpecificationId!=0)
-            {
-                var productId = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == x.ProductId && x.OrgId == orgId);
-                var productsepcId = _MasterContext.ProductSpecifications.FirstOrDefault(x => x.ProductGuid == productId.ProductGuid && x.OrgId == orgId);
-                var ordervariation = _MasterContext.OrderVariations.FirstOrDefault(ov => ov.OrderGuid == cart.OrderGuid && ov.OrgId == orgId && ov.ProductSpecificationId == productsepcId.ProductSpecificationId);
-                if (ordervariation != null)
+                if (cart != null)
                 {
-                    _MasterContext.OrderVariations.Remove(ordervariation);
+                    _MasterContext.OrderBasics.Remove(cart);
                     await _MasterContext.SaveChangesAsync();
                 }
+                var cartdetails = _MasterContext.OrderBasics.FirstOrDefault(u => u.UserName == username.Email && u.OrderStatus == "Cart" && u.OrgId == orgId);
+                if (cartdetails == null)
+                {
+                    _MasterContext.OrderMasters.Remove(details);
+                    await _MasterContext.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                var productId = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == x.ProductId && x.OrgId == orgId);
+                var productsepcId = _MasterContext.ProductSpecifications.FirstOrDefault(x => x.ProductGuid == productId.ProductGuid && x.OrgId == orgId && x.SpecificationId == SpecificationId & x.OrgId == orgId);
+                var ordervariation = _MasterContext.OrderVariations.FirstOrDefault(ov => ov.OrderGuid == cart.OrderGuid && ov.OrgId == orgId && ov.ProductSpecificationId == productsepcId.ProductSpecificationId & ov.OrgId == orgId);
+                var q = (from variation in _MasterContext.OrderVariations
+                         join order in _MasterContext.OrderBasics on variation.OrderId equals order.OrderId
+                         join ordermaster in _MasterContext.OrderMasters on order.OrderGuid equals ordermaster.OrderGuid
+                         where variation.ProductSpecificationId == productsepcId.ProductSpecificationId && order.OrderStatus == "Cart" && order.UserName == username.Email && order.OrgId == orgId
+                         select new
+                         {
+                             ov = variation,
+                             Ob = order,
+                             om = ordermaster
+                         }).FirstOrDefault();
 
+                _MasterContext.OrderVariations.Remove(q.ov);
+                _MasterContext.OrderBasics.Remove(q.Ob);
+                var cartdetails = _MasterContext.OrderBasics.FirstOrDefault(u => u.UserName == username.Email && u.OrderStatus == "Cart" && u.OrgId == orgId);
+                if (cartdetails == null)
+                {
+                    _MasterContext.OrderMasters.Remove(q.om);
+                }                
+                await _MasterContext.SaveChangesAsync();
             }            
          }
         public async Task<CartDTO> GetNoOfItemsInCart(int OrgId, int UserId)

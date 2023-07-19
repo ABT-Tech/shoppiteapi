@@ -11,5 +11,6 @@ namespace Shoppite.Core.Model
         public Guid? OrderGuid { get; set; }
         public int? ProductSpecificationId { get; set; }
         public int? OrgId { get; set; }
+        public int? OrderId { get; set; } 
     }
 }
