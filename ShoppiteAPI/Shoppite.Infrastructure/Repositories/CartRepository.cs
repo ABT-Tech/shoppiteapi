@@ -243,7 +243,7 @@ namespace Shoppite.Infrastructure.Repositories
             }
             else
             {
-                var productId = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == x.ProductId && x.OrgId == orgId);
+                var productId = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == proId && x.OrgId == orgId);
                 var productsepcId = _MasterContext.ProductSpecifications.FirstOrDefault(x => x.ProductGuid == productId.ProductGuid && x.OrgId == orgId && x.SpecificationId == SpecificationId & x.OrgId == orgId);
                 var ordervariation = _MasterContext.OrderVariations.FirstOrDefault(ov => ov.OrderGuid == cart.OrderGuid && ov.OrgId == orgId && ov.ProductSpecificationId == productsepcId.ProductSpecificationId & ov.OrgId == orgId);
                 var q = (from variation in _MasterContext.OrderVariations
