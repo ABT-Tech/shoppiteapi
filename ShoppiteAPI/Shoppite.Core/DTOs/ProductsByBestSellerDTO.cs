@@ -20,6 +20,7 @@ namespace Shoppite.Core.DTOs
         public Double OldPrice { get; set; }
         public int BrandId { get; set; }
         public int CategoryId { get; set; }
+        public Guid ProductGUID { get; set; }
         public string SpecificationNames { get; set; }
         public int SpecificationIds { get; set; }
         //public Boolean WishlistedProduct { get; set; }
