@@ -74,10 +74,8 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     var specification = await _MasterContext.SpecificationSetups.FirstAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
                     productsDTOs[i].SpecificationIds = specification.SpecificationId;
-                    productsDTOs[i].SpecificationNames = specification.SpecificationName;
-                    productsDTOs[i].ProductList = null;
-                }
-                
+                    productsDTOs[i].SpecificationNames = specification.SpecificationName;           
+                }             
             }
             if (UserId!=null)
             {
@@ -327,7 +325,6 @@ namespace Shoppite.Infrastructure.Repositories
                     var specification = await _MasterContext.SpecificationSetups.FirstAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
                     bestSellerDTOs[i].SpecificationIds = specification.SpecificationId;
                     bestSellerDTOs[i].SpecificationNames = specification.SpecificationName;
-                    bestSellerDTOs[i].ProductList = null;
                 }               
             }
             return bestSellerDTOs;
@@ -380,7 +377,6 @@ namespace Shoppite.Infrastructure.Repositories
                     var specification = await _MasterContext.SpecificationSetups.FirstAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
                     productsDTOs[i].SpecificationIds = specification.SpecificationId;
                     productsDTOs[i].SpecificationNames = specification.SpecificationName;
-                    productsDTOs[i].ProductList = null;
                 }             
             }
             return productsDTOs;
@@ -574,6 +570,19 @@ namespace Shoppite.Infrastructure.Repositories
                             productVariation[i].WishlistedProduct = true;
                         }
                     }
+                }
+            }
+            for (int i = 0; i < productVariation.Count; i++)
+            {
+                var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == productVariation[i].ProductGUID && x.OrgId == productVariation[i].orgId);
+                if (DefaultSpecification != null)
+                {
+                    var specification = await _MasterContext.SpecificationSetups.FirstAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == OrgId);
+                    if(productVariation[i].SpecificationIds != specification.SpecificationId)
+                    {
+                        productVariation[i].ProductList = null;
+
+                    }                   
                 }
             }
             return productVariation;
