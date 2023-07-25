@@ -204,7 +204,7 @@ namespace Shoppite.Infrastructure.Repositories
             var username = _MasterContext.Users.FirstOrDefault(u => u.UserId == UserId);
             CustomerWishlist cuswishlist = _MasterContext.CustomerWishlists.FirstOrDefault(u => u.ProductId == ProductId && u.UserName == username.Email &&u.OrgId== OrgId);
         
-            if (cuswishlist != null&&SpecificationId==0)
+            if (cuswishlist != null&&SpecificationId==0||SpecificationId==null)
             {
                 _MasterContext.CustomerWishlists.Remove(cuswishlist);
                 await _MasterContext.SaveChangesAsync();
@@ -227,7 +227,7 @@ namespace Shoppite.Infrastructure.Repositories
             var username = _MasterContext.Users.FirstOrDefault(u => u.UserId == userId);
             var cart = _MasterContext.OrderBasics.FirstOrDefault(u => u.ProductId == proId && u.UserName == username.Email && u.OrgId == orgId&&u.OrderStatus=="Cart");
             OrderMaster details = await _MasterContext.OrderMasters.FirstOrDefaultAsync(a => a.OrderGuid == cart.OrderGuid && a.OrgId == orgId);
-            if (SpecificationId == 0)
+            if (SpecificationId == 0 || SpecificationId == null)
             {
                 if (cart != null)
                 {
