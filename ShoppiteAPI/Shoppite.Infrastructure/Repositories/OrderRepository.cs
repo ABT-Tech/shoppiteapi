@@ -48,22 +48,47 @@ namespace Shoppite.Infrastructure.Repositories
                 buynow.OrgId = orders.orgid;
                 _MasterContext.OrderBasics.Add(buynow);
                 await _MasterContext.SaveChangesAsync();
-
-                var getspecId = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == orders.ProductLists[p].SpecificationId&&x.OrgId==orders.orgid&&x.ProductGuid==productDetail.ProductGuid);
+                               
                 OrderVariation variation = new();
                 variation.OrderGuid = buynow.OrderGuid;
                 variation.OrgId = buynow.OrgId;
-                variation.ProductSpecificationId = getspecId.ProductSpecificationId;
+                if (orders.ProductLists[p].SpecificationId != 0)
+                {
+                    var getspecId = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == orders.ProductLists[p].SpecificationId && x.OrgId == orders.orgid && x.ProductGuid == productDetail.ProductGuid);
+                    variation.ProductSpecificationId = getspecId.ProductSpecificationId;
+                }               
 
                 _MasterContext.OrderVariations.Add(variation);
                 await _MasterContext.SaveChangesAsync();
 
-                var findQty = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == buynow.ProductId);
-                if(findQty!=null)
+                var findQty = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == buynow.ProductId && x.OrgId == orders.orgid);
+                if (orders.ProductLists[p].SpecificationId == 0)
                 {
-                    findQty.Qty = findQty.Qty - buynow.Qty;
-                    _MasterContext.ProductBasics.Update(findQty);
-                    await _MasterContext.SaveChangesAsync();
+                    if (findQty != null)
+                    {
+                        findQty.Qty = findQty.Qty - buynow.Qty;
+                        _MasterContext.ProductBasics.Update(findQty);
+                        await _MasterContext.SaveChangesAsync();
+                    }
+                }
+                else
+                {      
+                    var SpecQty = _MasterContext.ProductSpecifications.FirstOrDefault(x => x.ProductGuid == productDetail.ProductGuid&&x.SpecificationId==orders.ProductLists[p].SpecificationId&&x.OrgId==orders.orgid);
+                    if(SpecQty == null)
+                    {
+                        if (findQty != null)
+                        {
+                            findQty.Qty -= buynow.Qty;
+                            _MasterContext.ProductBasics.Update(findQty);
+                            await _MasterContext.SaveChangesAsync();
+                        }
+                    }
+                    else
+                    {
+                        SpecQty.Quantity -= buynow.Qty;
+                        _MasterContext.ProductSpecifications.Update(SpecQty);
+                        await _MasterContext.SaveChangesAsync();
+                    }
                 }
 
                 var ordersdetail = await _MasterContext.OrderMasters.FirstOrDefaultAsync(x => x.OrderGuid == orderMaster.OrderGuid && x.OrgId == orderMaster.OrgId);
@@ -128,16 +153,43 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     for (int j = 0; j < orders.ProductLists.Count; j++)
                     {
-                        var findQty = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == orders.ProductLists[j].Id);
-                        if (findQty != null)
+                        if (orders.ProductLists[j].SpecificationId == 0 || orders.ProductLists[j].SpecificationId == null) 
                         {
-                            if (check[i].ProductId == orders.ProductLists[j].Id)
+                            var findQty = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == orders.ProductLists[j].Id);
+                            if (findQty != null)
                             {
-                                findQty.Qty = findQty.Qty - orders.ProductLists[j].Quantity;
-                                _MasterContext.ProductBasics.Update(findQty);
-                                await _MasterContext.SaveChangesAsync();
+                                if (check[i].ProductId == orders.ProductLists[j].Id)
+                                {
+                                    findQty.Qty = findQty.Qty - orders.ProductLists[j].Quantity;
+                                    _MasterContext.ProductBasics.Update(findQty);
+                                    await _MasterContext.SaveChangesAsync();
+                                }
                             }
                         }
+                        else
+                        {
+                            var findQty = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == orders.ProductLists[j].Id);
+                            var SpecQty = _MasterContext.ProductSpecifications.FirstOrDefault(x => x.SpecificationId == orders.ProductLists[j].SpecificationId&&x.ProductGuid==findQty.ProductGuid);
+                            var OrderVariation = _MasterContext.OrderVariations.FirstOrDefault(o=>o.OrderGuid==orders.OrderGuid&&o.OrderId==check[i].OrderId);
+                            if (findQty != null)
+                            {
+                                if (check[i].ProductId == orders.ProductLists[j].Id&&SpecQty.ProductSpecificationId== OrderVariation.ProductSpecificationId)
+                                {
+                                    if (SpecQty.Quantity == null)
+                                    {
+                                        findQty.Qty = findQty.Qty - orders.ProductLists[j].Quantity;
+                                        _MasterContext.ProductBasics.Update(findQty);
+                                        await _MasterContext.SaveChangesAsync();
+                                    }
+                                    else
+                                    {
+                                        SpecQty.Quantity = SpecQty.Quantity - orders.ProductLists[j].Quantity;
+                                        _MasterContext.ProductSpecifications.Update(SpecQty);
+                                        await _MasterContext.SaveChangesAsync();
+                                    }
+                                }
+                            }
+                        }                      
                     }
                 }
                 foreach (var order in check)
@@ -248,9 +300,11 @@ namespace Shoppite.Infrastructure.Repositories
                                    "SUM(Order_Basic.Price*Order_Basic.QTY) As TotalPrice, " +
                                   "CONCAT(shiiping.Address + ''+',', shiiping.City + ''+',',shiiping.Street+ ''+',', shiiping.Zipcode) AS Address " +
                                   "FROM Order_Basic " +
-                                  "Inner JOIN Users ON Order_Basic.UserName = Users.Email " +
-                                  "Inner JOIN Order_Shipping AS shiiping ON Order_Basic.OrderGuid = shiiping.OrderGuid " +
-                                  "inner join Order_Master om on  Order_Basic.OrderGUID=om.OrderGUID " +
+                                  "LEFT JOIN Users ON Order_Basic.UserName = Users.Email " +
+                                  "LEFT JOIN Order_Shipping AS shiiping ON Order_Basic.OrderGuid = shiiping.OrderGuid " +
+                                  "LEFT JOIn Order_Variation As ov ON Order_Basic.OrgId=ov.OrgId and ov.OrderGuid=Order_Basic.OrderGuid " +
+                                  "and Order_Basic.OrderId=ov.OrderId " +
+                                  "LEFT join Order_Master om on  Order_Basic.OrderGUID=om.OrderGUID " +
                                   "WHERE Order_Basic.OrgId= " + OrgId + " And om.OrderMasterId= " + OrderMasterId +
                                   "Group By Users.UserId,Users.OrgId, CONVERT(DATE, Order_Basic.InsertDate), " +
                                   "CONCAT(shiiping.Address + ''+',', shiiping.City + ''+',',shiiping.Street+ ''+',', shiiping.Zipcode) ";
@@ -333,10 +387,30 @@ namespace Shoppite.Infrastructure.Repositories
 
                     for (int i = 0; i < orderBasicdetails.Count; i++)
                     {
+                        var OrderVariation =  _MasterContext.OrderVariations.Where(ov => ov.OrderGuid == orderMasterDetails.OrderGuid && ov.OrderId == orderBasicdetails[i].OrderId).FirstOrDefault();
                         var productDetails = await _MasterContext.ProductBasics.FirstOrDefaultAsync(p => p.ProductId == orderBasicdetails[i].ProductId && p.OrgId == orders.orgId);
-                        productDetails.Qty = productDetails.Qty + orderBasicdetails[i].Qty;
-                        _MasterContext.Entry(productDetails).State = EntityState.Detached;
-                        _MasterContext.Entry(productDetails).State = EntityState.Modified;
+                        if (OrderVariation.ProductSpecificationId == 0||OrderVariation.ProductSpecificationId==null)
+                        {
+                            productDetails.Qty += orderBasicdetails[i].Qty;
+                            _MasterContext.Entry(productDetails).State = EntityState.Detached;
+                            _MasterContext.Entry(productDetails).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(p => p.ProductGuid == productDetails.ProductGuid&& p.ProductSpecificationId==OrderVariation.ProductSpecificationId && p.OrgId == orders.orgId);
+                            if(productspecDetails.Quantity!=null)
+                            {
+                                productspecDetails.Quantity = productspecDetails.Quantity + orderBasicdetails[i].Qty;
+                                _MasterContext.Entry(productspecDetails).State = EntityState.Detached;
+                                _MasterContext.Entry(productspecDetails).State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                productDetails.Qty = productDetails.Qty + orderBasicdetails[i].Qty;
+                                _MasterContext.Entry(productDetails).State = EntityState.Detached;
+                                _MasterContext.Entry(productDetails).State = EntityState.Modified;
+                            }
+                        }
                         await _MasterContext.SaveChangesAsync();
                     }
                     return "Cancellation Confirmed";
