@@ -85,10 +85,21 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     for (int j = 0; j < wishlistList.Count; j++)
                     {
-                        if (productsDTOs[i].Id == wishlistList[j].ProductId)
+                        if (productsDTOs[i].SpecificationIds == 0)
                         {
-                            productsDTOs[i].WishlistedProduct = true;
-                        }                      
+                            if (productsDTOs[i].Id == wishlistList[j].ProductId)
+                            {
+                                productsDTOs[i].WishlistedProduct = true;
+                            }
+                        }
+                        else
+                        {
+                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productsDTOs[i].SpecificationIds && x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == orgId);
+                            if (productsDTOs[i].Id == wishlistList[j].ProductId && productspecDetails.ProductSpecificationId == wishlistList[j].ProductSpecificationId)
+                            {
+                                productsDTOs[i].WishlistedProduct = true;
+                            }
+                        }
                     }
                 }
             }           
@@ -140,12 +151,36 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     for (int j = 0; j < wishlistList.Count; j++)
                     {
-                        if (productsDTOs[i].Id == wishlistList[j].ProductId)
+                        if (productsDTOs[i].SpecificationIds == 0)
                         {
-                            productsDTOs[i].WishlistedProduct = true;
+                            if (productsDTOs[i].Id == wishlistList[j].ProductId)
+                            {
+                                productsDTOs[i].WishlistedProduct = true;
+                            }
                         }
+                        else
+                        {
+                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productsDTOs[i].SpecificationIds && x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == orgId);
+                            if (productsDTOs[i].Id == wishlistList[j].ProductId && productspecDetails.ProductSpecificationId == wishlistList[j].ProductSpecificationId)
+                            {
+                                productsDTOs[i].WishlistedProduct = true;
+                            }
+                        }
+                }
+            }
+            for (int i = 0; i < productsDTOs.Count; i++)
+            {
+                var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == productsDTOs[i].orgId);
+                if (DefaultSpecification != null)
+                {
+                    var specification = await _MasterContext.SpecificationSetups.FirstAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
+                    if (productsDTOs[i].SpecificationIds != specification.SpecificationId)
+                    {
+                        productsDTOs[i].ProductList = null;
+
                     }
-                }           
+                }
+            }
             return productsDTOs;
         }
         public async Task<List<ProductsDTO>> SearchProducts(int orgId,string productname)
