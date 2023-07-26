@@ -565,9 +565,20 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     for (int j = 0; j < wishlistList.Count; j++)
                     {
-                        if (productVariation[i].Id == wishlistList[j].ProductId)
+                        if (productVariation[i].SpecificationIds == 0)
                         {
-                            productVariation[i].WishlistedProduct = true;
+                            if (productVariation[i].Id == wishlistList[j].ProductId)
+                            {
+                                productVariation[i].WishlistedProduct = true;
+                            }
+                        }
+                        else
+                        {
+                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productVariation[i].SpecificationIds && x.ProductGuid == productVariation[i].ProductGUID && x.OrgId == OrgId);
+                            if (productVariation[i].Id == wishlistList[j].ProductId && productspecDetails.ProductSpecificationId == wishlistList[j].ProductSpecificationId)
+                            {
+                                productVariation[i].WishlistedProduct = true;
+                            }
                         }
                     }
                 }
