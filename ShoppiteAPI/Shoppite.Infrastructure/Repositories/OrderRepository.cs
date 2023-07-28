@@ -251,7 +251,7 @@ namespace Shoppite.Infrastructure.Repositories
                         myOrderDTO.orgId = Convert.ToInt32(OrgId);
                         myOrderDTO.orderId = Convert.ToInt32(result["OrderMasterId"]);
                         //myOrderDTO.OrderDate = (DateTime)result["OrderDate"];
-                       // myOrderDTO.OrderStatus = result["OrderStatus"].ToString();
+                        myOrderDTO.OrderStatus = result["OrderStatus"].ToString();
                         myOrderDTO.Price = Convert.ToDouble(result["Price"]);
                         myOrderDTO.userId = Convert.ToInt32(UserId);
                         OrdersDTO.Add(myOrderDTO);

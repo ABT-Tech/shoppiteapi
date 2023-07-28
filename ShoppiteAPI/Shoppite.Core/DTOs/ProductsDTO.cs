@@ -24,5 +24,8 @@ namespace Shoppite.Core.DTOs
         public int CategoryId { get; set; }
         public string SpecificationNames { get; set; }
         public int SpecificationIds { get; set; }
+        public int ProductQty { get; set; }
+        public double ProductPrice { get; set; }
+        public string ProductImage { get; set; }
     }
 }
