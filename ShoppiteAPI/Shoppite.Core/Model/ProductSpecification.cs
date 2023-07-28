@@ -17,5 +17,7 @@ namespace Shoppite.Core.Model
         public string UserName { get; set; }
         public int? OrgId { get; set; }
         public int? Quantity { get; set; }
+        public bool IsDefault { get; set; }
+
     }
 }
