@@ -534,7 +534,7 @@ namespace Shoppite.Infrastructure.Repositories
                     EncryptionHelper encryptionHelper = new EncryptionHelper();
                     string encryptedParams = encryptionHelper.EncryptPaymentRequest(merchantDetails.AggregatorMerchantId, merchantDetails.AggregatorMerchantApiKey, objMerchantParams);
                     orders.encryptedParams = encryptedParams;
-                    
+                    response.merchantId = merchantParams.merchantId;
                     response.AggregatorCallbackURL = merchantParams.returnURL;
                     response.encryptedParams = encryptedParams;
                 }                                          
