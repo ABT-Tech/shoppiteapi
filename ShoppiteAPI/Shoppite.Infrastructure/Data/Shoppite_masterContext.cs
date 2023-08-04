@@ -51,6 +51,7 @@ namespace Shoppite.Infrastructure.Data
         public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
         public virtual DbSet<OrderVariation> OrderVariations { get; set; }
         public virtual DbSet<Organization> Organizations { get; set; }
+        public virtual DbSet<Organization_Aggregator_Control> Organization_Aggregator_Controls { get; set; }
         public virtual DbSet<PageCategory> PageCategories { get; set; }
         public virtual DbSet<PageCategoryDetail> PageCategoryDetails { get; set; }
         public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }
@@ -809,6 +810,13 @@ namespace Shoppite.Infrastructure.Data
                     .HasMaxLength(100)
                     .IsUnicode(false)
                     .HasColumnName("vender_name");
+            });
+
+            modelBuilder.Entity<Organization_Aggregator_Control>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.ToTable("Organization_Aggregator_Control");
             });
 
             modelBuilder.Entity<PageCategory>(entity =>

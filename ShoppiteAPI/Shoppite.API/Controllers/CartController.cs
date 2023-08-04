@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper.Configuration;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shoppite.Application.Commands;
@@ -12,6 +13,7 @@ namespace Shoppite.API.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
         private readonly IMediator _mediator;
         public CartController(IMediator mediator)
         {
@@ -95,6 +97,19 @@ namespace Shoppite.API.Controllers
         {
             return await _mediator.Send(new GetNumOfItemsInCart(OrgId, UserId));
         }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetOnePlayFlag(int OrgId)
+        {
+            return await _mediator.Send(new GetOnePayFlag(OrgId));
+        }
+
+        [HttpPost]
+        public async Task<PaymentGatewayResponse> MakePaymentRequest([FromBody] OrdersDTO orders)
+        {
+            return await _mediator.Send(new PaymentRequest(orders));
+        }
+      
 
     }
 }

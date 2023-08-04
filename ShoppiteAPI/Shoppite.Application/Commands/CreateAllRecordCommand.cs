@@ -25,4 +25,6 @@ namespace Shoppite.Application.Commands
     public record Forgetpassword(ForgetPassword Password):IRequest<string>;
     public record UpdateProductDetails(UpdateProductDetail Products):IRequest<string>;
     public record UpdateUserStatus(CustomerInfo cinfo):IRequest<string>;
+    public record PaymentRequest(OrdersDTO orders) : IRequest<PaymentGatewayResponse>;
+
 }

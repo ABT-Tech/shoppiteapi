@@ -12,5 +12,8 @@ namespace Shoppite.Core.DTOs
         public List<ProductList> ProductLists { get; set; }
         public ChangeAddress Address { get; set; }
         public object BaseTotalPrice { get; set; }
+        public bool OnePay { get; set; }
+        public string encryptedParams { get; set; }
+        public string AggregatorRedirectionLink { get; set; }
     }
 }

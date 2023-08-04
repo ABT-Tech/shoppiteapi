@@ -17,5 +17,6 @@ namespace Shoppite.Application.Responses
         public List<ProductList> ProductLists { get; set; }
         public ChangeAddress Address { get; set; }
         public object BaseTotalPrice { get; set; }
+        public bool OnePay { get; set; }
     }
 }
