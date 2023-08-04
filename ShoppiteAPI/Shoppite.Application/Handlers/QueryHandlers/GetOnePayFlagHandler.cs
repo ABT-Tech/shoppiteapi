@@ -13,17 +13,17 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Application.Handlers.QueryHandlers
 {
-    public class GetOnePayFlagHandler : IRequestHandler<GetOnePayFlag, OrderResponse>
+    public class GetOnePayFlagHandler : IRequestHandler<GetOnePayFlag, OnePayFlagResponse>
     {
         private readonly IOrderRepository _orderRepository;
         public GetOnePayFlagHandler(IOrderRepository orderRepository)
         {
             _orderRepository = orderRepository;
         }
-        public async Task<OrderResponse> Handle(GetOnePayFlag request, CancellationToken cancellationToken)
+        public async Task<OnePayFlagResponse> Handle(GetOnePayFlag request, CancellationToken cancellationToken)
         {
             var orgDetails = await _orderRepository.GetOnePayFlag(request.OrgId);
-            var mapper = ObjectMapper.Mapper.Map<OrderResponse>(orgDetails);
+            var mapper = ObjectMapper.Mapper.Map<OnePayFlagResponse>(orgDetails);
             return mapper;
         }
 

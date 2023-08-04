@@ -33,5 +33,5 @@ namespace Shoppite.Application.Queries
     public record GetNumOfItemsInCart(int OrgId,int UserId):IRequest<NumberOfCartItemResponse>;
     public record GetProductVariationQuery(int OrgId, Guid ProductGUId) : IRequest<List<ProductVariationResponse>>;
     public record GetProductDetailsBySpecification(int OrgId, Guid ProductGUId,int? SpecificationId, int? userId) : IRequest<List<ProductResponse>>;
-    public record GetOnePayFlag(int OrgId) : IRequest<OrderResponse>;
+    public record GetOnePayFlag(int OrgId) : IRequest<OnePayFlagResponse>;
 }
