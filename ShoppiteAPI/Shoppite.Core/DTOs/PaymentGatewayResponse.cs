@@ -11,5 +11,6 @@ namespace Shoppite.Core.DTOs
         public string encryptedParams { get; set; }
         public string AggregatorRedirectionLink { get; set; }
         public string AggregatorCallbackURL { get; set; }
+        public string merchantId { get; set; }
     }
 }
