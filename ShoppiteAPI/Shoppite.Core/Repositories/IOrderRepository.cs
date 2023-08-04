@@ -17,5 +17,7 @@ namespace Shoppite.Core.Repositories
        Task<string> UpdateOrderStatus(Orders orders);
        Task<string> cancelOrder(CancelOrders orders);
        Task<List<Report>> GetTotalOrderDetails(int OrgId);
+       Task<OrdersDTO> GetOnePayFlag(int OrgId);
+       Task<PaymentGatewayResponse> MakePaymentRequest(OrdersDTO orders);
     }
 }

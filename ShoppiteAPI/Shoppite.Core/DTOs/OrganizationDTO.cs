@@ -15,5 +15,6 @@ namespace Shoppite.Core.DTOs
         public string VenderEmail { get; set; }
         public string VenderMobile { get; set; }
         public string OrgDescription { get; set; }
+        public bool OnePay { get; set; }
     }
 }

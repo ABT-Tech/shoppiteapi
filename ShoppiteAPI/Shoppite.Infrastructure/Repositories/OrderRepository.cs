@@ -1,13 +1,17 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Shoppite.Core.DTOs;
 using Shoppite.Core.Model;
 using Shoppite.Core.Repositories;
 using Shoppite.Infrastructure.Data;
+using Shoppite.Infrastructure.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,9 +20,11 @@ namespace Shoppite.Infrastructure.Repositories
     public class OrderRepository : IOrderRepository
     {
         protected readonly Shoppite_masterContext _MasterContext;
-        public OrderRepository(Shoppite_masterContext dbContext)
+        protected readonly IConfiguration _configuration;
+        public OrderRepository(Shoppite_masterContext dbContext,IConfiguration configuration)
         {
             _MasterContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _configuration = configuration;
         }
         public async Task BuyNow(OrdersDTO orders)
         {
@@ -449,6 +455,91 @@ namespace Shoppite.Infrastructure.Repositories
                 }
             }           
             return details;
+        }
+        public async Task<OrdersDTO> GetOnePayFlag(int OrgId)
+        {
+            OrdersDTO orderDetails = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SELECT ORGANIZATION.ID FROM ORGANIZATION " +
+                    "JOIN Organization_Aggregator_Control ON ORGANIZATION.ID=Organization_Aggregator_Control.ORGID " +
+                    "WHERE ORGID= " +OrgId;
+                    
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.Text;
+                var parameter = command.CreateParameter();
+                await this._MasterContext.Database.OpenConnectionAsync();
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        if (OrgId != 0|| OrgId!=null)
+                        {
+                            orderDetails.OnePay = true;
+                        }
+                        else
+                        {
+                            orderDetails.OnePay = false;
+                        }
+
+                    }
+                }
+            }
+            return orderDetails;
+        }
+        public async Task<PaymentGatewayResponse> MakePaymentRequest(OrdersDTO orders)
+        {
+            PaymentGatewayResponse response = new();
+            if (orders.OnePay)
+            {
+                var getUsername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == orders.UserId && u.OrgId == orders.orgid);
+                var order = orders.OrderGuid;
+                var merchantDetails = _MasterContext.Organization_Aggregator_Controls.FirstOrDefault(x => x.OrgId == orders.orgid);
+                var strProductMapping = string.Empty;
+                decimal? TotalOrderCharge = 0;
+                decimal? TotalProductCharges = 0;
+                var IsTestEnable = _configuration.GetSection("OnePeSettings")["IsTest"].ToString();
+                orders.AggregatorRedirectionLink = _configuration.GetSection("OnePeSettings")["URL"];
+             
+                response.AggregatorRedirectionLink = orders.AggregatorRedirectionLink;
+
+                foreach (var orderDetails in orders.ProductLists)
+                {
+                    TotalProductCharges = orderDetails.Price+ orderDetails.DeliveryFees; ;
+                    if (string.IsNullOrEmpty(strProductMapping))
+                        strProductMapping += orderDetails.Id + "~" + TotalProductCharges;
+                    else
+                        strProductMapping += "|" + orderDetails.Id + "~" + TotalProductCharges;
+                    TotalOrderCharge = TotalOrderCharge + TotalProductCharges;
+                }
+                using (HttpClient client = new HttpClient())
+                {
+                    MerchantParams merchantParams = new MerchantParams();
+                    merchantParams.merchantId = merchantDetails.AggregatorMerchantId;
+                    merchantParams.apiKey = merchantDetails.AggregatorMerchantApiKey;
+                    merchantParams.txnId = orders.OrderGuid.ToString();
+                    merchantParams.amount = IsTestEnable == "1" ? "10.00" : TotalOrderCharge.ToString();
+                    merchantParams.dateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                    merchantParams.custMail = getUsername.Email;
+                    merchantParams.custMobile = orders.Contactnumber;
+                    merchantParams.udf1 = orders.Address.AddressDetail;
+                    merchantParams.udf2 = orders.Address.AddressDetail;
+                    merchantParams.returnURL = merchantDetails.AggregatorCallbackURL + "/Cart/OrderSuccess";
+                    merchantParams.isMultiSettlement = "0";
+                    merchantParams.productId = "DEFAULT";
+                    merchantParams.channelId = "0";
+                    merchantParams.txnType = "DIRECT";
+                    merchantParams.Rid = merchantDetails.AggregatorRID.ToString();
+                    var objMerchantParams = JsonConvert.SerializeObject(merchantParams);
+                    EncryptionHelper encryptionHelper = new EncryptionHelper();
+                    string encryptedParams = encryptionHelper.EncryptPaymentRequest(merchantDetails.AggregatorMerchantId, merchantDetails.AggregatorMerchantApiKey, objMerchantParams);
+                    orders.encryptedParams = encryptedParams;
+                    
+                    response.AggregatorCallbackURL = merchantParams.returnURL;
+                    response.encryptedParams = encryptedParams;
+                }                                          
+            }         
+            return response;          
         }
     }
 }

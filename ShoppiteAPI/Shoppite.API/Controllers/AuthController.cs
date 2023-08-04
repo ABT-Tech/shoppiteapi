@@ -37,12 +37,12 @@ namespace Shoppite.API.Controllers
             return Ok(result);
         }
 
-        //[HttpGet]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //public string UserGetPassword(string Password)
-        //{
-        //    EncryptionHelper encryptionHelper = new EncryptionHelper();
-        //    return encryptionHelper.Decrypt(Password);
-        //}
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public string UserGetPassword(string Password)
+        {
+            EncryptionHelper encryptionHelper = new EncryptionHelper();
+            return encryptionHelper.Decrypt(Password);
+        }
     }
 }
