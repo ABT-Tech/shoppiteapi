@@ -490,6 +490,7 @@ namespace Shoppite.Infrastructure.Repositories
         public async Task<PaymentGatewayResponse> MakePaymentRequest(OrdersDTO orders)
         {
             PaymentGatewayResponse response = new();
+            await BuyNow(orders);
             if (orders.OnePay)
             {
                 var getUsername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == orders.UserId && u.OrgId == orders.orgid);
@@ -499,9 +500,8 @@ namespace Shoppite.Infrastructure.Repositories
                 decimal? TotalOrderCharge = 0;
                 decimal? TotalProductCharges = 0;
                 var IsTestEnable = _configuration.GetSection("OnePeSettings")["IsTest"].ToString();
-                orders.AggregatorRedirectionLink = _configuration.GetSection("OnePeSettings")["URL"];
+                response.AggregatorRedirectionLink = _configuration.GetSection("OnePeSettings")["URL"];
              
-                response.AggregatorRedirectionLink = orders.AggregatorRedirectionLink;
 
                 foreach (var orderDetails in orders.ProductLists)
                 {
@@ -533,7 +533,6 @@ namespace Shoppite.Infrastructure.Repositories
                     var objMerchantParams = JsonConvert.SerializeObject(merchantParams);
                     EncryptionHelper encryptionHelper = new EncryptionHelper();
                     string encryptedParams = encryptionHelper.EncryptPaymentRequest(merchantDetails.AggregatorMerchantId, merchantDetails.AggregatorMerchantApiKey, objMerchantParams);
-                    orders.encryptedParams = encryptedParams;
                     response.merchantId = merchantParams.merchantId;
                     response.AggregatorCallbackURL = merchantParams.returnURL;
                     response.encryptedParams = encryptedParams;
