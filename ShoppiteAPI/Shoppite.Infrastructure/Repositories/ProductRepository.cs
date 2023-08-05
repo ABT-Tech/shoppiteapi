@@ -72,9 +72,13 @@ namespace Shoppite.Infrastructure.Repositories
                 var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == productsDTOs[i].orgId&&x.IsDefault==true);
                 if (DefaultSpecification != null)
                 {
-                    var specification = await _MasterContext.SpecificationSetups.FirstAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
-                    productsDTOs[i].SpecificationIds =(int)DefaultSpecification.SpecificationId;
-                    productsDTOs[i].SpecificationNames = specification.SpecificationName;           
+                    var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
+                   if(specification!=null)
+                    {
+                        productsDTOs[i].SpecificationIds = (int)DefaultSpecification.SpecificationId;
+                        productsDTOs[i].SpecificationNames = specification.SpecificationName;
+                    }
+                         
                 }             
             }
             if (UserId!=null)
@@ -368,9 +372,12 @@ namespace Shoppite.Infrastructure.Repositories
                 var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == ProductDetails.ProductGuid && x.OrgId == orgId&&x.IsDefault==true);
                 if (DefaultSpecification != null)
                 {
-                    var specification = await _MasterContext.SpecificationSetups.FirstAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
-                    bestSellerDTOs[i].SpecificationIds = specification.SpecificationId;
-                    bestSellerDTOs[i].SpecificationNames = specification.SpecificationName;
+                    var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
+                    if(specification!=null)
+                    {
+                        bestSellerDTOs[i].SpecificationIds = specification.SpecificationId;
+                        bestSellerDTOs[i].SpecificationNames = specification.SpecificationName;
+                    }                 
                 }               
             }
             return bestSellerDTOs;
@@ -420,9 +427,13 @@ namespace Shoppite.Infrastructure.Repositories
                 var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == productsDTOs[i].orgId);
                 if (DefaultSpecification != null)
                 {
-                    var specification = await _MasterContext.SpecificationSetups.FirstAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
-                    productsDTOs[i].SpecificationIds = specification.SpecificationId;
-                    productsDTOs[i].SpecificationNames = specification.SpecificationName;
+                    var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
+                    if(specification!=null)
+                    {
+                        productsDTOs[i].SpecificationIds = specification.SpecificationId;
+                        productsDTOs[i].SpecificationNames = specification.SpecificationName;
+                    }
+                   
                 }             
             }
             return productsDTOs;
