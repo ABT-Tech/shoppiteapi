@@ -524,7 +524,7 @@ namespace Shoppite.Infrastructure.Repositories
                     merchantParams.custMobile = orders.Contactnumber;
                     merchantParams.udf1 = orders.Address.AddressDetail;
                     merchantParams.udf2 = orders.Address.AddressDetail;
-                    merchantParams.returnURL = merchantDetails.AggregatorCallbackURL + "/Cart/OrderSuccess";
+                    merchantParams.returnURL = merchantDetails.AggregatorCallbackURL;
                     merchantParams.isMultiSettlement = "0";
                     merchantParams.productId = "DEFAULT";
                     merchantParams.channelId = "0";
