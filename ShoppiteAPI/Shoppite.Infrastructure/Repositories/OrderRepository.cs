@@ -494,6 +494,7 @@ namespace Shoppite.Infrastructure.Repositories
             if (orders.OnePay)
             {
                 var getUsername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == orders.UserId && u.OrgId == orders.orgid);
+                var getUserProfile = await _MasterContext.UsersProfiles.FirstOrDefaultAsync(u => u.ProfileGuid == getUsername.Guid);
                 var order = orders.OrderGuid;
                 var merchantDetails = _MasterContext.Organization_Aggregator_Controls.FirstOrDefault(x => x.OrgId == orders.orgid);
                 var strProductMapping = string.Empty;
@@ -521,7 +522,7 @@ namespace Shoppite.Infrastructure.Repositories
                     merchantParams.amount = IsTestEnable == "1" ? "10.00" : TotalOrderCharge.ToString();
                     merchantParams.dateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                     merchantParams.custMail = getUsername.Email;
-                    merchantParams.custMobile = orders.Contactnumber;
+                    merchantParams.custMobile = getUserProfile.ContactNumber;
                     merchantParams.udf1 = orders.Address.AddressDetail;
                     merchantParams.udf2 = orders.Address.AddressDetail;
                     merchantParams.returnURL = merchantDetails.AggregatorCallbackURL + "/Cart/OrderSuccess";
