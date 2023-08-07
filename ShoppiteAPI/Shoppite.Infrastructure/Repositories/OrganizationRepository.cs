@@ -23,7 +23,7 @@ namespace Shoppite.Infrastructure.Repositories
         {
             _MasterContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-        public async Task<List<OrganizationDTO>> GetOrganizations() 
+        public async Task<List<OrganizationDTO>> GetOrganizations(int Org_CategoryId) 
         {
             List<OrganizationDTO> organizationDTOs = new List<OrganizationDTO>();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
@@ -34,10 +34,13 @@ namespace Shoppite.Infrastructure.Repositories
                                 "organization.v_email AS VendorEmail," +
                                 "organization.v_mobile AS VendorMobile," +
                                 "organization.org_description AS OrgDescription," +
-                                "Logo.Logo AS IMAGE " +
+                                "Logo.Logo AS IMAGE, " +
+                                "organization.IsPublished, " +
+                                "organization.IsActive " +
                                 "FROM organization " +
                                 "JOIN logo ON organization.id = logo.orgid "+
-                                "WHERE IsActive=1 ";
+                                "Join OrganizationCategory ON OrganizationCategory.Org_CategoryId=organization.Org_CategoryId " +
+                                "Where OrganizationCategory.Org_CategoryId= " + Org_CategoryId;
 
                 command.CommandText = strSQL;
                 command.CommandType = CommandType.Text;
@@ -56,11 +59,43 @@ namespace Shoppite.Infrastructure.Repositories
                         organizationDTO.VenderEmail = result["VendorEmail"].ToString();
                         organizationDTO.VenderMobile = result["VendorMobile"].ToString();
                         organizationDTO.OrgDescription = result["OrgDescription"].ToString();
+                        organizationDTO.IsPublished =result["IsPublished"] != DBNull.Value ?(bool) result["IsPublished"]:false;
+                        organizationDTO.IsActive = result["IsActive"] != DBNull.Value ? (bool)result["IsActive"] : false;
                         organizationDTOs.Add(organizationDTO);
                     }
                 }
             }
             return organizationDTOs;
+
+        }
+        public async Task<List<OrganizationCategoryDTO>> GetOrganizationCategories()
+        {
+            List<OrganizationCategoryDTO> organizationcategory= new List<OrganizationCategoryDTO>();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SELECT OrganizationCategory.Org_CategoryId, " +
+                                "OrganizationCategory.CategoryName, " +
+                                "OrganizationCategory.CategoryImage " +
+                                "FROM OrganizationCategory ";
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.Text;
+
+                await this._MasterContext.Database.OpenConnectionAsync();
+
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        OrganizationCategoryDTO organizationDTO = new OrganizationCategoryDTO();
+                        organizationDTO.CategoryName =result["CategoryName"].ToString();
+                        organizationDTO.CategoryImage = result["CategoryImage"].ToString();
+                        organizationDTO.Org_CategoryId = Convert.ToInt32(result["Org_CategoryId"]);
+                        organizationcategory.Add(organizationDTO);
+                    }
+                }
+            }
+            return organizationcategory;
 
         }
     }

@@ -12,6 +12,7 @@ namespace Shoppite.Core.Repositories
     public interface IOrganizationRepository
     {
         //custom operations here
-        Task<List<OrganizationDTO>> GetOrganizations();
+        Task<List<OrganizationDTO>> GetOrganizations(int Org_CategoryId);
+        Task<List<OrganizationCategoryDTO>> GetOrganizationCategories();
     }
 }
