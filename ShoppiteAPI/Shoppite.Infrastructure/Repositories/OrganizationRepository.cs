@@ -23,43 +23,34 @@ namespace Shoppite.Infrastructure.Repositories
         {
             _MasterContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-        public async Task<List<OrganizationDTO>> GetOrganizations(int Org_CategoryId) 
+        public async Task<List<OrganizationDTO>> GetOrganizations(int? Org_CategoryId) 
         {
             List<OrganizationDTO> organizationDTOs = new List<OrganizationDTO>();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
-                string strSQL = "SELECT organization.id AS OrgId, " +
-                                "organization.org_name AS ShopName, " +
-                                "organization.vender_name AS VenderName," +
-                                "organization.v_email AS VendorEmail," +
-                                "organization.v_mobile AS VendorMobile," +
-                                "organization.org_description AS OrgDescription," +
-                                "Logo.Logo AS IMAGE, " +
-                                "organization.IsPublished, " +
-                                "organization.IsActive " +
-                                "FROM organization " +
-                                "JOIN logo ON organization.id = logo.orgid "+
-                                "Join OrganizationCategory ON OrganizationCategory.Org_CategoryId=organization.Org_CategoryId " +
-                                "Where OrganizationCategory.Org_CategoryId= " + Org_CategoryId;
+                string strSQL = "SP_GetAllOrganization";
 
                 command.CommandText = strSQL;
-                command.CommandType = CommandType.Text;
-
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                parameter.ParameterName = "@Org_CategoryId";
+                parameter.Value = Org_CategoryId;
+                command.Parameters.Add(parameter);
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())
                 {
-                    while (await result.ReadAsync())
+                    while (result.Read())
                     {
                         OrganizationDTO organizationDTO = new OrganizationDTO();
-                        organizationDTO.OrgId =  Convert.ToInt32(result["OrgId"]);
+                        organizationDTO.OrgId = Convert.ToInt32(result["OrgId"]);
                         organizationDTO.ShopName = result["ShopName"].ToString();
                         organizationDTO.Image = result["Image"].ToString();
                         organizationDTO.VenderName = result["VenderName"].ToString();
                         organizationDTO.VenderEmail = result["VendorEmail"].ToString();
                         organizationDTO.VenderMobile = result["VendorMobile"].ToString();
                         organizationDTO.OrgDescription = result["OrgDescription"].ToString();
-                        organizationDTO.IsPublished =result["IsPublished"] != DBNull.Value ?(bool) result["IsPublished"]:false;
+                        organizationDTO.IsPublished = result["IsPublished"] != DBNull.Value ? (bool)result["IsPublished"] : false;
                         organizationDTO.IsActive = result["IsActive"] != DBNull.Value ? (bool)result["IsActive"] : false;
                         organizationDTOs.Add(organizationDTO);
                     }

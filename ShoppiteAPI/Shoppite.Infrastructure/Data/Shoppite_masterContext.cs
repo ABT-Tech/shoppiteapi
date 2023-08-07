@@ -44,7 +44,7 @@ namespace Shoppite.Infrastructure.Data
         public virtual DbSet<MigrationHistory> MigrationHistories { get; set; }
         public virtual DbSet<NewsLetter> NewsLetters { get; set; }
         public virtual DbSet<OrderBasic> OrderBasics { get; set; }
-        public virtual DbSet<OrganizationCategory> OrganizationCategories { get; set; }
+        public virtual DbSet<OrganizationCategory> OrganizationCategory { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<OrderDisbursement> OrderDisbursements { get; set; }
         public virtual DbSet<OrderMaster> OrderMasters { get; set; }
