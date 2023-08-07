@@ -8,7 +8,7 @@ namespace Shoppite.Application.Queries
 {
     public record GetAllCategoriesQuery(int org_id) : IRequest<List<CategoryResponse>>;
     public record GetAllCarosolCategories(int org_id) : IRequest<List<CategoryResponse>>;
-    public record GetAllOrganizationQuery(int Org_CategoryId) : IRequest<List<OrganizationResponse>>;
+    public record GetAllOrganizationQuery(int? Org_CategoryId) : IRequest<List<OrganizationResponse>>;
     public record GetAllProductsByOrganizationsQuery(int org_id,int? userId) : IRequest<List<ProductResponse>>;
     public record GetWishlistByUserQuery(int org_id, int user_id) : IRequest<List<ProductResponse>>;
     public record GetMostSellerProductsByOrganizationsQuery(int org_id) : IRequest<List<ProductResponse>>;

@@ -17,5 +17,6 @@ namespace Shoppite.Core.DTOs
         public string OrgDescription { get; set; }
         public bool IsActive { get; set; }
         public bool IsPublished { get; set; }
+        public int Org_CategoryId { get; set; }
     }
 }

@@ -25,5 +25,6 @@ namespace Shoppite.Core.Model
         public string VBankBranchName { get; set; }
         public string VUpiId { get; set; }
         public string VIdProof { get; set; }
+        public int Org_CategoryId { get; set; }
     }
 }
