@@ -107,17 +107,7 @@ namespace Shoppite.Infrastructure.Repositories
                     }
                 }
             }
-
-           
-
-            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
-            {
-                string strSQL = "SELECT NAME FROM TABLE_NAME WHERE ID = @ID";
-
-
-
-            }
-
+          
             return productsDTOs;           
         }
         public async Task<List<ProductsDTO>> GetWishlistByUser(int orgId, int userId) 

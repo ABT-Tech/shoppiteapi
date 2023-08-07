@@ -15,5 +15,7 @@ namespace Shoppite.Application.Responses
         public string VendorEmail { get; set; }
         public string VendorMobile { get; set; }
         public string OrgDescription { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsPublished { get; set; }
     }
 }
