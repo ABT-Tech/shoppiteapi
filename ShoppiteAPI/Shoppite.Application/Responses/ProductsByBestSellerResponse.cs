@@ -19,7 +19,7 @@ namespace Shoppite.Application.Responses
         public string[] ProductList { get; set; }
         public int BrandId { get; set; }
         public int CategoryId { get; set; }
-        public int ProductGUId { get; set; }
+        public Guid ProductGUId { get; set; }
         public int OldPrice { get; set; }
         public string SpecificationNames { get; set; }
         public int SpecificationIds { get; set; }
