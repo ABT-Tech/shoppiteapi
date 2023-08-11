@@ -490,7 +490,17 @@ namespace Shoppite.Infrastructure.Repositories
         public async Task<PaymentGatewayResponse> MakePaymentRequest(OrdersDTO orders)
         {
             PaymentGatewayResponse response = new();
-            await BuyNow(orders);
+            CartRepository cartRepository = new CartRepository(_MasterContext);
+            foreach (var product in orders.ProductLists)
+            {
+                CartRequest cartRequest = new CartRequest();
+                cartRequest.orgId = (int)orders.orgid;
+                cartRequest.proId = (int)product.Id;
+                cartRequest.Qty = (int)product.Quantity;
+                cartRequest.SpecificationId = (int)product.SpecificationId;
+                cartRequest.UserId = (int)orders.UserId;
+                await cartRepository.AddToCart(cartRequest);
+            }
             if (orders.OnePay)
             {
                 var getUsername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == orders.UserId && u.OrgId == orders.orgid);
@@ -525,7 +535,7 @@ namespace Shoppite.Infrastructure.Repositories
                     merchantParams.custMobile = getUserProfile.ContactNumber;
                     merchantParams.udf1 = orders.Address.AddressDetail;
                     merchantParams.udf2 = orders.Address.AddressDetail;
-                    merchantParams.returnURL = merchantDetails.AggregatorCallbackURL;
+                    merchantParams.returnURL = merchantDetails.AggregatorCallbackURL + "Cart/PaymentResponse";
                     merchantParams.isMultiSettlement = "0";
                     merchantParams.productId = "DEFAULT";
                     merchantParams.channelId = "0";
@@ -535,7 +545,7 @@ namespace Shoppite.Infrastructure.Repositories
                     EncryptionHelper encryptionHelper = new EncryptionHelper();
                     string encryptedParams = encryptionHelper.EncryptPaymentRequest(merchantDetails.AggregatorMerchantId, merchantDetails.AggregatorMerchantApiKey, objMerchantParams);
                     response.merchantId = merchantParams.merchantId;
-                    response.AggregatorCallbackURL = merchantParams.returnURL;
+                    response.AggregatorCallbackURL = merchantDetails.AggregatorCallbackURL;
                     response.encryptedParams = encryptedParams;
                 }                                          
             }         
