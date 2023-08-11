@@ -491,15 +491,18 @@ namespace Shoppite.Infrastructure.Repositories
         {
             PaymentGatewayResponse response = new();
             CartRepository cartRepository = new CartRepository(_MasterContext);
-            foreach (var product in orders.ProductLists)
+            if (orders.OrderGuid == null)
             {
-                CartRequest cartRequest = new CartRequest();
-                cartRequest.orgId = (int)orders.orgid;
-                cartRequest.proId = (int)product.Id;
-                cartRequest.Qty = (int)product.Quantity;
-                cartRequest.SpecificationId = (int)product.SpecificationId;
-                cartRequest.UserId = (int)orders.UserId;
-                await cartRepository.AddToCart(cartRequest);
+                foreach (var product in orders.ProductLists)
+                {
+                    CartRequest cartRequest = new CartRequest();
+                    cartRequest.orgId = (int)orders.orgid;
+                    cartRequest.proId = (int)product.Id;
+                    cartRequest.Qty = (int)product.Quantity;
+                    cartRequest.SpecificationId = (int)product.SpecificationId;
+                    cartRequest.UserId = (int)orders.UserId;
+                    await cartRepository.AddToCart(cartRequest);
+                }
             }
             if (orders.OnePay)
             {
