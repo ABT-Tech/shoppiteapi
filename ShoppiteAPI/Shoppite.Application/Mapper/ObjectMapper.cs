@@ -49,6 +49,7 @@ namespace Shoppite.Application.Mapper
             CreateMap<OrdersDTO, OrderResponse>().ReverseMap();
             CreateMap<OrdersDTO, OnePayFlagResponse>().ReverseMap();
             CreateMap<OrganizationCategoryDTO, OrganizationCategoryResponse>().ReverseMap();
+            CreateMap<CategoryDTO, CategoryResponse>().ReverseMap();
         }
     }
  }
