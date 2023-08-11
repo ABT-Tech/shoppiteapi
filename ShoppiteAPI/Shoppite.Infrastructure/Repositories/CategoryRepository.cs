@@ -47,7 +47,9 @@ namespace Shoppite.Infrastructure.Repositories
                         categoryDTO.ParentCategoryId = Convert.ToInt32(result["ParentCategoryId"]);
                         categoryDTO.Description = result["Description"].ToString();
                         categoryDTO.Icon = result["Icon"].ToString();
-                        categoryDTO.Banner = result["Banner"].ToString();
+                        var BannerStrList = result["BannerList"].ToString();
+                        var Banner = BannerStrList.Split(',');
+                        categoryDTO.Banner = Banner;
                         categoryDTO.IsPublished = (bool)result["IsPublished"];
                         categoryDTO.IsShowHomePage = (bool)result["IsShowHomePage"];
                         categoryDTO.IsIncludeMenu = (bool)result["IsIncludeMenu"];
