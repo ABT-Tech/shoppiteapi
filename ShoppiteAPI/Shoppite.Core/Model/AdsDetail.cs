@@ -19,5 +19,6 @@ namespace Shoppite.Core.Model
         public DateTime? InsertDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public int? OrgId { get; set; }
+        public int CategoryId { get; set; }
     }
 }

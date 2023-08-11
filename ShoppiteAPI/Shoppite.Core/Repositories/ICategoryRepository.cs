@@ -12,6 +12,6 @@ namespace Shoppite.Core.Repositories
     public interface ICategoryRepository 
     {
         //custom operations here
-        Task<List<CategoryMaster>> GetAllCategory(int OrgId);
+        Task<List<CategoryDTO>> GetAllCategory(int OrgId);
     }
 }

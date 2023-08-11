@@ -23,14 +23,49 @@ namespace Shoppite.Infrastructure.Repositories
         {
             _MasterContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-        public async Task<List<CategoryMaster>> GetAllCategory(int OrgId) 
+        public async Task<List<CategoryDTO>> GetAllCategory(int OrgId) 
         {
-            var categoryList = from c in _MasterContext.CategoryMasters
-                               join p in _MasterContext.ProductCategories on c.CategoryId equals p.CategoryId
-                               where c.OrgId == OrgId && c.ParentCategoryId != 0
-                               select c;
-            return await categoryList.Distinct().ToListAsync();
+            List<CategoryDTO> categoryDtos = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_GetCategoryByOrgId";
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@orgid", OrgId));
 
+                await this._MasterContext.Database.OpenConnectionAsync();
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        CategoryDTO categoryDTO = new CategoryDTO();
+
+                        categoryDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
+                        categoryDTO.CategoryName = result["CategoryName"].ToString();
+                        categoryDTO.Urlpath = result["Urlpath"].ToString();
+                        categoryDTO.ParentCategoryId = Convert.ToInt32(result["ParentCategoryId"]);
+                        categoryDTO.Description = result["Description"].ToString();
+                        categoryDTO.Icon = result["Icon"].ToString();
+                        categoryDTO.Banner = result["Banner"].ToString();
+                        categoryDTO.IsPublished = (bool)result["IsPublished"];
+                        categoryDTO.IsShowHomePage = (bool)result["IsShowHomePage"];
+                        categoryDTO.IsIncludeMenu = (bool)result["IsIncludeMenu"];
+                        categoryDTO.SeoPageName = result["SeoPageName"].ToString();
+                        categoryDTO.SeoTitle = result["SeoTitle"].ToString();
+                        categoryDTO.SeoKeyword = result["SeoKeyword"].ToString();
+                        categoryDTO.SeoDescription = result["SeoDescription"].ToString();
+                        categoryDTO.InsertDate = (DateTime)result["InsertDate"];
+                        categoryDTO.ModifiedDate = (DateTime)result["ModifiedDate"];
+                        categoryDTO.UserName = result["UserName"].ToString();
+                        categoryDTO.DisplayOrder = Convert.ToInt32(result["DisplayOrder"]);
+                        categoryDTO.OrgId = Convert.ToInt32(OrgId);
+
+                        categoryDtos.Add(categoryDTO);
+                    }
+                }
+            }
+            return categoryDtos;
         }
     }
 }
