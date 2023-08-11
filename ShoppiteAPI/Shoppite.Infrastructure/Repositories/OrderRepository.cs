@@ -491,7 +491,7 @@ namespace Shoppite.Infrastructure.Repositories
         {
             PaymentGatewayResponse response = new();
             CartRepository cartRepository = new CartRepository(_MasterContext);
-            if (orders.OrderGuid == null)
+            if (orders.OrderGuid == null || orders.OrderGuid == Guid.Empty)
             {
                 foreach (var product in orders.ProductLists)
                 {
@@ -503,7 +503,11 @@ namespace Shoppite.Infrastructure.Repositories
                     cartRequest.UserId = (int)orders.UserId;
                     await cartRepository.AddToCart(cartRequest);
                 }
+                var username = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == orders.UserId && u.OrgId == orders.orgid);
+                var orderData = await _MasterContext.OrderBasics.FirstOrDefaultAsync(u => u.UserName == username.Email && u.OrgId == orders.orgid && u.OrderStatus == "Cart");
+                orders.OrderGuid = orderData.OrderGuid;
             }
+            
             if (orders.OnePay)
             {
                 var getUsername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == orders.UserId && u.OrgId == orders.orgid);
