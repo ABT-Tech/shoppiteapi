@@ -651,5 +651,40 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return productVariation;
         }
+
+        public async void UpdateProductImage(string oldpath,string newPath)
+        {
+            List<OrganizationCategoryDTO> organizationcategory = new List<OrganizationCategoryDTO>();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "UPDATE TOP(1) Product_Basic SET CoverImage = '"+ newPath + "' where CoverImage = '"+ oldpath + "'";
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.Text;
+
+                await this._MasterContext.Database.OpenConnectionAsync();
+
+                await command.ExecuteReaderAsync();
+                await this._MasterContext.Database.CloseConnectionAsync();
+            }
+            
+        }
+        public async void UpdateProductOtherImage(string oldpath, string newPath)
+        {
+            List<OrganizationCategoryDTO> organizationcategory = new List<OrganizationCategoryDTO>();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "UPDATE TOP(1) Product_Images SET Image = '" + newPath + "' where Image = '" + oldpath + "'";
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.Text;
+
+                await this._MasterContext.Database.OpenConnectionAsync();
+
+                await command.ExecuteReaderAsync();
+                await this._MasterContext.Database.CloseConnectionAsync();
+            }
+
+        }
     }
 }
