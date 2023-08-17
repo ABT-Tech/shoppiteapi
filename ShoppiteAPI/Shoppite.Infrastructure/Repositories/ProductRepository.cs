@@ -487,7 +487,7 @@ namespace Shoppite.Infrastructure.Repositories
             }          
             return productsDTO;
         }
-        public async Task<List<ProductsDTO>> GetSimilarProducts(int orgId, int CategoryId,int  BrandId)
+        public async Task<List<ProductsDTO>> GetSimilarProducts(int orgId, int CategoryId,int  BrandId,int? UserId)
         {
             List<ProductsDTO> productsDTOs = new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
@@ -523,6 +523,46 @@ namespace Shoppite.Infrastructure.Repositories
                     productsDTO.BrandId = Convert.ToInt32(result["BrandId"]);
                     productsDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
                     productsDTOs.Add(productsDTO);
+                }
+            }
+            for (int i = 0; i < productsDTOs.Count; i++)
+            {
+                var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == productsDTOs[i].orgId && x.IsDefault == true);
+                if (DefaultSpecification != null)
+                {
+                    var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
+                    if (specification != null)
+                    {
+                        productsDTOs[i].SpecificationIds = (int)DefaultSpecification.SpecificationId;
+                        productsDTOs[i].SpecificationNames = specification.SpecificationName;
+                    }
+
+                }
+            }
+            if (UserId != null)
+            {
+                var getusername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == UserId && u.OrgId == orgId);
+                var wishlistList = await _MasterContext.CustomerWishlists.Where(x => x.UserName == getusername.Email && x.OrgId == orgId).ToListAsync();
+                for (int i = 0; i < productsDTOs.Count; i++)
+                {
+                    for (int j = 0; j < wishlistList.Count; j++)
+                    {
+                        if (productsDTOs[i].SpecificationIds == 0)
+                        {
+                            if (productsDTOs[i].Id == wishlistList[j].ProductId)
+                            {
+                                productsDTOs[i].WishlistedProduct = true;
+                            }
+                        }
+                        else
+                        {
+                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productsDTOs[i].SpecificationIds && x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == orgId);
+                            if (productsDTOs[i].Id == wishlistList[j].ProductId && productspecDetails.ProductSpecificationId == wishlistList[j].ProductSpecificationId)
+                            {
+                                productsDTOs[i].WishlistedProduct = true;
+                            }
+                        }
+                    }
                 }
             }
             return productsDTOs;
