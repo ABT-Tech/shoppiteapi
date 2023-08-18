@@ -515,8 +515,9 @@ namespace Shoppite.Infrastructure.Repositories
                     productsDTO.Brand = result["Brand"].ToString();
                     productsDTO.Price = Convert.ToDouble(result["Price"]);
                     productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
-                   /* productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
-                    productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);*/
+                    productsDTO.ProductGUID = (Guid)result["ProductGUID"];
+                    /* productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
+                     productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);*/
                     productsDTO.ProductList = ProductList;
                     productsDTO.Quantity = Convert.ToInt32(result["Qty"]);
                     productsDTO.orgId = Convert.ToInt32(orgId);
