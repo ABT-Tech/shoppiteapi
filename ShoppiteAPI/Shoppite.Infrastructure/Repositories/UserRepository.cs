@@ -228,16 +228,21 @@ namespace Shoppite.Infrastructure.Repositories
             return "Coupan added";
         }
 
-        public async Task<string> ApplyCoupan(User_CouponDTO coupans)
+        public async Task<UserCoupanResponse> ApplyCoupan(CoupanDTO coupans)
         {
+            UserCoupanResponse response = new();
             var getCoupanId = await _MasterContext.Coupans.FirstOrDefaultAsync(x=>x.CoupanCode==coupans.CoupanCode);
             if(getCoupanId!=null)
-            {               
-                return coupans.CoupanCode+" Appied!!";
+            {
+                response.Message = coupans.CoupanCode + " Appied!!";
+                response.StatusCode = 0;
+                return response;
             }
             else
             {
-                return "Sorry, Coupon Not Found!!";
+                response.StatusCode = 1;
+                response.Message = "Sorry, Coupon Not Found!!";
+                return response;
             }           
         }
     }

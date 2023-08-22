@@ -26,7 +26,7 @@ namespace Shoppite.Application.Commands
     public record UpdateProductDetails(UpdateProductDetail Products):IRequest<string>;
     public record UpdateUserStatus(CustomerInfo cinfo):IRequest<string>;
     public record PaymentRequest(OrdersDTO orders) : IRequest<PaymentGatewayResponse>;
-    public record ApplyCoupan(User_CouponDTO coupan) : IRequest<string>;
+    public record ApplyCoupan(CoupanDTO coupan) : IRequest<UserCoupanResponse>;
     public record AddCoupan(CoupanDTO coupan) : IRequest<string>;
 
 }

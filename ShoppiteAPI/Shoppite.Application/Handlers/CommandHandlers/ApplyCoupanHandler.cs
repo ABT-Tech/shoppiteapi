@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Shoppite.Application.Commands;
+using Shoppite.Core.DTOs;
 using Shoppite.Core.Repositories;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Application.Handlers.CommandHandlers
 {
-    public class ApplyCoupanHandler : IRequestHandler<ApplyCoupan, string>
+    public class ApplyCoupanHandler : IRequestHandler<ApplyCoupan, UserCoupanResponse>
     {
         private readonly IUserRepository _userRepository;
 
@@ -18,7 +19,7 @@ namespace Shoppite.Application.Handlers.CommandHandlers
         {
             _userRepository = userRepository;
         }
-        public async Task<string> Handle(ApplyCoupan request, CancellationToken cancellationToken)
+        public async Task<UserCoupanResponse> Handle(ApplyCoupan request, CancellationToken cancellationToken)
         {
             return await _userRepository.ApplyCoupan(request.coupan);
              
