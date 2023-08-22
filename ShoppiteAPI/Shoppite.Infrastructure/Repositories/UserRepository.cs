@@ -216,6 +216,35 @@ namespace Shoppite.Infrastructure.Repositories
                 return "Something Went wrong..";
             }
         }
+        public async Task<string> AddCoupan(CoupanDTO coupanDTO)
+        {
+            Coupan coupan = new();
+            {
+                coupan.CoupanCode = coupanDTO.CoupanCode;
+                coupan.CreatedAt = DateTime.Now;               
+            }
+            _MasterContext.Coupans.Add(coupan);
+            await _MasterContext.SaveChangesAsync();
+            return "Coupan added";
+        }
+
+        public async Task<UserCoupanResponse> ApplyCoupan(CoupanDTO coupans)
+        {
+            UserCoupanResponse response = new();
+            var getCoupanId = await _MasterContext.Coupans.FirstOrDefaultAsync(x=>x.CoupanCode==coupans.CoupanCode);
+            if(getCoupanId!=null)
+            {
+                response.Message = coupans.CoupanCode + " Appied!!";
+                response.StatusCode = 0;
+                return response;
+            }
+            else
+            {
+                response.StatusCode = 1;
+                response.Message = "Sorry, Coupon Not Found!!";
+                return response;
+            }           
+        }
     }
 }
  

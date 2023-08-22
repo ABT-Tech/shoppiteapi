@@ -13,5 +13,6 @@ namespace Shoppite.Core.DTOs
         public ChangeAddress Address { get; set; }
         public object BaseTotalPrice { get; set; }
         public bool OnePay { get; set; }
+        public int CoupanId { get; set; }
     }
 }

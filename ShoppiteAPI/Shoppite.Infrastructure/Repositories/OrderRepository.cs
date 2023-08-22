@@ -26,7 +26,7 @@ namespace Shoppite.Infrastructure.Repositories
             _MasterContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _configuration = configuration;
         }
-        public async Task BuyNow(OrdersDTO orders)
+        public async Task<string> BuyNow(OrdersDTO orders)
         {
             var getUsername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == orders.UserId && u.OrgId == orders.orgid);
             if (orders.OrderGuid == Guid.Empty)
@@ -130,9 +130,33 @@ namespace Shoppite.Infrastructure.Repositories
                     _MasterContext.OrderShippings.Add(shipping);
                     await _MasterContext.SaveChangesAsync();
                 }
-
+                if (orders.CoupanId != null)
+                {
+                    var getCoupandetails = await _MasterContext.User_Coupans.FirstOrDefaultAsync(uc => uc.UserId == orders.UserId && uc.OrgId == orders.orgid && uc.CoupanId == orders.CoupanId);
+                    var CouponAplliedCount = await _MasterContext.User_Coupans.Where(uc => uc.UserId == orders.UserId && uc.CoupanId == orders.CoupanId).ToListAsync();
+                    if (getCoupandetails != null)
+                    {
+                        return "You Have reached Maximum Limit Try It in Another Shop!";
+                        // var getCoupanUserDetails=
+                    }
+                    else if (CouponAplliedCount.Count <= 5)
+                    {
+                        User_Coupan user_Coupan = new();
+                        user_Coupan.CoupanId = orders.CoupanId;
+                        user_Coupan.UserId = orders.UserId;
+                        user_Coupan.CreatedAt = DateTime.Now;
+                        user_Coupan.OrgId = (int)orders.orgid;
+                        _MasterContext.User_Coupans.Add(user_Coupan);
+                        await _MasterContext.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return "Sorry,You Have reached Maximum Limit!";
+                    }
+                }
             }
-            else {
+            else
+            {
                 var check = await _MasterContext.OrderBasics.Where(x => x.OrderGuid == orders.OrderGuid && x.OrderStatus == "Cart" && x.OrgId == orders.orgid).ToListAsync();
                 OrderBasic ob = new();
                 {
@@ -234,8 +258,35 @@ namespace Shoppite.Infrastructure.Repositories
                         shipping.InsertDate = DateTime.Now;
                         _MasterContext.OrderShippings.Add(shipping);
                         await _MasterContext.SaveChangesAsync();
+                    }
+                if(orders.CoupanId != null)
+                {
+                    var getCoupandetails = await _MasterContext.User_Coupans.FirstOrDefaultAsync(uc=>uc.UserId==orders.UserId&&uc.OrgId==orders.orgid&&uc.CoupanId==orders.CoupanId);
+                    var  CouponAplliedCount= await _MasterContext.User_Coupans.Where(uc => uc.UserId == orders.UserId && uc.CoupanId == orders.CoupanId).ToListAsync();
+                    if (getCoupandetails!=null)
+                    {
+                        return "You Have reached Maximum Limit Try It in Another Shop!";
+                        // var getCoupanUserDetails=
+                    }
+                    else if(CouponAplliedCount.Count<=5)
+                    {
+                        User_Coupan user_Coupan = new();
+                        user_Coupan.CoupanId = orders.CoupanId;
+                        user_Coupan.UserId = orders.UserId;
+                        user_Coupan.CreatedAt = DateTime.Now;
+                        user_Coupan.OrgId =(int)orders.orgid;
+                        _MasterContext.User_Coupans.Add(user_Coupan);
+                        await _MasterContext.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return "Sorry,You Have reached Maximum Limit!";
+                    }
+                    
                 }
-            }        
+              //  return "Suceess";
+            }
+            return "Success";
         }
         public async Task<List<MyOrdersDTO>> GetMyOrderDetails(int OrgId, int UserId)
         {

@@ -81,7 +81,8 @@ namespace Shoppite.Infrastructure.Data
         public virtual DbSet<VendorMembershipPackage> VendorMembershipPackages { get; set; }
         public virtual DbSet<WebsiteSetup> WebsiteSetups { get; set; }
         public virtual DbSet<WebsiteSetupScript> WebsiteSetupScripts { get; set; }
-
+        public virtual DbSet<Coupan> Coupans { get; set; }
+        public virtual DbSet<User_Coupan> User_Coupans { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -374,7 +375,13 @@ namespace Shoppite.Infrastructure.Data
 
                 entity.Property(e => e.Status).HasMaxLength(50);
             });
+            modelBuilder.Entity<Coupan>(entity =>
+            {
+                entity.HasKey(e => e.CoupanId);
+                entity.ToTable("Coupan");
+                entity.Property(e => e.CreatedAt).HasColumnType("datetime");
 
+            });
             modelBuilder.Entity<Currency>(entity =>
             {
                 entity.ToTable("Currency");
@@ -1157,6 +1164,13 @@ namespace Shoppite.Infrastructure.Data
                     .HasMaxLength(256);
             });
 
+            modelBuilder.Entity<User_Coupan>(entity =>
+            {
+                entity.HasKey(e => e.CoupanId);
+                entity.ToTable("User_Coupan");
+                entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+
+            });
             modelBuilder.Entity<UserActivation>(entity =>
             {
                 entity.HasKey(e => e.UserId);

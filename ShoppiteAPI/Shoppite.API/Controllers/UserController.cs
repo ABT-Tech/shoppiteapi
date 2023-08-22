@@ -68,5 +68,15 @@ namespace Shoppite.API.Controllers
         {
             return await _mediator.Send(new UpdateUserStatus(info));
         }
+        [HttpPost]
+        public async Task<ActionResult<string>> AddCoupan([FromBody] CoupanDTO coupan)
+        {
+            return await _mediator.Send(new AddCoupan(coupan));
+        }
+        [HttpPost]
+        public async Task<ActionResult<UserCoupanResponse>> ApplyCoupon([FromBody] CoupanDTO coupan)
+        {
+            return await _mediator.Send(new ApplyCoupan(coupan));
+        }
     }
 }
