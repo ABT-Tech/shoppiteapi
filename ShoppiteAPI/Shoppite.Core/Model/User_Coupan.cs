@@ -13,5 +13,6 @@ namespace Shoppite.Core.Model
         public int UserId { get; set; }
         public int OrgId { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string ContactNumber { get; set; }
     }
 }

@@ -230,11 +230,48 @@ namespace Shoppite.Infrastructure.Repositories
 
         public async Task<UserCoupanResponse> ApplyCoupan(CoupanDTO coupans)
         {
-            UserCoupanResponse response = new();
-            var getCoupanId = await _MasterContext.Coupans.FirstOrDefaultAsync(x=>x.CoupanCode==coupans.CoupanCode);
-            if(getCoupanId!=null)
+            UserCoupanResponse response = new();           
+            var getCoupanId = await _MasterContext.Coupans.FirstOrDefaultAsync(x => x.CoupanCode == coupans.CoupanCode);
+            var getUserDetail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.UserId==coupans.UserId && x.OrgId == coupans.OrgId);
+            var getUserMobileNum = await _MasterContext.UsersProfiles.FirstOrDefaultAsync(x => x.UserName == getUserDetail.Email && x.OrgId == coupans.OrgId);
+
+            var getUserCouponDeail = await _MasterContext.User_Coupans.FirstOrDefaultAsync(x => x.UserId == coupans.UserId && x.CoupanId==getCoupanId.CoupanId);
+            var CoupanDetails = await _MasterContext.User_Coupans.ToListAsync();
+            if (getUserCouponDeail == null && getCoupanId != null)
             {
+                coupans.CoupanId = getCoupanId.CoupanId;
+                response.CoupanId = coupans.CoupanId;
                 response.Message = coupans.CoupanCode + " Appied!!";
+                response.StatusCode = 0;
+                return response;
+            }
+            else if (getUserCouponDeail != null && getUserCouponDeail.OrgId == coupans.OrgId)
+            {
+                if( getUserCouponDeail.ContactNumber== getUserMobileNum.ContactNumber)
+                {
+                    response.CoupanId = getCoupanId.CoupanId;
+                    response.Message = "You Have Reached To Maximum limit for this shop try in another shop!!";
+                }
+                else
+                {
+                    response.Message = "Details not Found Plese Update Details!!";
+                }
+               
+                response.StatusCode = 0;
+                return response;
+            }
+            else if (CoupanDetails != null && CoupanDetails.Count <= 5)
+            {
+                if(CoupanDetails.Count==5)
+                {
+                    response.Message = "You Have Reached To Maximum limit!!";
+                }
+                else
+                {
+                    coupans.CoupanId = getCoupanId.CoupanId;
+                    response.CoupanId = coupans.CoupanId;
+                    response.Message = coupans.CoupanCode + " Appied!!";
+                }
                 response.StatusCode = 0;
                 return response;
             }
@@ -243,7 +280,7 @@ namespace Shoppite.Infrastructure.Repositories
                 response.StatusCode = 1;
                 response.Message = "Sorry, Coupon Not Found!!";
                 return response;
-            }           
+            }
         }
     }
 }

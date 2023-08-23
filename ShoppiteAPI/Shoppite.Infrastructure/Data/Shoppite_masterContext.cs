@@ -1166,7 +1166,7 @@ namespace Shoppite.Infrastructure.Data
 
             modelBuilder.Entity<User_Coupan>(entity =>
             {
-                entity.HasKey(e => e.CoupanId);
+                entity.HasKey(e => e.CoupanUserId);
                 entity.ToTable("User_Coupan");
                 entity.Property(e => e.CreatedAt).HasColumnType("datetime");
 

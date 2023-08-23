@@ -8,9 +8,10 @@ namespace Shoppite.Core.DTOs
 {
     public class CoupanDTO
     {
-       // public int CoupanId { get; set; }
+        public int CoupanId { get; set; }
+        public int UserId { get; set; }
         public string CoupanCode { get; set; }
-       // public DateTime CreatedAt { get; set; }       
+        public int OrgId { get; set; }
 
     }
 }
