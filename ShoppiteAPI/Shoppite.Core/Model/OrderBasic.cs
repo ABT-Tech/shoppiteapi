@@ -30,6 +30,5 @@ namespace Shoppite.Core.Model
         public int? Currencyid { get; set; }
         public string LastOrderStatus { get; set; }
         public int? OrgId { get; set; }
-        public int? CoupanId { get; set; }
     }
 }

@@ -49,11 +49,7 @@ namespace Shoppite.Infrastructure.Repositories
                 buynow.Price = Price.Price;
                 buynow.UserName = getUsername.Email;
                 buynow.InsertDate = DateTime.Now;
-                buynow.OrderStatus = "Confirmed";
-                if(orders.CoupanId!=null && orders.CoupanId!=0)
-                {
-                    buynow.CoupanId = orders.CoupanId;
-                }               
+                buynow.OrderStatus = "Confirmed";                            
                 buynow.PaymentMode = "COD";
                 buynow.OrgId = orders.orgid;
                 _MasterContext.OrderBasics.Add(buynow);
@@ -294,7 +290,7 @@ namespace Shoppite.Infrastructure.Repositories
                     }
                     
                 }
-              //  return "Suceess";
+                return "Suceess";
             }
             return "Success";
         }

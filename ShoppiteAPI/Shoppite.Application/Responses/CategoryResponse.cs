@@ -27,5 +27,6 @@ namespace Shoppite.Application.Responses
         public string UserName { get; set; }
         public int? DisplayOrder { get; set; }
         public int? OrgId { get; set; }
+        public bool IsCouponEnabled { get; set; }
     }
 }
