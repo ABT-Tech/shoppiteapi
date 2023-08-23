@@ -50,6 +50,10 @@ namespace Shoppite.Infrastructure.Repositories
                 buynow.UserName = getUsername.Email;
                 buynow.InsertDate = DateTime.Now;
                 buynow.OrderStatus = "Confirmed";
+                if(orders.CoupanId!=null && orders.CoupanId!=0)
+                {
+                    buynow.CoupanId = orders.CoupanId;
+                }               
                 buynow.PaymentMode = "COD";
                 buynow.OrgId = orders.orgid;
                 _MasterContext.OrderBasics.Add(buynow);
@@ -136,7 +140,7 @@ namespace Shoppite.Infrastructure.Repositories
                     var CouponAplliedCount = await _MasterContext.User_Coupans.Where(uc => uc.UserId == orders.UserId && uc.CoupanId == orders.CoupanId).ToListAsync();
                     if (getCoupandetails != null)
                     {
-                        return "You Have reached Maximum Limit Try It in Another Shop!";
+                        return "You Have reached Maximum Limit for this shop Try It in Another Shop!";
                         // var getCoupanUserDetails=
                     }
                     else if (CouponAplliedCount.Count <= 5)
@@ -263,6 +267,10 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     var getCoupandetails = await _MasterContext.User_Coupans.FirstOrDefaultAsync(uc=>uc.UserId==orders.UserId&&uc.OrgId==orders.orgid&&uc.CoupanId==orders.CoupanId);
                     var  CouponAplliedCount= await _MasterContext.User_Coupans.Where(uc => uc.UserId == orders.UserId && uc.CoupanId == orders.CoupanId).ToListAsync();
+                    var getUserDetail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.UserId == orders.UserId && x.OrgId == orders.orgid);
+                    
+                        var getMobilenum = await _MasterContext.UsersProfiles.FirstOrDefaultAsync(u => u.UserName == getUserDetail.Email && u.OrgId == getUserDetail.OrgId); 
+                 
                     if (getCoupandetails!=null)
                     {
                         return "You Have reached Maximum Limit Try It in Another Shop!";
@@ -275,6 +283,8 @@ namespace Shoppite.Infrastructure.Repositories
                         user_Coupan.UserId = orders.UserId;
                         user_Coupan.CreatedAt = DateTime.Now;
                         user_Coupan.OrgId =(int)orders.orgid;
+                        user_Coupan.ContactNumber = orders.Contactnumber;
+                                             
                         _MasterContext.User_Coupans.Add(user_Coupan);
                         await _MasterContext.SaveChangesAsync();
                     }
