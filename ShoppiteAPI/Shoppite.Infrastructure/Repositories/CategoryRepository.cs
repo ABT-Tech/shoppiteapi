@@ -13,18 +13,23 @@ using Shoppite.Core.DTOs;
 using Shoppite.Core.Extensions;
 using Shoppite.Core.Entities;
 using Shoppite.Core.Model;
+using Microsoft.Extensions.Configuration;
 
 namespace Shoppite.Infrastructure.Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
         protected readonly Shoppite_masterContext _MasterContext;
-        public CategoryRepository(Shoppite_masterContext dbContext)
+        protected readonly IConfiguration _configuration;
+        public CategoryRepository(Shoppite_masterContext dbContext, IConfiguration configuration)
         {
             _MasterContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
+        
         public async Task<List<CategoryDTO>> GetAllCategory(int OrgId) 
         {
+            var IsCouponEnabled = _configuration.GetSection("CouponSettings")["IsCoupanEnabled"];
             List<CategoryDTO> categoryDtos = new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
@@ -62,7 +67,14 @@ namespace Shoppite.Infrastructure.Repositories
                         categoryDTO.UserName = result["UserName"].ToString();
                         categoryDTO.DisplayOrder = Convert.ToInt32(result["DisplayOrder"]);
                         categoryDTO.OrgId = Convert.ToInt32(OrgId);
-
+                        if (IsCouponEnabled == "1")
+                        {
+                            categoryDTO.IsCouponEnabled = true;
+                        }
+                        else
+                        {
+                            categoryDTO.IsCouponEnabled = false;
+                        }
                         categoryDtos.Add(categoryDTO);
                     }
                 }
