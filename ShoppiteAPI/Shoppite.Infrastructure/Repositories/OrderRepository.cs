@@ -580,6 +580,11 @@ namespace Shoppite.Infrastructure.Repositories
 
                 foreach (var orderDetails in orders.ProductLists)
                 {
+                    if(orders.CoupanId!=null)
+                    {
+                        orderDetails.Price = orderDetails.Price / 2;
+                    }
+                                      
                     TotalProductCharges = orderDetails.Price+ orderDetails.DeliveryFees; ;
                     if (string.IsNullOrEmpty(strProductMapping))
                         strProductMapping += orderDetails.Id + "~" + TotalProductCharges;

@@ -249,7 +249,7 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     coupans.CoupanId = getCoupanId.CoupanId;
                     response.CoupanId = coupans.CoupanId;
-                    response.Message = coupans.CoupanCode + " Appied!!";
+                    response.Message = coupans.CoupanCode + " Applied!!";
                     response.StatusCode = 0;
                     return response;
                 }
@@ -285,7 +285,7 @@ namespace Shoppite.Infrastructure.Repositories
                     {
                         coupans.CoupanId = getCoupanId.CoupanId;
                         response.CoupanId = coupans.CoupanId;
-                        response.Message = coupans.CoupanCode + " Appied!!";
+                        response.Message = coupans.CoupanCode + " Applied!!";
                         return response;
                     }
 
