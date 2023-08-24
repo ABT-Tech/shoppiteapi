@@ -300,6 +300,30 @@ namespace Shoppite.Infrastructure.Repositories
                 }
                 return "Suceess";
             }
+            if (orders.CoupanId != null)
+            {
+                var getCoupandetails = await _MasterContext.User_Coupans.FirstOrDefaultAsync(uc => uc.UserId == orders.UserId && uc.OrgId == orders.orgid && uc.CoupanId == orders.CoupanId);
+                var CouponAplliedCount = await _MasterContext.User_Coupans.Where(uc => uc.UserId == orders.UserId && uc.CoupanId == orders.CoupanId).ToListAsync();
+                if (getCoupandetails != null)
+                {
+                    return "You Have reached Maximum Limit for this shop Try It in Another Shop!";
+                    // var getCoupanUserDetails=
+                }
+                else if (CouponAplliedCount.Count <= 1)
+                {
+                    User_Coupan user_Coupan = new();
+                    user_Coupan.CoupanId = orders.CoupanId;
+                    user_Coupan.UserId = orders.UserId;
+                    user_Coupan.CreatedAt = DateTime.Now;
+                    user_Coupan.OrgId = (int)orders.orgid;
+                    _MasterContext.User_Coupans.Add(user_Coupan);
+                    await _MasterContext.SaveChangesAsync();
+                }
+                else
+                {
+                    return "Sorry,You Have reached Maximum Limit!";
+                }
+            }
             return "Success";
         }
         public async Task<List<MyOrdersDTO>> GetMyOrderDetails(int OrgId, int UserId)

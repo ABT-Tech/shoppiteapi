@@ -235,7 +235,7 @@ namespace Shoppite.Infrastructure.Repositories
             var getUserDetail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.UserId==coupans.UserId && x.OrgId == coupans.OrgId);
             var getUserMobileNum = await _MasterContext.UsersProfiles.FirstOrDefaultAsync(x => x.UserName == getUserDetail.Email && x.OrgId == coupans.OrgId);
 
-            var CoupanDetails = await _MasterContext.User_Coupans.ToListAsync();
+            var CoupanDetails = await _MasterContext.User_Coupans.Where(x => x.UserId == coupans.UserId && x.CoupanId == getCoupanId.CoupanId && x.ContactNumber == getUserMobileNum.ContactNumber).ToListAsync();
             if (getCoupanId == null)
             {
                 response.StatusCode = 1;
@@ -244,7 +244,7 @@ namespace Shoppite.Infrastructure.Repositories
             }
             else
             {
-                var getUserCouponDeail = await _MasterContext.User_Coupans.FirstOrDefaultAsync(x => x.UserId == coupans.UserId && x.CoupanId == getCoupanId.CoupanId);
+                var getUserCouponDeail = await _MasterContext.User_Coupans.FirstOrDefaultAsync(x => x.UserId == coupans.UserId && x.CoupanId == getCoupanId.CoupanId && x.ContactNumber == getUserMobileNum.ContactNumber);
                 if (getUserCouponDeail == null && getCoupanId != null)
                 {
                     coupans.CoupanId = getCoupanId.CoupanId;
@@ -258,26 +258,30 @@ namespace Shoppite.Infrastructure.Repositories
                     response.StatusCode = 0;
                     if (getUserCouponDeail.ContactNumber == getUserMobileNum.ContactNumber)
                     {
+                        response.StatusCode = 1;
                         response.CoupanId = getCoupanId.CoupanId;
                         response.Message = "You Have Reached To Maximum limit for this shop try in another shop!!";
                         return response;
                     }
                     else if (getUserMobileNum.ContactNumber == null)
                     {
+                        response.StatusCode = 1;
                         response.Message = "Details not Found Plese Update Details!!";
                         return response;
                     }
                     else
                     {
+                        response.StatusCode = 1;
                         return response;
                     }
 
                 }
-                else if (CoupanDetails != null && CoupanDetails.Count <= 5)
+                else if (CoupanDetails != null && CoupanDetails.Count <= 1)
                 {
                     response.StatusCode = 0;
                     if (CoupanDetails.Count == 5)
                     {
+                        response.StatusCode = 1;
                         response.Message = "You Have Reached To Maximum limit!!";
                         return response;
                     }
