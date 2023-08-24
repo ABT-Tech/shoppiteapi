@@ -40,18 +40,35 @@ namespace Shoppite.Infrastructure.Repositories
                 await _MasterContext.SaveChangesAsync();
 
                 int p = 0;
+                
                 var productDetail = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == orders.ProductLists[p].Id);
-                var Price = _MasterContext.ProductPrices.FirstOrDefault(x => x.ProductGuid == productDetail.ProductGuid);              
-                OrderBasic buynow = new();
-                buynow.OrderGuid = orderMaster.OrderGuid;
-                buynow.ProductId = orders.ProductLists[p].Id;
-                buynow.Qty = orders.ProductLists[p].Quantity;
-                buynow.Price = Price.Price;
-                buynow.UserName = getUsername.Email;
-                buynow.InsertDate = DateTime.Now;
-                buynow.OrderStatus = "Confirmed";                            
-                buynow.PaymentMode = "COD";
-                buynow.OrgId = orders.orgid;
+                var Price = _MasterContext.ProductPrices.FirstOrDefault(x => x.ProductGuid == productDetail.ProductGuid);
+                var discountPrice = Price.Price;
+                if (orders.IsCouponApplied == true && orders.CoupanId != 0)
+                {
+                    if (orders.ProductLists[p].Quantity * discountPrice < 2000)
+                    {
+                        discountPrice = (discountPrice * 50) / 100;
+                    }
+                    else
+                    {
+                        discountPrice = returnDiscountPrice(orders.ProductLists[p].Quantity, discountPrice);
+                    }
+
+                }
+                OrderBasic buynow = new()
+                {
+                    OrderGuid = orderMaster.OrderGuid,
+                    ProductId = orders.ProductLists[p].Id,
+                    Qty = orders.ProductLists[p].Quantity,
+                    Price = discountPrice,
+                    DeliveryFees = Price.DeliveryFees,
+                    UserName = getUsername.Email,
+                    InsertDate = DateTime.Now,
+                    OrderStatus = "Confirmed",
+                    PaymentMode = "COD",
+                    OrgId = orders.orgid
+                };
                 _MasterContext.OrderBasics.Add(buynow);
                 await _MasterContext.SaveChangesAsync();
                                
@@ -130,30 +147,7 @@ namespace Shoppite.Infrastructure.Repositories
                     _MasterContext.OrderShippings.Add(shipping);
                     await _MasterContext.SaveChangesAsync();
                 }
-                if (orders.CoupanId != null)
-                {
-                    var getCoupandetails = await _MasterContext.User_Coupans.FirstOrDefaultAsync(uc => uc.UserId == orders.UserId && uc.OrgId == orders.orgid && uc.CoupanId == orders.CoupanId);
-                    var CouponAplliedCount = await _MasterContext.User_Coupans.Where(uc => uc.UserId == orders.UserId && uc.CoupanId == orders.CoupanId).ToListAsync();
-                    if (getCoupandetails != null)
-                    {
-                        return "You Have reached Maximum Limit for this shop Try It in Another Shop!";
-                        // var getCoupanUserDetails=
-                    }
-                    else if (CouponAplliedCount.Count <= 5)
-                    {
-                        User_Coupan user_Coupan = new();
-                        user_Coupan.CoupanId = orders.CoupanId;
-                        user_Coupan.UserId = orders.UserId;
-                        user_Coupan.CreatedAt = DateTime.Now;
-                        user_Coupan.OrgId = (int)orders.orgid;
-                        _MasterContext.User_Coupans.Add(user_Coupan);
-                        await _MasterContext.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return "Sorry,You Have reached Maximum Limit!";
-                    }
-                }
+                
             }
             else
             {
@@ -168,6 +162,20 @@ namespace Shoppite.Infrastructure.Repositories
                         {
                             if (check[i].OrderId == orders.ProductLists[j].OrderId)
                             {
+                                var discountPrice = check[i].Price;
+                                if (orders.IsCouponApplied == true && orders.CoupanId != 0)
+                                {
+                                    if (orders.ProductLists[j].Quantity * discountPrice < 2000)
+                                    {
+                                        discountPrice = (discountPrice * 50) / 100;
+                                    }
+                                    else
+                                    {
+                                        discountPrice = returnDiscountPrice(orders.ProductLists[j].Quantity, discountPrice);
+                                    }
+
+                                }
+                                check[i].Price = discountPrice;
                                 check[i].OrderStatus = "Confirmed";
                                 check[i].Qty = orders.ProductLists[j].Quantity;
                                 check[i].InsertDate = DateTime.Now;
@@ -614,6 +622,10 @@ namespace Shoppite.Infrastructure.Repositories
                 }                                          
             }         
             return response;          
+        }
+        public decimal returnDiscountPrice(int? Quantity,decimal? Price) {
+            decimal response = Convert.ToInt32(((Price * Quantity) - 1000) / Quantity);
+            return response;
         }
     }
 }
