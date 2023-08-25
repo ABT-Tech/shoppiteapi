@@ -22,7 +22,7 @@ namespace Shoppite.Application.Responses
         public Guid ProductGUId { get; set; }
         public int OldPrice { get; set; }
         public string SpecificationNames { get; set; }
-        public int SpecificationIds { get; set; }
+        public int SpecificationId { get; set; }
         public string SpecificationImage { get; set; }
         //public Boolean WishlistedProduct { get; set; }
     }

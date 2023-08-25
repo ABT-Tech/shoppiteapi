@@ -122,7 +122,7 @@ namespace Shoppite.Infrastructure.Repositories
                         cartDTO.Image = result["Image"].ToString();
                         cartDTO.Brand = result["Brand"].ToString();
                         cartDTO.SpecificationNames = result["SpecificationNames"].ToString();
-                        cartDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
+                        cartDTO.SpecificationId = Convert.ToInt32(result["SpecificationIds"]);
                         cartDTO.Quantity = Convert.ToInt32(result["Quantity"]);
                         cartDTO.ProductQty = Convert.ToInt32(result["qty"]);
                         cartDTO.Price = Convert.ToDouble(result["Price"]);
