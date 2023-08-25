@@ -74,6 +74,7 @@ namespace Shoppite.Infrastructure.Repositories
 
                 OrderVariation variation = new();
                 variation.OrderGuid = buynow.OrderGuid;
+                variation.OrderId = buynow.OrderId;
                 variation.OrgId = buynow.OrgId;
                 if (orders.ProductLists[p].SpecificationId != 0)
                 {
