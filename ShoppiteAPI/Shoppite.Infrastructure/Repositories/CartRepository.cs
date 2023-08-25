@@ -193,6 +193,7 @@ namespace Shoppite.Infrastructure.Repositories
                         address.AddressDetail = result["AddressDetail"].ToString();
                         address.orgId = Convert.ToInt32(OrgId);
                         address.UserId = Convert.ToInt32(UserId);
+                        address.ContactNumber = result["Contactnumber"].ToString();
                         changeAddress.Add(address);
                     }
                 }

@@ -15,5 +15,6 @@ namespace Shoppite.Application.Responses
         public string SelectCity { get; set; }
         public string SelectState { get; set; }
         public string AddressDetail { get; set; }
+        public string ContactNumber { get; set; }
     }
 }
