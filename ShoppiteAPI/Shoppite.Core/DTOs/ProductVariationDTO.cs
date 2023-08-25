@@ -9,7 +9,7 @@ namespace Shoppite.Core.DTOs
     public class ProductVariationDTO
     {
         public string SpecificationNames { get; set; }
-        public int SpecificationIds { get; set; }
+        public int SpecificationId { get; set; }
         public bool IsSpecificationExist { get; set; }
         public Guid ProductGUId { get; set; }
         public int OrgId { get; set; }

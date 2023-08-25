@@ -338,7 +338,7 @@ namespace Shoppite.Infrastructure.Repositories
                         orderListModel.Id = Convert.ToInt32(result["Id"]);
                         orderListModel.Title = result["Title"].ToString();
                         orderListModel.SpecificationNames = result["SpecificationNames"].ToString();
-                        orderListModel.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
+                        orderListModel.SpecificationId = Convert.ToInt32(result["SpecificationIds"]);
                         orderListModel.Image = result["Image"].ToString();
                         orderListModel.Brand = result["Brand"].ToString();
                         orderListModel.Quantity = Convert.ToInt32(result["Quantity"]);

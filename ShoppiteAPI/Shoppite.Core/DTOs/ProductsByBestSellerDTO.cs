@@ -22,7 +22,7 @@ namespace Shoppite.Core.DTOs
         public int CategoryId { get; set; }
         public Guid ProductGUID { get; set; }
         public string SpecificationNames { get; set; }
-        public int SpecificationIds { get; set; }
+        public int SpecificationId { get; set; }
         //public Boolean WishlistedProduct { get; set; }
     }
 }

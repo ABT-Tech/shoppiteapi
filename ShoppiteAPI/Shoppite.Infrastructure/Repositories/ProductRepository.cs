@@ -75,7 +75,7 @@ namespace Shoppite.Infrastructure.Repositories
                     var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
                    if(specification!=null)
                     {
-                        productsDTOs[i].SpecificationIds = (int)DefaultSpecification.SpecificationId;
+                        productsDTOs[i].SpecificationId = (int)DefaultSpecification.SpecificationId;
                         productsDTOs[i].SpecificationNames = specification.SpecificationName;
                     }
                          
@@ -89,7 +89,7 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     for (int j = 0; j < wishlistList.Count; j++)
                     {
-                        if (productsDTOs[i].SpecificationIds == 0)
+                        if (productsDTOs[i].SpecificationId == 0)
                         {
                             if (productsDTOs[i].Id == wishlistList[j].ProductId)
                             {
@@ -98,7 +98,7 @@ namespace Shoppite.Infrastructure.Repositories
                         }
                         else
                         {
-                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productsDTOs[i].SpecificationIds && x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == orgId);
+                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productsDTOs[i].SpecificationId && x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == orgId);
                             if (productsDTOs[i].Id == wishlistList[j].ProductId && productspecDetails.ProductSpecificationId == wishlistList[j].ProductSpecificationId)
                             {
                                 productsDTOs[i].WishlistedProduct = true;
@@ -139,7 +139,7 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.Brand = result["Brand"].ToString();
                         productsDTO.ProductGUID = (Guid)result["ProductGUID"];
                         productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
-                        productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
+                        productsDTO.SpecificationId = Convert.ToInt32(result["SpecificationIds"]);
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
                         productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
                         productsDTO.ProductList = ProductList;
@@ -156,7 +156,7 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     for (int j = 0; j < wishlistList.Count; j++)
                     {
-                        if (productsDTOs[i].SpecificationIds == 0)
+                        if (productsDTOs[i].SpecificationId == 0)
                         {
                             if (productsDTOs[i].Id == wishlistList[j].ProductId)
                             {
@@ -165,7 +165,7 @@ namespace Shoppite.Infrastructure.Repositories
                         }
                         else
                         {
-                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productsDTOs[i].SpecificationIds && x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == orgId);
+                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productsDTOs[i].SpecificationId && x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == orgId);
                             if (productsDTOs[i].Id == wishlistList[j].ProductId && productspecDetails.ProductSpecificationId == wishlistList[j].ProductSpecificationId)
                             {
                                 productsDTOs[i].WishlistedProduct = true;
@@ -179,7 +179,7 @@ namespace Shoppite.Infrastructure.Repositories
                 if (DefaultSpecification != null)
                 {
                    // var specification = await _MasterContext.SpecificationSetups.FirstAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
-                    if (productsDTOs[i].SpecificationIds != DefaultSpecification.SpecificationId)
+                    if (productsDTOs[i].SpecificationId != DefaultSpecification.SpecificationId)
                     {
                         productsDTOs[i].ProductList = null;
 
@@ -220,7 +220,7 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.Quantity = Convert.ToInt32(result["qty"]);
                         productsDTO.ProductGUID = (Guid)result["ProductGUID"];
                         productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
-                        productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
+                        productsDTO.SpecificationId = Convert.ToInt32(result["SpecificationIds"]);
                         productsDTO.orgId = Convert.ToInt32(orgId);
                         productsDTO.BrandId = Convert.ToInt32(result["BrandId"]);
                         productsDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
@@ -299,7 +299,7 @@ namespace Shoppite.Infrastructure.Repositories
                         product.ProductGuid = (Guid)result["ProductGuid"];
                         product.SpecificationNames = result["SpecificationNames"].ToString();
                         product.SpecificationImage = result["SpecificationImage"].ToString();
-                        product.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
+                        product.SpecificationId = Convert.ToInt32(result["SpecificationIds"]);
                         product.Image = result["Image"].ToString();
                         product.Brand = result["Brands"].ToString();
                         product.Price = Convert.ToDouble(result["Price"]);
@@ -365,7 +365,7 @@ namespace Shoppite.Infrastructure.Repositories
                     var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
                     if(specification!=null)
                     {
-                        bestSellerDTOs[i].SpecificationIds = specification.SpecificationId;
+                        bestSellerDTOs[i].SpecificationId = specification.SpecificationId;
                         bestSellerDTOs[i].SpecificationNames = specification.SpecificationName;
                     }                 
                 }               
@@ -420,7 +420,7 @@ namespace Shoppite.Infrastructure.Repositories
                     var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
                     if(specification!=null)
                     {
-                        productsDTOs[i].SpecificationIds = specification.SpecificationId;
+                        productsDTOs[i].SpecificationId = specification.SpecificationId;
                         productsDTOs[i].SpecificationNames = specification.SpecificationName;
                     }
                    
@@ -534,7 +534,7 @@ namespace Shoppite.Infrastructure.Repositories
                     var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
                     if (specification != null)
                     {
-                        productsDTOs[i].SpecificationIds = (int)DefaultSpecification.SpecificationId;
+                        productsDTOs[i].SpecificationId = (int)DefaultSpecification.SpecificationId;
                         productsDTOs[i].SpecificationNames = specification.SpecificationName;
                     }
 
@@ -548,7 +548,7 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     for (int j = 0; j < wishlistList.Count; j++)
                     {
-                        if (productsDTOs[i].SpecificationIds == 0)
+                        if (productsDTOs[i].SpecificationId == 0)
                         {
                             if (productsDTOs[i].Id == wishlistList[j].ProductId)
                             {
@@ -557,7 +557,7 @@ namespace Shoppite.Infrastructure.Repositories
                         }
                         else
                         {
-                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productsDTOs[i].SpecificationIds && x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == orgId);
+                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productsDTOs[i].SpecificationId && x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == orgId);
                             if (productsDTOs[i].Id == wishlistList[j].ProductId && productspecDetails.ProductSpecificationId == wishlistList[j].ProductSpecificationId)
                             {
                                 productsDTOs[i].WishlistedProduct = true;
@@ -588,7 +588,7 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     ProductVariationDTO productVariationdetails = new();
                     productVariationdetails.SpecificationNames = result["SpecificationNames"].ToString();
-                    productVariationdetails.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);
+                    productVariationdetails.SpecificationId = Convert.ToInt32(result["SpecificationIds"]);
                     productVariationdetails.ProductGUId = (Guid)ProductGUID;
                     productVariationdetails.OrgId = Convert.ToInt32(OrgId);
                     productVariationdetails.IsSpecificationExist = Convert.ToBoolean(result["IsSpecificationExist"]);
@@ -634,7 +634,7 @@ namespace Shoppite.Infrastructure.Repositories
                     productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
                     productsDTO.Image = result["Image"].ToString();
                     productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
-                    productsDTO.SpecificationIds= Convert.ToInt32(result["SpecificationIds"]);
+                    productsDTO.SpecificationId= Convert.ToInt32(result["SpecificationIds"]);
                     productsDTO.Brand = result["Brand"].ToString();
                     productsDTO.Price = Convert.ToDouble(result["Price"]);
                     productsDTO.ProductList = ProductList;
@@ -655,7 +655,7 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     for (int j = 0; j < wishlistList.Count; j++)
                     {
-                        if (productVariation[i].SpecificationIds == 0)
+                        if (productVariation[i].SpecificationId == 0)
                         {
                             if (productVariation[i].Id == wishlistList[j].ProductId)
                             {
@@ -664,7 +664,7 @@ namespace Shoppite.Infrastructure.Repositories
                         }
                         else
                         {
-                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productVariation[i].SpecificationIds && x.ProductGuid == productVariation[i].ProductGUID && x.OrgId == OrgId);
+                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productVariation[i].SpecificationId && x.ProductGuid == productVariation[i].ProductGUID && x.OrgId == OrgId);
                             if (productVariation[i].Id == wishlistList[j].ProductId && productspecDetails.ProductSpecificationId == wishlistList[j].ProductSpecificationId)
                             {
                                 productVariation[i].WishlistedProduct = true;
@@ -684,7 +684,7 @@ namespace Shoppite.Infrastructure.Repositories
                         productVariation[i].Price = productVariation[i].ProductPrice;
                     }
                     
-                    if (productVariation[i].SpecificationIds != DefaultSpecification.SpecificationId)
+                    if (productVariation[i].SpecificationId != DefaultSpecification.SpecificationId)
                     {
                         productVariation[i].ProductList = null;
                     }                   
