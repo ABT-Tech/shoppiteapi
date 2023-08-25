@@ -31,10 +31,10 @@ namespace Shoppite.Infrastructure.Repositories
 
                 command.CommandText = strSQL;
                 command.CommandType = CommandType.StoredProcedure;
-                var parameter = command.CreateParameter();             
+                var parameter = command.CreateParameter();
                 command.Parameters.Add(new SqlParameter("@OrgId", OrgId));
                 command.Parameters.Add(new SqlParameter("@UserId", UserId));
-                           
+
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())
@@ -64,11 +64,11 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task<string> UserRegistration(UserRegistrationDTO userRegistration)
         {
-            var findemail = _MasterContext.Users.FirstOrDefault(x => x.Email == userRegistration.Email&&x.OrgId==userRegistration.OrgId);
-            if(findemail!=null)
+            var findemail = _MasterContext.Users.FirstOrDefault(x => x.Email == userRegistration.Email && x.OrgId == userRegistration.OrgId);
+            if (findemail != null)
             {
-              return "User Exist!! Please Try with new Email";
-                
+                return "User Exist!! Please Try with new Email";
+
             }
             else
             {
@@ -103,17 +103,17 @@ namespace Shoppite.Infrastructure.Repositories
                 await _MasterContext.SaveChangesAsync();
                 return "You are Registered!!";
             }
-            
+
         }
         public async Task UpdateUserProfile(UserDTO userDTO)
         {
-            var users =  _MasterContext.Users.FirstOrDefault(u=>u.UserId==userDTO.userId & u.OrgId==userDTO.OrgId);
-            var username = _MasterContext.UsersProfiles.FirstOrDefault(a => a.UserName == users.Email & a.OrgId==users.OrgId);
+            var users = _MasterContext.Users.FirstOrDefault(u => u.UserId == userDTO.userId & u.OrgId == userDTO.OrgId);
+            var username = _MasterContext.UsersProfiles.FirstOrDefault(a => a.UserName == users.Email & a.OrgId == users.OrgId);
             if (users != null)
             {
-                users.Username = userDTO.ChangeName;         
-                users.Email = userDTO.ChangeEmail;   
-                _MasterContext.Entry(users).State = EntityState.Detached;          
+                users.Username = userDTO.ChangeName;
+                users.Email = userDTO.ChangeEmail;
+                _MasterContext.Entry(users).State = EntityState.Detached;
                 _MasterContext.Entry(users).State = EntityState.Modified;
                 await _MasterContext.SaveChangesAsync();
             }
@@ -128,17 +128,17 @@ namespace Shoppite.Infrastructure.Repositories
                 profile.State = userDTO.ChangeState;
                 profile.Zip = userDTO.Zipcode;
 
-                _MasterContext.Entry(profile).State = EntityState.Detached;          
+                _MasterContext.Entry(profile).State = EntityState.Detached;
                 _MasterContext.Entry(profile).State = EntityState.Modified;
                 await _MasterContext.SaveChangesAsync();
             }
         }
         public async Task<string> ForgetPassword(ForgetPassword password)
         {
-            var userDetails =  _MasterContext.Users.Where(u => u.Email == password.Email && u.OrgId == password.OrgId).FirstOrDefault();
-            if(userDetails!=null)
+            var userDetails = _MasterContext.Users.Where(u => u.Email == password.Email && u.OrgId == password.OrgId).FirstOrDefault();
+            if (userDetails != null)
             {
-                if ( password.Password == password.ConfirmPassword)
+                if (password.Password == password.ConfirmPassword)
                 {
                     userDetails.Password = password.Password;
                     _MasterContext.Entry(userDetails).State = EntityState.Detached;
@@ -192,11 +192,11 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task<string> UpdateUserStatus(CustomerInfo cinfo)
         {
-            var CustomerInfo = await _MasterContext.Users.Where(x=>x.UserId==cinfo.userId&&x.OrgId==cinfo.orgId&&x.Email==cinfo.Email).FirstOrDefaultAsync();
+            var CustomerInfo = await _MasterContext.Users.Where(x => x.UserId == cinfo.userId && x.OrgId == cinfo.orgId && x.Email == cinfo.Email).FirstOrDefaultAsync();
             var statusDetail = await _MasterContext.UsersProfiles.Where(c => c.OrgId == cinfo.orgId && c.UserName == CustomerInfo.Email).FirstOrDefaultAsync();
             if (statusDetail != null)
             {
-                if(statusDetail.Status=="Active")
+                if (statusDetail.Status == "Active")
                 {
                     statusDetail.Status = "InActive";
                     _MasterContext.Entry(statusDetail).State = EntityState.Detached;
@@ -221,7 +221,7 @@ namespace Shoppite.Infrastructure.Repositories
             Coupan coupan = new();
             {
                 coupan.CoupanCode = coupanDTO.CoupanCode;
-                coupan.CreatedAt = DateTime.Now;               
+                coupan.CreatedAt = DateTime.Now;
             }
             _MasterContext.Coupans.Add(coupan);
             await _MasterContext.SaveChangesAsync();
@@ -230,12 +230,9 @@ namespace Shoppite.Infrastructure.Repositories
 
         public async Task<UserCoupanResponse> ApplyCoupan(CoupanDTO coupans)
         {
-            UserCoupanResponse response = new();           
+            UserCoupanResponse response = new();
             var getCoupanId = await _MasterContext.Coupans.FirstOrDefaultAsync(x => x.CoupanCode == coupans.CoupanCode);
-            var getUserDetail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.UserId==coupans.UserId && x.OrgId == coupans.OrgId);
-            var getUserMobileNum = await _MasterContext.UsersProfiles.FirstOrDefaultAsync(x => x.UserName == getUserDetail.Email && x.OrgId == coupans.OrgId);
 
-            var CoupanDetails = await _MasterContext.User_Coupans.ToListAsync();
             if (getCoupanId == null)
             {
                 response.StatusCode = 1;
@@ -244,7 +241,21 @@ namespace Shoppite.Infrastructure.Repositories
             }
             else
             {
-                var getUserCouponDeail = await _MasterContext.User_Coupans.FirstOrDefaultAsync(x => x.UserId == coupans.UserId && x.CoupanId == getCoupanId.CoupanId);
+                var getUserDetail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.UserId == coupans.UserId && x.OrgId == coupans.OrgId);
+                if (getUserDetail == null)
+                {
+                    response.StatusCode = 1;
+                    response.Message = "Details not Found please Update Details!!";
+                    return response;
+                }
+                var getUserMobileNum = await _MasterContext.UsersProfiles.FirstOrDefaultAsync(x => x.UserName == getUserDetail.Email && x.OrgId == coupans.OrgId);
+                if (getUserMobileNum == null)
+                {
+                    response.StatusCode = 1;
+                    response.Message = "Details not Found please Update Details!!";
+                    return response;
+                }
+                var getUserCouponDeail = await _MasterContext.User_Coupans.FirstOrDefaultAsync(x => x.UserId == coupans.UserId && x.CoupanId == getCoupanId.CoupanId && x.ContactNumber == getUserMobileNum.ContactNumber);
                 if (getUserCouponDeail == null && getCoupanId != null)
                 {
                     coupans.CoupanId = getCoupanId.CoupanId;
@@ -258,41 +269,26 @@ namespace Shoppite.Infrastructure.Repositories
                     response.StatusCode = 0;
                     if (getUserCouponDeail.ContactNumber == getUserMobileNum.ContactNumber)
                     {
+                        response.StatusCode = 1;
                         response.CoupanId = getCoupanId.CoupanId;
                         response.Message = "You Have Reached To Maximum limit for this shop try in another shop!!";
                         return response;
                     }
-                    else if (getUserMobileNum.ContactNumber == null)
-                    {
-                        response.Message = "Details not Found Plese Update Details!!";
-                        return response;
-                    }
                     else
                     {
+                        response.StatusCode = 1;
+                        response.Message = "Applied Coupon Out Of Stock!!";
                         return response;
                     }
 
                 }
-                else if (CoupanDetails != null && CoupanDetails.Count <= 5)
+                else
                 {
-                    response.StatusCode = 0;
-                    if (CoupanDetails.Count == 5)
-                    {
-                        response.Message = "You Have Reached To Maximum limit!!";
-                        return response;
-                    }
-                    else
-                    {
-                        coupans.CoupanId = getCoupanId.CoupanId;
-                        response.CoupanId = coupans.CoupanId;
-                        response.Message = coupans.CoupanCode + " Applied!!";
-                        return response;
-                    }
-
+                    response.StatusCode = 1;
+                    response.Message = "Applied Coupon Out Of Stock!!";
+                    return response;
                 }
-                return response;
             }
         }
     }
 }
- 

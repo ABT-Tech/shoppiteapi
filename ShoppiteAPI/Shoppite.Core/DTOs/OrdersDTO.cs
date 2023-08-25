@@ -14,5 +14,6 @@ namespace Shoppite.Core.DTOs
         public object BaseTotalPrice { get; set; }
         public bool OnePay { get; set; }
         public int CoupanId { get; set; }
+        public bool IsCouponApplied { get; set; }
     }
 }
