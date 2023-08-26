@@ -42,8 +42,16 @@ namespace Shoppite.Infrastructure.Repositories
                 int p = 0;
 
                 var productDetail = _MasterContext.ProductBasics.FirstOrDefault(x => x.ProductId == orders.ProductLists[p].Id);
+                decimal? discountPrice = 0; //orders.ProductLists[p].Price;
                 var Price = _MasterContext.ProductPrices.FirstOrDefault(x => x.ProductGuid == productDetail.ProductGuid);
-                var discountPrice = Price.Price;
+                if (orders.ProductLists[p].SpecificationId != 0)
+                {
+                    var productSpecification = _MasterContext.ProductSpecifications.FirstOrDefault(x => x.ProductGuid == productDetail.ProductGuid);
+                    discountPrice = productSpecification.Price == null ? orders.ProductLists[p].Price: productSpecification.Price ;
+                }
+                else {
+                    discountPrice = orders.ProductLists[p].Price;
+                }
                 if (orders.IsCouponApplied == true && orders.CoupanId != 0)
                 {
                     if (orders.ProductLists[p].Quantity * discountPrice < 2000)
