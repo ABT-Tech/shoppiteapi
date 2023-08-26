@@ -64,10 +64,10 @@ namespace Shoppite.Infrastructure.Repositories
                     else
                     {
                         discountPrice = returnDiscountPrice(orders.ProductLists[p].Quantity, discountPrice);
-                        discountPrice = Math.Truncate(100 * discountPrice.Value) / 100;
                     }
 
                 }
+                discountPrice = Math.Round((decimal)discountPrice, 0);
                 OrderBasic buynow = new()
                 {
                     OrderGuid = orderMaster.OrderGuid,
@@ -193,6 +193,7 @@ namespace Shoppite.Infrastructure.Repositories
                                     }
 
                                 }
+                                discountPrice = Math.Round((decimal)discountPrice, 0);
                                 check[i].Price = discountPrice;
                                 check[i].OrderStatus = "Confirmed";
                                 check[i].Qty = orders.ProductLists[j].Quantity;
