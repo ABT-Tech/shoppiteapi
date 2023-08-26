@@ -11,6 +11,8 @@ namespace Shoppite.Core.Model
         public int Org_CategoryId { get; set; }
         public int CategoryName { get; set; }
         public string CategoryImage { get; set; }
+        public Boolean IsActive { get; set; }
+        public int SortOrder { get; set; }
 
     }
 }

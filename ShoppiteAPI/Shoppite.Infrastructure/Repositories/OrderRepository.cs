@@ -61,6 +61,7 @@ namespace Shoppite.Infrastructure.Repositories
                     else
                     {
                         discountPrice = returnDiscountPrice(orders.ProductLists[p].Quantity, discountPrice);
+                        discountPrice = Math.Truncate(100 * discountPrice.Value) / 100;
                     }
 
                 }

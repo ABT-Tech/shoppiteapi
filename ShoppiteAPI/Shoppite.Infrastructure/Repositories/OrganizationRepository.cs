@@ -67,7 +67,9 @@ namespace Shoppite.Infrastructure.Repositories
                 string strSQL = "SELECT OrganizationCategory.Org_CategoryId, " +
                                 "OrganizationCategory.CategoryName, " +
                                 "OrganizationCategory.CategoryImage " +
-                                "FROM OrganizationCategory ";
+                                "FROM OrganizationCategory " +
+                                "WhERE OrganizationCategory.IsActive=1 Order by SortOrder asc "
+                                ;
 
                 command.CommandText = strSQL;
                 command.CommandType = CommandType.Text;

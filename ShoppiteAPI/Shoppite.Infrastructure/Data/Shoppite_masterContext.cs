@@ -829,7 +829,7 @@ namespace Shoppite.Infrastructure.Data
             modelBuilder.Entity<OrganizationCategory>(entity =>
             {
                 entity.HasKey(e => e.Org_CategoryId);
-
+                entity.Property(e => e.IsActive).HasColumnName("IsActive");
                 entity.ToTable("OrganizationCategory");
             });
             modelBuilder.Entity<PageCategory>(entity =>
