@@ -249,13 +249,21 @@ namespace Shoppite.Infrastructure.Repositories
                     return response;
                 }
                 var getUserMobileNum = await _MasterContext.UsersProfiles.FirstOrDefaultAsync(x => x.UserName == getUserDetail.Email && x.OrgId == coupans.OrgId);
+                var getVendorDetails = await _MasterContext.UsersProfiles.FirstOrDefaultAsync(x => x.UserName == getUserDetail.Email && x.OrgId == coupans.OrgId&&x.Type=="vendor");
+                if (getUserMobileNum.Type=="vendor")
+                {
+                    response.StatusCode = 1;
+                    response.Message = "You are not applicable for this coupon!!";
+                    return response;
+
+                }
                 if (getUserMobileNum == null)
                 {
                     response.StatusCode = 1;
                     response.Message = "Details not Found please Update Details!!";
                     return response;
                 }
-                var getUserCouponDeail = await _MasterContext.User_Coupans.FirstOrDefaultAsync(x => x.UserId == coupans.UserId && x.CoupanId == getCoupanId.CoupanId && x.ContactNumber == getUserMobileNum.ContactNumber);
+                var getUserCouponDeail = await _MasterContext.User_Coupans.FirstOrDefaultAsync(x =>x.CoupanId == getCoupanId.CoupanId && x.ContactNumber == getUserMobileNum.ContactNumber);
                 if (getUserCouponDeail == null && getCoupanId != null)
                 {
                     coupans.CoupanId = getCoupanId.CoupanId;
@@ -264,7 +272,7 @@ namespace Shoppite.Infrastructure.Repositories
                     response.StatusCode = 0;
                     return response;
                 }
-                else if (getUserCouponDeail != null && getUserCouponDeail.OrgId == coupans.OrgId)
+                else if (getUserCouponDeail != null)
                 {
                     response.StatusCode = 0;
                     if (getUserCouponDeail.ContactNumber == getUserMobileNum.ContactNumber)
@@ -280,7 +288,6 @@ namespace Shoppite.Infrastructure.Repositories
                         response.Message = "Applied Coupon Out Of Stock!!";
                         return response;
                     }
-
                 }
                 else
                 {
