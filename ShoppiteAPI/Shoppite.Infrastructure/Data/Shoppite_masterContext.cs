@@ -83,6 +83,8 @@ namespace Shoppite.Infrastructure.Data
         public virtual DbSet<WebsiteSetupScript> WebsiteSetupScripts { get; set; }
         public virtual DbSet<Coupan> Coupans { get; set; }
         public virtual DbSet<User_Coupan> User_Coupans { get; set; }
+        public virtual DbSet<WhatsAppMessages> WhatsAppMessages { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -1319,6 +1321,29 @@ namespace Shoppite.Infrastructure.Data
                 entity.HasKey(e => e.Id);
 
                 entity.ToTable("Notifications_Token");
+            });
+            modelBuilder.Entity<WhatsAppMessages>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+
+                entity.ToTable("WhatsAppMessages");
+
+                entity.Property(e => e.MobileNumber).HasMaxLength(50);
+
+                entity.Property(e => e.MessageRequest).HasMaxLength(2000);
+
+                entity.Property(e => e.TemplateID).HasMaxLength(50);
+
+                entity.Property(e => e.Is_SendMessage).HasColumnName("Is_SendMessage");
+
+                entity.Property(e => e.MessageRequest).HasMaxLength(2000);
+
+                entity.Property(e => e.MessageResponse).HasMaxLength(2000);
+
+                entity.Property(e => e.OrgName).HasMaxLength(100);
+
+                entity.Property(e => e.InsertDateTime).HasColumnType("datetime");
+
             });
             modelBuilder.Entity<Notifications>(entity =>
             {

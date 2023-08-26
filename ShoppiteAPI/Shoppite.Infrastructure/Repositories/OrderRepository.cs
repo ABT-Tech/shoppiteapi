@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
 using Shoppite.Core.DTOs;
 using Shoppite.Core.Model;
 using Shoppite.Core.Repositories;
@@ -20,7 +22,7 @@ namespace Shoppite.Infrastructure.Repositories
     public class OrderRepository : IOrderRepository
     {
         protected readonly Shoppite_masterContext _MasterContext;
-        protected readonly IConfiguration _configuration;
+        protected readonly IConfiguration _configuration;      
         public OrderRepository(Shoppite_masterContext dbContext, IConfiguration configuration)
         {
             _MasterContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
@@ -28,6 +30,7 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task<string> BuyNow(OrdersDTO orders)
         {
+            var IsWhatsappEnable = _configuration.GetSection("WhatsAppSettings")["IsEnable"].ToString();
             var getUsername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == orders.UserId && u.OrgId == orders.orgid);
             if (orders.OrderGuid == Guid.Empty)
             {
@@ -80,7 +83,6 @@ namespace Shoppite.Infrastructure.Repositories
                 };
                 _MasterContext.OrderBasics.Add(buynow);
                 await _MasterContext.SaveChangesAsync();
-
                 OrderVariation variation = new();
                 variation.OrderGuid = buynow.OrderGuid;
                 variation.OrderId = buynow.OrderId;
@@ -156,6 +158,12 @@ namespace Shoppite.Infrastructure.Repositories
                     shipping.InsertDate = DateTime.Now;
                     _MasterContext.OrderShippings.Add(shipping);
                     await _MasterContext.SaveChangesAsync();
+                }
+
+                if (buynow.OrderStatus == "Confirmed" && IsWhatsappEnable == "1" )
+                {
+                    var Contactdetails = await GetVendorContactDetails(orderMaster.OrderGuid);
+                    await SendWhatsAppMesage(Contactdetails.Item1, Contactdetails.Item2, Contactdetails.Item3, "order_notify_to_vendor_templateid");
                 }
 
             }
@@ -277,7 +285,14 @@ namespace Shoppite.Infrastructure.Repositories
                     _MasterContext.OrderShippings.Add(shipping);
                     await _MasterContext.SaveChangesAsync();
                 }
+                if (IsWhatsappEnable == "1")
+                {
+                    var Contactdetail = await GetVendorContactDetails(orders.OrderGuid.Value);
+                    await SendWhatsAppMesage(Contactdetail.Item1, Contactdetail.Item2, Contactdetail.Item3, "order_notify_to_vendor_templateid");
+                }
+                   
             }
+            
             if (orders.CoupanId != 0)
             {
 
@@ -619,5 +634,70 @@ namespace Shoppite.Infrastructure.Repositories
             decimal response = Convert.ToInt32(((Price * Quantity) - 1000) / Quantity);
             return response;
         }
+
+        public async Task<(int, string, string)> GetVendorContactDetails(Guid OrderGuid)
+        {
+            var result = await (from o in _MasterContext.OrderMasters
+                                join p in _MasterContext.UsersProfiles on o.OrgId equals p.OrgId
+                                join or in _MasterContext.Organizations on p.OrgId equals or.Id
+                                where p.Type == "vendor" && o.OrderGuid == OrderGuid
+                                select new { o.OrderMasterId, p.ContactNumber, or.OrgName }).FirstOrDefaultAsync();
+
+
+            return (result.OrderMasterId, result.ContactNumber, result.OrgName);
+
+        }
+        public async Task SendWhatsAppMesage(int orderID, string mobileNumber, string orgname, string template)
+        {
+            try
+            {
+                var WhatsAppURL = _configuration.GetSection("WhatsAppSettings")["WhatsAppURL"].ToString();
+                var APIKey = _configuration.GetSection("WhatsAppSettings")["APIKey"].ToString();
+                var templetID = _configuration.GetSection("WhatsAppSettings")[template].ToString();
+                var client = new RestClient(WhatsAppURL + "sendnotification");
+                var IsTestEnable = _configuration.GetSection("WhatsAppSettings")["IsTest"].ToString();
+                var TestMobileNumer = _configuration.GetSection("WhatsAppSettings")["TestMobileNumber"].ToString();
+                var request = new RestRequest("Message");
+                var MobileNumber = mobileNumber.StartsWith("91") ? mobileNumber : "91" + mobileNumber;
+                MobileNumber = IsTestEnable == "1" ? TestMobileNumer : MobileNumber;
+                var ordersID = orderID.ToString().PadLeft(5, '0');
+                //LogError("WhatsApp Request initialize - MobileNumber : " + MobileNumber + ", WhatsAppURL : " + WhatsAppURL + ", ordersID : '" + ordersID + "', Template : " + templetID + ", orgname :" + orgname + " , APIKEY : " + APIKey);
+                string body = "";
+                request.AddHeader("API-KEY", APIKey);
+                request.AddHeader("Content-Type", "application/json");
+                if (template == "order_notify_to_vendor_templateid")
+                {
+                    body = "{\r\n" + "\"mobile\": \"" + MobileNumber + "\",\"templateid\": \"" + templetID + "\",\"template\":{ \"components\":[{ \"type\":\"body\",\"parameters\":[{ \"type\":\"text\",\"text\":\"" + orgname + "\"},{ \"type\":\"text\",\"text\":\"" + ordersID + "\"}]}]}}";
+                    //LogError("WhatsApp Request Body - WhatsappRequestBody : " + body);
+                }
+                if (template == "order_shiping_templateid")
+                {
+                    body = "{\r\n" + "\"mobile\": \"" + MobileNumber + "\",\"templateid\": \"" + templetID + "\",\"template\":{ \"components\":[{ \"type\":\"body\",\"parameters\":[{ \"type\":\"text\",\"text\":\"" + orgname + "\"},{ \"type\":\"text\",\"text\":\"" + ordersID + "\"}]}]}}";
+                    //LogError("WhatsApp Request Body - WhatsappRequestBody : " + body);
+                }
+                request.AddParameter("application/json", body, ParameterType.RequestBody);
+                var response = await client.ExecutePostAsync(request);
+                //LogError("WhatsApp response - StatusCode   :" + response.IsSuccessStatusCode);
+                JObject jObject = JsonConvert.DeserializeObject<JObject>(response.Content);
+                bool status = (bool)jObject["status"];
+                //LogError("status : " + status);
+                WhatsAppMessages whatsApp = new WhatsAppMessages();
+                whatsApp.MobileNumber = MobileNumber;
+                whatsApp.MessageRequest = body;
+                whatsApp.TemplateID = templetID;
+                whatsApp.Is_SendMessage = status;
+                whatsApp.MessageResponse = response.Content;
+                whatsApp.OrgName = orgname;
+                whatsApp.InsertDateTime = DateTime.Now;
+                //LogError("WhatsApp Insert Request in Database - MobileNo : " + whatsApp.MobileNumber + ", MessageRequest : " + whatsApp.MessageRequest + ", TemplateID : " + whatsApp.TemplateID + ", Is_SendMessage : " + whatsApp.Is_SendMessage + ", MessageResponse : " + whatsApp.MessageResponse + ", OrgName : " + whatsApp.OrgName + "InsertDateTime : " + whatsApp.InsertDateTime);
+                await _MasterContext.WhatsAppMessages.AddAsync(whatsApp);
+                await _MasterContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                //LogError("WhatsApp Exception - Mobile Number : " + mobileNumber + ", Template : " + template + ", Message : " + ex.Message + ", Stack Trace : " + ex.StackTrace);
+            }
+        }
+
     }
 }
