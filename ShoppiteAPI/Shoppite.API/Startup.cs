@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Shoppite.Application.Handlers.QueryHandlers;
+using Shoppite.Core.DTOs;
 
 namespace Shoppite.API
 {
@@ -36,7 +37,7 @@ namespace Shoppite.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
             services.AddControllers();
             services.AddDbContext<Shoppite_masterContext>(
                  m => m.UseSqlServer(Configuration.GetConnectionString("ShoppiteDB")), ServiceLifetime.Transient);
