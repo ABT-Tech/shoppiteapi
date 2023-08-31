@@ -64,7 +64,7 @@ namespace Shoppite.Infrastructure.Repositories
         }
         public async Task<string> UserRegistration(UserRegistrationDTO userRegistration)
         {
-            var findemail = _MasterContext.Users.FirstOrDefault(x => x.Email == userRegistration.Email && x.OrgId == userRegistration.OrgId);
+            var findemail = _MasterContext.UsersProfiles.FirstOrDefault(x => x.UserName == userRegistration.Email && x.OrgId == userRegistration.OrgId&&x.Type== "Client");
             if (findemail != null)
             {
                 return "User Exist!! Please Try with new Email";
@@ -296,6 +296,74 @@ namespace Shoppite.Infrastructure.Repositories
                     return response;
                 }
             }
+        }
+        public async Task<UserRegisteredCheckResponse> UserVerify(UserExistanceDTO users)
+        {
+            UserRegisteredCheckResponse userResponse = new();
+            var findUser = await _MasterContext.UsersProfiles.Where(x => x.UserName == users.Email && x.ContactNumber == users.ContactNumber && x.Type == "Client").ToListAsync();
+            var orgNames = string.Empty;
+            if (findUser.Count > 0)
+            {
+                for (int i = 0; i < findUser.Count; i++)
+                {
+                    var findOrgs = await _MasterContext.Organizations.FirstOrDefaultAsync(x=>x.Id==findUser[i].OrgId);                
+                    orgNames+= findOrgs.OrgName + ",";
+
+                    //orgNames = orgNames.Substring(0, orgNames.Length - 1);
+                } 
+                userResponse.StatusCode = 0;
+                orgNames = orgNames.TrimEnd(',');
+                userResponse.Message = "you are Registered with "+ orgNames;               
+                return userResponse;
+            }
+            else
+            {
+                userResponse.StatusCode = 1;
+                userResponse.Message = "you are Not Registered with Any Shop";
+                return userResponse;
+            }
+        }
+        public async Task<string> RegisterToanotherOrg(UserExistanceDTO users)
+        {
+            var findUser = await _MasterContext.UsersProfiles.Where(x => x.UserName == users.Email && x.ContactNumber == users.ContactNumber && x.Type == "Client").ToListAsync();
+
+            for (int i = 0; i <= findUser.Count; i++)
+            {
+                var regsiterdUserDetail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.OrgId == findUser[0].OrgId && x.Email == findUser[1].UserName);
+                if (i == 0)
+                {
+                    User us = new();
+                    {
+                        us.Username = regsiterdUserDetail.Username;
+                        us.Password = regsiterdUserDetail.Password;
+                        us.CreatedDate = DateTime.Now;
+                        us.Email = regsiterdUserDetail.Email;
+                        us.Guid = Guid.NewGuid();
+                        us.OrgId = users.OrgId;
+                    }
+                    _MasterContext.Users.Add(us);
+                    await _MasterContext.SaveChangesAsync();
+                    UsersProfile profile = new();
+                    {
+                        var userGuid = _MasterContext.Users.FirstOrDefault(x => x.Guid == us.Guid);
+                        profile.Type = "Client";
+                        profile.InsertDate = DateTime.Now;
+                        profile.ProfileGuid = userGuid.Guid;
+                        profile.OrgId = users.OrgId;
+                        profile.UserName = regsiterdUserDetail.Email;
+                        profile.ContactNumber = findUser[0].ContactNumber;
+                        profile.Address = findUser[0].Address;
+                        profile.City = findUser[0].City;
+                        profile.State = findUser[0].State;
+                        profile.Zip = findUser[0].Zip;
+                        profile.Status = "Active";
+                    }
+                    _MasterContext.UsersProfiles.Add(profile);
+                    await _MasterContext.SaveChangesAsync();
+                    return "You are Registered!!";
+                }
+            }
+            return "";
         }
     }
 }

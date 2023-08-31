@@ -1,6 +1,9 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using MailKit.Security;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using MimeKit;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -13,7 +16,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Mail;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,15 +29,18 @@ namespace Shoppite.Infrastructure.Repositories
     public class OrderRepository : IOrderRepository
     {
         protected readonly Shoppite_masterContext _MasterContext;
-        protected readonly IConfiguration _configuration;      
-        public OrderRepository(Shoppite_masterContext dbContext, IConfiguration configuration)
+        protected readonly IConfiguration _configuration;
+        private readonly SmtpSettings _smtpSettings;
+        public OrderRepository(Shoppite_masterContext dbContext, IConfiguration configuration, IOptions<SmtpSettings> smtpSettings)
         {
             _MasterContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _configuration = configuration;
+            _smtpSettings = smtpSettings.Value;
         }
         public async Task<string> BuyNow(OrdersDTO orders)
         {
             var IsWhatsappEnable = _configuration.GetSection("WhatsAppSettings")["IsEnable"].ToString();
+            var IsEmailEnable = _configuration.GetSection("SmtpSettings")["IsEmailEnable"].ToString();
             var getUsername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == orders.UserId && u.OrgId == orders.orgid);
             if (orders.OrderGuid == Guid.Empty)
             {
@@ -165,6 +175,10 @@ namespace Shoppite.Infrastructure.Repositories
                     var Contactdetails = await GetVendorContactDetails(orderMaster.OrderGuid);
                     await SendWhatsAppMesage(Contactdetails.Item1, Contactdetails.Item2, Contactdetails.Item3, "order_notify_to_vendor_templateid");
                 }
+                if(buynow.OrderStatus== "Confirmed" && IsEmailEnable=="1")
+                {
+                    await SendEmailAsync(getemail.Email, getUsername.Username);
+                }
 
             }
             else
@@ -290,6 +304,10 @@ namespace Shoppite.Infrastructure.Repositories
                 {
                     var Contactdetail = await GetVendorContactDetails(orders.OrderGuid.Value);
                     await SendWhatsAppMesage(Contactdetail.Item1, Contactdetail.Item2, Contactdetail.Item3, "order_notify_to_vendor_templateid");
+                }
+                if(IsEmailEnable=="1")
+                {
+                    await SendEmailAsync(getemail.Email, getUsername.Username);
                 }
                    
             }
@@ -699,6 +717,38 @@ namespace Shoppite.Infrastructure.Repositories
                 //LogError("WhatsApp Exception - Mobile Number : " + mobileNumber + ", Template : " + template + ", Message : " + ex.Message + ", Stack Trace : " + ex.StackTrace);
             }
         }
+        public async Task<string> SendEmailAsync(string recipientEmail, string recipientFirstName)
+        {
 
+            string email = _smtpSettings.SenderEmail;
+            string password =_smtpSettings.Password;
+          
+            var smtp = new SmtpClient(_smtpSettings.SenderName, _smtpSettings.Port)
+            {
+                UseDefaultCredentials = false,
+                EnableSsl = true,
+                Timeout = 20000,
+                Credentials = new NetworkCredential(email, password)
+            };
+            try
+            {              
+                var msg = new MailMessage();
+                msg.From = new MailAddress(email);
+                msg.To.Add(new MailAddress(recipientEmail));
+                msg.Subject = "Test";
+                msg.Body = "Hello";
+                msg.IsBodyHtml = true;              
+                smtp.Send(msg);
+                return "Email Sent Successfully";               
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                smtp.Dispose();
+            }
+        }
     }
 }

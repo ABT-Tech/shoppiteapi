@@ -28,5 +28,7 @@ namespace Shoppite.Application.Commands
     public record PaymentRequest(OrdersDTO orders) : IRequest<PaymentGatewayResponse>;
     public record ApplyCoupan(CoupanDTO coupan) : IRequest<UserCoupanResponse>;
     public record AddCoupan(CoupanDTO coupan) : IRequest<string>;
+    public record VerifyUser(UserExistanceDTO ExistanceDTO) : IRequest<UserRegisteredCheckResponse>;
+    public record RegisterToanotherOrg(UserExistanceDTO ExistanceDTO) : IRequest<string>;
 
 }

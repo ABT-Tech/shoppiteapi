@@ -17,5 +17,7 @@ namespace Shoppite.Core.Repositories
         Task<string> UpdateUserStatus(CustomerInfo customerInfo);
         Task<string> AddCoupan(CoupanDTO coupans);
         Task<UserCoupanResponse> ApplyCoupan(CoupanDTO usercoupans);
+        Task<UserRegisteredCheckResponse> UserVerify(UserExistanceDTO userExistance);
+        Task<string> RegisterToanotherOrg(UserExistanceDTO userExistance);
     }
 }

@@ -78,5 +78,15 @@ namespace Shoppite.API.Controllers
         {
             return await _mediator.Send(new ApplyCoupan(coupan));
         }
+        [HttpPost]
+        public async Task<ActionResult<UserRegisteredCheckResponse>> VerifyUserExistance([FromBody] UserExistanceDTO userExistance)
+        {
+            return await _mediator.Send(new VerifyUser(userExistance));
+        }
+        [HttpPost]
+        public async Task<ActionResult<string>> RegisterToanotherShop([FromBody] UserExistanceDTO userExistance)
+        {
+            return await _mediator.Send(new RegisterToanotherOrg(userExistance));
+        }
     }
 }
