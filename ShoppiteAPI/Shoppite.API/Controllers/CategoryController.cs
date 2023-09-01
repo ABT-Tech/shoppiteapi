@@ -33,5 +33,17 @@ namespace Shoppite.API.Controllers
         {
             return await _mediator.Send(new GetAllCarosolCategories(OrgId));
         }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetAllParentCategories()
+        {
+            return await _mediator.Send(new GetAllParentCategories());
+        }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<object> GetAllCategoriesByParent(int MainCategoryId)
+        {
+            return await _mediator.Send(new GetAllCategoriesByParent(MainCategoryId));
+        }
     }
 }

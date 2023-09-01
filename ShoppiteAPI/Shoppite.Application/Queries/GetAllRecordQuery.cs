@@ -35,4 +35,6 @@ namespace Shoppite.Application.Queries
     public record GetProductDetailsBySpecification(int OrgId, Guid ProductGUId,int? SpecificationId, int? userId) : IRequest<List<ProductResponse>>;
     public record GetOnePayFlag(int OrgId) : IRequest<OnePayFlagResponse>;
     public record GetAllOrganizationCategoryQuery() : IRequest<List<OrganizationCategoryResponse>>;
+    public record GetAllParentCategories() : IRequest<List<MainCategoryResponse>>;
+    public record GetAllCategoriesByParent(int MaincategoryId) : IRequest<List<CategoriesResponse>>;
 }
