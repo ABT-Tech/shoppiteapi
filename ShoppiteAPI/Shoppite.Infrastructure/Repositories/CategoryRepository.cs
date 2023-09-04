@@ -91,7 +91,7 @@ namespace Shoppite.Infrastructure.Repositories
                                "Category_Master.Category_Name AS MainCategory, " +
                                "Category_Master.Icon AS MainCategoryImage " +
                                "FROM Category_Master " +
-                               "WhERE  Category_Master.Parent_Category_Id=0 AND Category_Master.IspUBLISHED=1 Order by Category_Name asc "
+                               "WhERE  Category_Master.Parent_Category_Id=0 AND Category_Master.OrgId=0 AND Category_Master.IspUBLISHED=1 Order by Category_Name asc "
                                ;
 
                 command.CommandText = strSQL;
