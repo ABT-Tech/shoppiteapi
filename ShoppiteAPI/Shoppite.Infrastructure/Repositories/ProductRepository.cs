@@ -727,5 +727,54 @@ namespace Shoppite.Infrastructure.Repositories
             }
 
         }
+        public async Task<List<AllProductsDTO>> GetAllProducts(int? UserId,int? OrgId)
+        {
+            List<AllProductsDTO> productsDTOs = new List<AllProductsDTO>();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_GetAllProducts";
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                parameter.ParameterName = "@OrgId";
+                parameter.Value = OrgId;
+                command.Parameters.Add(parameter);
+
+                await this._MasterContext.Database.OpenConnectionAsync();
+
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        AllProductsDTO productsDTO = new AllProductsDTO();
+                        productsDTO.Id = Convert.ToInt32(result["Id"]);
+                        productsDTO.Title = result["Title"].ToString();
+                        productsDTO.Image = result["Image"].ToString();
+                        productsDTO.Brand = result["Brand"].ToString();
+                        productsDTO.Price = Convert.ToDouble(result["Price"]);
+                        productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                        productsDTO.ProductGUID = (Guid)result["ProductGUID"];
+                        productsDTO.Quantity = Convert.ToInt32(result["quantity"]);
+                        productsDTO.orgId = Convert.ToInt32(result["orgId"]);
+                        productsDTOs.Add(productsDTO);
+                    }
+                }
+            }
+            for (int i = 0; i < productsDTOs.Count; i++)
+            {
+                var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == productsDTOs[i].orgId && x.IsDefault == true);
+                if (DefaultSpecification != null)
+                {
+                    var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId);
+                    if (specification != null)
+                    {
+                        productsDTOs[i].SpecificationId = (int)DefaultSpecification.SpecificationId;
+                        productsDTOs[i].SpecificationNames = specification.SpecificationName;
+                    }
+                }
+            }           
+            return productsDTOs;
+        }
     }
 }
