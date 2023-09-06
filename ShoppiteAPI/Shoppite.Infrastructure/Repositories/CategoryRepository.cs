@@ -27,7 +27,7 @@ namespace Shoppite.Infrastructure.Repositories
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
         
-        public async Task<List<CategoryDTO>> GetAllCategory(int OrgId) 
+        public async Task<List<CategoryDTO>> GetAllCategory(int? OrgId, int OrgCategoryId) 
         {
             var IsCouponEnabled = _configuration.GetSection("CouponSettings")["IsCoupanEnabled"];
             List<CategoryDTO> categoryDtos = new();
@@ -38,7 +38,7 @@ namespace Shoppite.Infrastructure.Repositories
                 command.CommandType = CommandType.StoredProcedure;
                 var parameter = command.CreateParameter();
                 command.Parameters.Add(new SqlParameter("@orgid", OrgId));
-
+                command.Parameters.Add(new SqlParameter("@OrgCategoryId", OrgCategoryId));
                 await this._MasterContext.Database.OpenConnectionAsync();
                 using (var result = await command.ExecuteReaderAsync())
                 {
@@ -75,6 +75,67 @@ namespace Shoppite.Infrastructure.Repositories
                         {
                             categoryDTO.IsCouponEnabled = false;
                         }
+                        categoryDtos.Add(categoryDTO);
+                    }
+                }
+            }
+            return categoryDtos;
+        }
+        public async Task<List<MainCategoryDTO>> GetAllParentcategories()
+        {
+          
+            List<MainCategoryDTO> categoryDtos = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SELECT Category_Master.Category_Id AS MainCategoryId, " +
+                               "Category_Master.Category_Name AS MainCategory, " +
+                               "Category_Master.Icon AS MainCategoryImage " +
+                               "FROM Category_Master " +
+                               "WhERE  Category_Master.Parent_Category_Id=0 AND Category_Master.OrgId=0 AND Category_Master.IspUBLISHED=1 Order by Category_Name asc "
+                               ;
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.Text;
+
+
+                await this._MasterContext.Database.OpenConnectionAsync();
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        MainCategoryDTO categoryDTO = new MainCategoryDTO();
+                        categoryDTO.MainCategoryId= Convert.ToInt32(result["MainCategoryId"]);
+                        categoryDTO.MainCategory= result["MainCategory"].ToString();
+                        categoryDTO.MainCategoryImage= result["MainCategoryImage"].ToString();
+                        categoryDtos.Add(categoryDTO);
+                    }
+                }
+            }
+            return categoryDtos;
+        }
+        public async Task<List<CategoriesDTO>> GetAllCategoriesByMainCategory(int MainCategoryId)
+        {
+            
+            List<CategoriesDTO> categoryDtos = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_GetAllCategories";
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@MainCategoryId", MainCategoryId));
+
+                await this._MasterContext.Database.OpenConnectionAsync();
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        CategoriesDTO categoryDTO = new CategoriesDTO();
+                        categoryDTO.MainCategoryId= Convert.ToInt32(result["MainCategoryId"]);
+                        categoryDTO.CategoryId= Convert.ToInt32(result["CategoryId"]);
+                        categoryDTO.CategoryName=result["CategoryName"].ToString();
+                        categoryDTO.CategoryImage= result["CategoryImage"].ToString();
+
                         categoryDtos.Add(categoryDTO);
                     }
                 }

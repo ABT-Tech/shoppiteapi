@@ -8,6 +8,6 @@ namespace Shoppite.Core.Entities
 {
     public class GeneralDbContext
     {
-        public string ConnectionString = "Server=67.211.213.218,1433\\MSSQLSERVER2017;Database=Shoppite_master;User Id=admin;Password=no563h!H3;";
+        public string ConnectionString = "Server=67.211.213.218,1433\\MSSQLSERVER2017;Database=Shoppite_master_Stage;User Id=admin;Password=no563h!H3;";
     }
 }

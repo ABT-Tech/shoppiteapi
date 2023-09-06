@@ -40,7 +40,7 @@ namespace Shoppite.Infrastructure.Repositories
         public async Task<string> BuyNow(OrdersDTO orders)
         {
             var IsWhatsappEnable = _configuration.GetSection("WhatsAppSettings")["IsEnable"].ToString();
-            var IsEmailEnable = _configuration.GetSection("SmtpSettings")["IsEmailEnable"].ToString();
+            //var IsEmailEnable = _configuration.GetSection("SmtpSettings")["IsEmailEnable"].ToString();
             var getUsername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == orders.UserId && u.OrgId == orders.orgid);
             if (orders.OrderGuid == Guid.Empty)
             {
@@ -175,10 +175,10 @@ namespace Shoppite.Infrastructure.Repositories
                     var Contactdetails = await GetVendorContactDetails(orderMaster.OrderGuid);
                     await SendWhatsAppMesage(Contactdetails.Item1, Contactdetails.Item2, Contactdetails.Item3, "order_notify_to_vendor_templateid");
                 }
-                if(buynow.OrderStatus== "Confirmed" && IsEmailEnable=="1")
+               /* if(buynow.OrderStatus== "Confirmed" && IsEmailEnable=="1")
                 {
                     await SendEmailAsync(getemail.Email, getUsername.Username);
-                }
+                }*/
 
             }
             else
@@ -305,11 +305,11 @@ namespace Shoppite.Infrastructure.Repositories
                     var Contactdetail = await GetVendorContactDetails(orders.OrderGuid.Value);
                     await SendWhatsAppMesage(Contactdetail.Item1, Contactdetail.Item2, Contactdetail.Item3, "order_notify_to_vendor_templateid");
                 }
-                if(IsEmailEnable=="1")
+               /* if(IsEmailEnable=="1")
                 {
                     await SendEmailAsync(getemail.Email, getUsername.Username);
                 }
-                   
+                   */
             }
             
             if (orders.CoupanId != 0)

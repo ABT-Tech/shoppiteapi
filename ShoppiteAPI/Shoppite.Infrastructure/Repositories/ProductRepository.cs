@@ -15,6 +15,7 @@ using Shoppite.Core.Entities;
 using Shoppite.Core.Model;
 using ReadSharp;
 using System.Diagnostics;
+using static Shoppite.Core.DTOs.AllProductsDTO;
 
 namespace Shoppite.Infrastructure.Repositories
 {
@@ -25,9 +26,10 @@ namespace Shoppite.Infrastructure.Repositories
         {
             _MasterContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-        public async Task<List<ProductsDTO>> GetAllProductsByOrganizations(int orgId,int? UserId)
+        public async Task<MasterProductDTO> GetAllProductsByOrganizations(int orgId = 0,int? UserId = null, int orgCat_ID = 0)
         {            
             List<ProductsDTO> productsDTOs = new List<ProductsDTO>();
+            MasterProductDTO masterProductDTO = new MasterProductDTO();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
                 string strSQL = "GetAllProductsByOrganizations";
@@ -35,9 +37,8 @@ namespace Shoppite.Infrastructure.Repositories
                 command.CommandText = strSQL;
                 command.CommandType = CommandType.StoredProcedure;
                 var parameter = command.CreateParameter();
-                parameter.ParameterName = "@Org_ID";
-                parameter.Value = orgId;
-                command.Parameters.Add(parameter);
+                command.Parameters.Add(new SqlParameter("@Org_ID", orgId));
+                command.Parameters.Add(new SqlParameter("@OrgCat_ID", orgCat_ID));
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())
@@ -63,6 +64,8 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.WishlistedProduct = productsDTO.WishlistedProduct;
                         productsDTO.BrandId= Convert.ToInt32(result["BrandId"]);
                         productsDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
+                        productsDTO.Status = result["Status"].ToString();
+                        productsDTO.StatusId = Convert.ToInt32(result["StatusId"]);
                         productsDTOs.Add(productsDTO);
                     }
                 }
@@ -107,8 +110,9 @@ namespace Shoppite.Infrastructure.Repositories
                     }
                 }
             }
-          
-            return productsDTOs;           
+            var productList = productsDTOs.GroupBy(p => p.Status,p => p,(key, g) => new DetailProductDTO { Status = key, productsDTOs = g.ToList() }).ToList();
+            masterProductDTO.MainProductDTOs = productList;
+            return masterProductDTO;           
         }
         public async Task<List<ProductsDTO>> GetWishlistByUser(int orgId, int userId) 
         {
@@ -316,7 +320,7 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return recentlyVieweds;
         }
-        public async Task<List<ProductsByBestSellerDTO>> ProductByBestSellers(int orgId,string type)
+        public async Task<List<ProductsByBestSellerDTO>> ProductByBestSellers(int? orgId,string type,int OrgCategoryId)
         {
             List<ProductsByBestSellerDTO> bestSellerDTOs= new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
@@ -328,6 +332,7 @@ namespace Shoppite.Infrastructure.Repositories
                 var parameter = command.CreateParameter();
                 command.Parameters.Add(new SqlParameter("@orgid", orgId));
                 command.Parameters.Add(new SqlParameter("@type", type));
+                command.Parameters.Add(new SqlParameter("@OrgCategoryId", OrgCategoryId));
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())
@@ -726,6 +731,163 @@ namespace Shoppite.Infrastructure.Repositories
                 await this._MasterContext.Database.CloseConnectionAsync();
             }
 
+        }
+        public async Task<List<AllProductsDTO>> GetAllProducts(int? OrgId,int? OrgCategoryId)
+        {
+            List<AllProductsDTO> productsDTOs = new();
+            //productsDTOs.StausDetails = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_GetAllProducts_BY_STATUS";
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@OrgId", OrgId));
+                command.Parameters.Add(new SqlParameter("@OrgCategoryId", OrgCategoryId));
+
+                await this._MasterContext.Database.OpenConnectionAsync();
+
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        AllProductsDTO productsDTO = new AllProductsDTO();
+                        productsDTO.Id = Convert.ToInt32(result["Id"]);
+                        productsDTO.Title = result["Title"].ToString();
+                        productsDTO.Image = result["Image"].ToString();
+                        productsDTO.Brand = result["Brand"].ToString();
+                        productsDTO.Price = Convert.ToDouble(result["Price"]);
+                        productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                        productsDTO.ProductGUID = (Guid)result["ProductGUID"];
+                        productsDTO.Quantity = Convert.ToInt32(result["quantity"]);
+                        productsDTO.orgId = Convert.ToInt32(result["orgId"]);
+                        productsDTO.BrandId = Convert.ToInt32(result["BrandId"]);
+                        productsDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
+                        productsDTO.Status = result["Status"].ToString();
+                        productsDTOs.Add(productsDTO);
+                    }
+                }
+            }
+
+                //var specificationIds= productsDTOs.Select(x => x.SpecificationId).ToArray();
+                var SpecifcationArray = productsDTOs.ToArray();
+                for (int i = 0; i < SpecifcationArray.Length; i++)
+                {
+                    var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == SpecifcationArray[i].ProductGUID && x.OrgId == SpecifcationArray[i].orgId && x.IsDefault == true);
+                    if (DefaultSpecification != null)
+                    {
+                        var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId);
+                        if (specification != null)
+                        {
+                            SpecifcationArray[i].SpecificationId = (int)DefaultSpecification.SpecificationId;
+                            SpecifcationArray[i].SpecificationNames = specification.SpecificationName;
+                        }
+                    }
+                }
+            
+ 
+            //var statusDetails = await GetAllProducts(OrgId, OrgCategoryId);
+            var productList = productsDTOs.GroupBy(x => new { x.Status, }, (key, g) => new { StatusType = key.Status, productstatusList = g.ToList() });
+            foreach (var sp in productList)
+            {
+                AllProductsDTO status_Product = new AllProductsDTO();
+                status_Product.Status = sp.StatusType;
+
+                status_Product.ProductsByStatus = status_Product.ProductsByStatus == null ? new List<AllProductsDTO>() : status_Product.ProductsByStatus;
+                foreach (var prod in sp.productstatusList)
+                {
+                    AllProductsDTO allProducts = new AllProductsDTO();
+                    allProducts.SpecificationId = prod.SpecificationId;
+                    allProducts.Price = prod.Price;
+                    allProducts.Id = prod.Id;
+                    allProducts.Title = prod.Title;
+                    allProducts.ProductGUID = prod.ProductGUID;
+                    allProducts.Brand = prod.Brand;
+                    allProducts.OldPrice = prod.OldPrice;
+                    allProducts.Quantity = prod.Quantity;
+                    allProducts.orgId = prod.orgId;
+                    allProducts.BrandId = prod.BrandId;
+                    allProducts.CategoryId = prod.CategoryId;
+                    status_Product.ProductsByStatus.Add(allProducts);
+                }
+                productsDTOs.Add(status_Product);
+            }
+            /*  using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+              {
+                  string strSQL = "SELECT TOP(50) STATUS FROM Status " +
+                      "LEFT JOIN PRODUCT_STATUS ON STATUS.STATUSID=STATUS.STATUSID " +
+                      "LEFT JOIN PRODUCT_BASIC ON PRODUCT_STATUS.PRODUCTGUID=PRODUCT_BASIC.PRODUCTGUID " +
+                      "LEFT JOIN ORGANIZATION ON ORGANIZATION.ID= PRODUCT_BASIC.ORGID " +
+                      "LEFT JOIN ORGANIZATIONCATEGORY ON ORGANIZATION.Org_CategoryId=ORGANIZATIONCATEGORY.Org_CategoryId " +
+                      "WHERE ORGANIZATIONCATEGORY.Org_CategoryId= " + OrgCategoryId
+                      ;
+
+                  command.CommandText = strSQL;
+                  command.CommandType = CommandType.Text;
+                  var parameter = command.CreateParameter();
+                  await this._MasterContext.Database.OpenConnectionAsync();
+                  using (var result = await command.ExecuteReaderAsync())
+                  {
+                      while (await result.ReadAsync())
+                      {
+                          productsDTOs.Status = result["Status"].ToString();                     
+                      }
+                  }
+              }*/
+            return productsDTOs;
+        }
+        public async Task<List<AllProductsDTO>> GetAllProductsByCategory(int? OrgId, int OrgCategoryId,int CategoryId)
+        {
+            List<AllProductsDTO> productsDTOs = new();
+            //productsDTOs.StausDetails = new();
+            using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
+            {
+                string strSQL = "SP_GetAllProductsByCAtegoryid";
+
+                command.CommandText = strSQL;
+                command.CommandType = CommandType.StoredProcedure;
+                var parameter = command.CreateParameter();
+                command.Parameters.Add(new SqlParameter("@OrgId", OrgId));
+                command.Parameters.Add(new SqlParameter("@OrgCategoryId", OrgCategoryId));
+                command.Parameters.Add(new SqlParameter("@CategoryId", CategoryId)); 
+                await this._MasterContext.Database.OpenConnectionAsync();
+
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    while (await result.ReadAsync())
+                    {
+                        AllProductsDTO productsDTO = new AllProductsDTO();
+                        productsDTO.Id = Convert.ToInt32(result["Id"]);
+                        productsDTO.Title = result["Title"].ToString();
+                        productsDTO.Image = result["Image"].ToString();
+                        productsDTO.Brand = result["Brand"].ToString();
+                        productsDTO.Price = Convert.ToDouble(result["Price"]);
+                        productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
+                        productsDTO.ProductGUID = (Guid)result["ProductGUID"];
+                        productsDTO.Quantity = Convert.ToInt32(result["quantity"]);
+                        productsDTO.orgId = Convert.ToInt32(result["orgId"]);
+                        productsDTO.BrandId = Convert.ToInt32(result["BrandId"]);
+                        productsDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
+                        productsDTOs.Add(productsDTO);
+                    }
+                }
+            }
+            var SpecifcationArray = productsDTOs.ToArray();
+            for (int i = 0; i < SpecifcationArray.Length; i++)
+            {
+                var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == SpecifcationArray[i].ProductGUID && x.OrgId == SpecifcationArray[i].orgId && x.IsDefault == true);
+                if (DefaultSpecification != null)
+                {
+                    var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId);
+                    if (specification != null)
+                    {
+                        SpecifcationArray[i].SpecificationId = (int)DefaultSpecification.SpecificationId;
+                        SpecifcationArray[i].SpecificationNames = specification.SpecificationName;
+                    }
+                }
+            }           
+            return productsDTOs;
         }
     }
 }

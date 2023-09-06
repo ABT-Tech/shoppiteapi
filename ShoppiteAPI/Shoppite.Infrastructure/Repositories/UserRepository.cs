@@ -329,7 +329,7 @@ namespace Shoppite.Infrastructure.Repositories
 
             for (int i = 0; i <= findUser.Count; i++)
             {
-                var regsiterdUserDetail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.OrgId == findUser[0].OrgId && x.Email == findUser[1].UserName);
+                var regsiterdUserDetail = await _MasterContext.Users.FirstOrDefaultAsync(x => x.OrgId == findUser[0].OrgId && x.Email == findUser[0].UserName);
                 if (i == 0)
                 {
                     User us = new();

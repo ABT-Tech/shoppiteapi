@@ -22,7 +22,6 @@ namespace Shoppite.Infrastructure.Repositories
      
         public async Task<string> AddToCart(CartRequest Cart)
         {
-            List<CartDTO> cartDTOs = new List<CartDTO>();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
                 string strSQL = "SP_AddToCart";

@@ -6,10 +6,10 @@ using System.Collections.Generic;
 
 namespace Shoppite.Application.Queries
 {
-    public record GetAllCategoriesQuery(int org_id) : IRequest<List<CategoryResponse>>;
+    public record GetAllCategoriesQuery(int? org_id,int Org_CategoryId) : IRequest<List<CategoryResponse>>;
     public record GetAllCarosolCategories(int org_id) : IRequest<List<CategoryResponse>>;
     public record GetAllOrganizationQuery(int? Org_CategoryId) : IRequest<List<OrganizationResponse>>;
-    public record GetAllProductsByOrganizationsQuery(int org_id,int? userId) : IRequest<List<ProductResponse>>;
+    public record GetAllProductsByOrganizationsQuery(int org_id,int? userId,int orgcat_Id) : IRequest<ProductMasterResponse>;
     public record GetWishlistByUserQuery(int org_id, int user_id) : IRequest<List<ProductResponse>>;
     public record GetMostSellerProductsByOrganizationsQuery(int org_id) : IRequest<List<ProductResponse>>;
     public record GetLastVisitedProductsByOrganizationsQuery(int org_id) : IRequest<List<ProductResponse>>;
@@ -20,7 +20,7 @@ namespace Shoppite.Application.Queries
     public record SearchProduct(int org_id,string productname):IRequest<List<ProductResponse>>;
     public record GetRecentlyViewedProductsByCategory(int OrgId,string IP):IRequest<List<RecentlyViewedProductResponse>>;
     public record GetMostViewedProductsByCategory(int OrgId, int CategoryId, string IP) : IRequest<List<RecentlyViewedProductResponse>>;
-    public record GetProductsByBestSellers(int OrgId,string Type):IRequest<List<ProductsByBestSellerResponse>>;
+    public record GetProductsByBestSellers(int? OrgId,string Type,int OrgCategoryId) :IRequest<List<ProductsByBestSellerResponse>>;
     public record GetOrdersDetailByOrgId(int OrgId,int OrderMasterId) :IRequest<OrderDetailResponse>;
     public record GetOrderDetails(int OrgId):IRequest<List<VendorsOrderResponse>>;
     public record GetProductsByCategory(int OrgId,int CategoryId):IRequest<List<ProductResponse>>;
@@ -35,4 +35,8 @@ namespace Shoppite.Application.Queries
     public record GetProductDetailsBySpecification(int OrgId, Guid ProductGUId,int? SpecificationId, int? userId) : IRequest<List<ProductResponse>>;
     public record GetOnePayFlag(int OrgId) : IRequest<OnePayFlagResponse>;
     public record GetAllOrganizationCategoryQuery() : IRequest<List<OrganizationCategoryResponse>>;
+    public record GetAllParentCategories() : IRequest<List<MainCategoryResponse>>;
+    public record GetAllCategoriesByParent(int MaincategoryId) : IRequest<List<CategoriesResponse>>;
+    public record GetAllProductsQuery(int? OrgId, int? OrgCategoryId) : IRequest<List<AllProductResponse>>;
+    public record GetAllProductsByCategoryQuery(int? OrgId, int OrgCategoryId,int CategoryId) : IRequest<List<AllProductResponse>>;
 }
