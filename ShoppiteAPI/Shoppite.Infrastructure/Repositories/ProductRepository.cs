@@ -26,9 +26,10 @@ namespace Shoppite.Infrastructure.Repositories
         {
             _MasterContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-        public async Task<List<ProductsDTO>> GetAllProductsByOrganizations(int orgId,int? UserId)
+        public async Task<MasterProductDTO> GetAllProductsByOrganizations(int orgId = 0,int? UserId = null, int orgCat_ID = 0)
         {            
             List<ProductsDTO> productsDTOs = new List<ProductsDTO>();
+            MasterProductDTO masterProductDTO = new MasterProductDTO();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
                 string strSQL = "GetAllProductsByOrganizations";
@@ -36,9 +37,8 @@ namespace Shoppite.Infrastructure.Repositories
                 command.CommandText = strSQL;
                 command.CommandType = CommandType.StoredProcedure;
                 var parameter = command.CreateParameter();
-                parameter.ParameterName = "@Org_ID";
-                parameter.Value = orgId;
-                command.Parameters.Add(parameter);
+                command.Parameters.Add(new SqlParameter("@Org_ID", orgId));
+                command.Parameters.Add(new SqlParameter("@OrgCat_ID", orgCat_ID));
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())
@@ -64,6 +64,8 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.WishlistedProduct = productsDTO.WishlistedProduct;
                         productsDTO.BrandId= Convert.ToInt32(result["BrandId"]);
                         productsDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
+                        productsDTO.Status = result["Status"].ToString();
+                        productsDTO.StatusId = Convert.ToInt32(result["StatusId"]);
                         productsDTOs.Add(productsDTO);
                     }
                 }
@@ -108,8 +110,9 @@ namespace Shoppite.Infrastructure.Repositories
                     }
                 }
             }
-          
-            return productsDTOs;           
+            var productList = productsDTOs.GroupBy(p => p.Status,p => p,(key, g) => new DetailProductDTO { Status = key, productsDTOs = g.ToList() }).ToList();
+            masterProductDTO.MainProductDTOs = productList;
+            return masterProductDTO;           
         }
         public async Task<List<ProductsDTO>> GetWishlistByUser(int orgId, int userId) 
         {

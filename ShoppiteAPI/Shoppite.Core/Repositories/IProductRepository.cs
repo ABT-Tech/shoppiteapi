@@ -11,7 +11,7 @@ namespace Shoppite.Core.Repositories
 {
     public interface IProductRepository
     {
-        Task<List<ProductsDTO>> GetAllProductsByOrganizations(int orgId,int? UserId);
+        Task<MasterProductDTO> GetAllProductsByOrganizations(int orgId,int? UserId, int orgcat_Id);
         Task<List<ProductsDTO>> GetWishlistByUser(int orgId, int user_id);
         Task<List<ProductsDTO>> SearchProducts(int orgId,string productname);
         Task<List<RecentlyViewedProductDTO>> GetRecentlyViewedProductsByCategory(int OrgId,string IP);

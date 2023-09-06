@@ -25,4 +25,13 @@ namespace Shoppite.Application.Responses
         public string SpecificationNames { get; set; }
         public int SpecificationId { get; set; }
     }
+    public class ProductMasterResponse
+    {
+        public List<ProductDetailResponse> MainProductDTOs { get; set; }
+    }
+    public class ProductDetailResponse
+    {
+        public string Status { get; set; }
+        public List<ProductResponse> productsDTOs { get; set; }
+    }
 }
