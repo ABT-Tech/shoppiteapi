@@ -22,9 +22,9 @@ namespace Shoppite.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetAllCategories(int OrgId)
+        public async Task<object> GetAllCategories(int? OrgId,int OrgCategoryId)
         {
-            return await _mediator.Send(new GetAllCategoriesQuery(OrgId));
+            return await _mediator.Send(new GetAllCategoriesQuery(OrgId, OrgCategoryId));
         }
 
         [HttpGet]

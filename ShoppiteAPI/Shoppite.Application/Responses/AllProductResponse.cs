@@ -21,5 +21,7 @@ namespace Shoppite.Application.Responses
         public int SpecificationId { get; set; }
         public int BrandId { get; set; }
         public int CategoryId { get; set; }
+        public string Status { get; set; }
+        public List<AllProductResponse> ProductsByStatus { get; set; }
     }
 }

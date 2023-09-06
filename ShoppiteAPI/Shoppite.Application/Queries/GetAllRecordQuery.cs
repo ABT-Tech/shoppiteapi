@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Shoppite.Application.Queries
 {
-    public record GetAllCategoriesQuery(int org_id) : IRequest<List<CategoryResponse>>;
+    public record GetAllCategoriesQuery(int? org_id,int Org_CategoryId) : IRequest<List<CategoryResponse>>;
     public record GetAllCarosolCategories(int org_id) : IRequest<List<CategoryResponse>>;
     public record GetAllOrganizationQuery(int? Org_CategoryId) : IRequest<List<OrganizationResponse>>;
     public record GetAllProductsByOrganizationsQuery(int org_id,int? userId) : IRequest<List<ProductResponse>>;
@@ -37,5 +37,6 @@ namespace Shoppite.Application.Queries
     public record GetAllOrganizationCategoryQuery() : IRequest<List<OrganizationCategoryResponse>>;
     public record GetAllParentCategories() : IRequest<List<MainCategoryResponse>>;
     public record GetAllCategoriesByParent(int MaincategoryId) : IRequest<List<CategoriesResponse>>;
-    public record GetAllProductsQuery(int? userId,int? OrgId) : IRequest<List<AllProductResponse>>;
+    public record GetAllProductsQuery(int? OrgId, int? OrgCategoryId) : IRequest<List<AllProductResponse>>;
+    public record GetAllProductsByCategoryQuery(int? OrgId, int OrgCategoryId,int CategoryId) : IRequest<List<AllProductResponse>>;
 }

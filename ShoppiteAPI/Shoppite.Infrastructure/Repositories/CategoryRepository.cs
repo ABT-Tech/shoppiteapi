@@ -27,7 +27,7 @@ namespace Shoppite.Infrastructure.Repositories
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
         
-        public async Task<List<CategoryDTO>> GetAllCategory(int OrgId) 
+        public async Task<List<CategoryDTO>> GetAllCategory(int? OrgId, int OrgCategoryId) 
         {
             var IsCouponEnabled = _configuration.GetSection("CouponSettings")["IsCoupanEnabled"];
             List<CategoryDTO> categoryDtos = new();

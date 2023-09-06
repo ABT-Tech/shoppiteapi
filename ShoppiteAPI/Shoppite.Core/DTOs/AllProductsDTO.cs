@@ -21,6 +21,8 @@ namespace Shoppite.Core.DTOs
         public int SpecificationId { get; set; }
         public int BrandId { get; set; }
         public int CategoryId { get; set; }
-       // public Boolean WishlistedProduct { get; set; }
+        public string Status { get; set; }
+        public List<AllProductsDTO> ProductsByStatus { get; set; }
+        
     }
 }
