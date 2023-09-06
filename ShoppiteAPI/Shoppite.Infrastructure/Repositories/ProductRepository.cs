@@ -317,7 +317,7 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return recentlyVieweds;
         }
-        public async Task<List<ProductsByBestSellerDTO>> ProductByBestSellers(int orgId,string type)
+        public async Task<List<ProductsByBestSellerDTO>> ProductByBestSellers(int? orgId,string type,int OrgCategoryId)
         {
             List<ProductsByBestSellerDTO> bestSellerDTOs= new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
@@ -329,6 +329,7 @@ namespace Shoppite.Infrastructure.Repositories
                 var parameter = command.CreateParameter();
                 command.Parameters.Add(new SqlParameter("@orgid", orgId));
                 command.Parameters.Add(new SqlParameter("@type", type));
+                command.Parameters.Add(new SqlParameter("@OrgCategoryId", OrgCategoryId));
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())

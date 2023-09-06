@@ -37,9 +37,9 @@ namespace Shoppite.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetMostSellerProductsByOrganizations(int org_Id, int? UserId)
+        public async Task<object> GetMostSellerProductsByOrganizations(int? org_Id, int? UserId,int OrgCategoryId)
         {
-            return await _mediator.Send(new GetProductsByBestSellers(org_Id, "Best Deals"));
+            return await _mediator.Send(new GetProductsByBestSellers(org_Id, "Best Deals", OrgCategoryId));
         }
 
         [HttpGet]
@@ -76,9 +76,9 @@ namespace Shoppite.API.Controllers
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetProductsByBestSellers(int org_Id, string type)
+        public async Task<object> GetProductsByBestSellers(int? org_Id, string type,int OrgICategoryd)
         {
-            return await _mediator.Send(new GetProductsByBestSellers(org_Id, type));
+            return await _mediator.Send(new GetProductsByBestSellers(org_Id, type, OrgICategoryd));
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
