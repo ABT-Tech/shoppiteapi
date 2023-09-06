@@ -46,16 +46,16 @@ namespace Shoppite.Infrastructure.Repositories
                     while (await result.ReadAsync())
                     {
                         ProductsDTO productsDTO = new  ProductsDTO();
-                        var ProductStrList = result["ProductList"].ToString();
-                        var ProductList = ProductStrList.Split(',');
+                       /* var ProductStrList = result["ProductList"].ToString();
+                        var ProductList = ProductStrList.Split(',');*/
                         productsDTO.Id = Convert.ToInt32(result["Id"]);
                         productsDTO.Title = result["Title"].ToString();
-                        productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
+                       // productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
                         productsDTO.Image = result["Image"].ToString();
                         productsDTO.Brand = result["Brand"].ToString();
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
                         productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
-                        productsDTO.ProductList = ProductList;
+                       // productsDTO.ProductList = ProductList;
                         productsDTO.ProductGUID = (Guid)result["ProductGUID"];
                        /* productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
                         productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);*/
@@ -340,13 +340,13 @@ namespace Shoppite.Infrastructure.Repositories
                     while (await result.ReadAsync())
                     {
                         ProductsByBestSellerDTO product = new();
-                        var ProductStrList = result["ProductList"].ToString();
-                        var ProductList = ProductStrList.Split(',');
+                     //   var ProductStrList = result["ProductList"].ToString();
+                     //   var ProductList = ProductStrList.Split(',');
                         product.Id = Convert.ToInt32(result["ProductId"]);
                         product.Title = result["ProductName"].ToString();
-                        product.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
+                    //    product.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
                         product.Image = result["Image"].ToString();
-                        product.ProductList = ProductList;
+                       // product.ProductList = ProductList;
                         product.Brand = result["Brands"].ToString();
                         product.Price = Convert.ToDouble(result["Price"]);
                         product.ProductGUID = (Guid)result["ProductGuid"];
