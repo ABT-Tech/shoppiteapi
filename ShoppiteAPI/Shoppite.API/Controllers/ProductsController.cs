@@ -30,9 +30,9 @@ namespace Shoppite.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetAllProductsByOrganizations(int org_Id, int? UserId)
+        public async Task<object> GetAllProductsByOrganizations(int org_Id, int? UserId, int orgcat_Id = 0)
         {
-            return await _mediator.Send(new GetAllProductsByOrganizationsQuery(org_Id, UserId));
+            return await _mediator.Send(new GetAllProductsByOrganizationsQuery(org_Id, UserId, orgcat_Id));
         }
 
         [HttpGet]
@@ -44,9 +44,9 @@ namespace Shoppite.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetLastVisitedProductsByOrganizations(int org_Id, int? UserId)
+        public async Task<object> GetLastVisitedProductsByOrganizations(int org_Id, int? UserId, int orgcat_Id = 0)
         {
-            return await _mediator.Send(new GetAllProductsByOrganizationsQuery(org_Id, UserId));
+            return await _mediator.Send(new GetAllProductsByOrganizationsQuery(org_Id, UserId, orgcat_Id));
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -117,49 +117,49 @@ namespace Shoppite.API.Controllers
         {
             return await _mediator.Send(new GetProductDetailsBySpecification(OrgId, ProductGUID, SpecificationId, UserId));
         }
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetProductsImages()
-        {
-            var orglist = await _mediator.Send(new GetAllOrganizationQuery(null));
-            orglist = orglist.Where(x => x.IsPublished == true).ToList();
-            if (orglist != null)
-            {
-                foreach (var org in orglist)
-                {
-                    List<ProductResponse> productResponses = new List<ProductResponse>();
-                    productResponses = await _mediator.Send(new GetAllProductsByOrganizationsQuery(org.OrgId, null));
-                    foreach (var product in productResponses)
-                    {
-                        try
-                        {
-                            var image = product.Image;
-                            Uri uri = new Uri(image);
-                            var newImageFile = RestoreImage(org, uri);
-                            _productRepository.UpdateProductImage(image, newImageFile);
-                            foreach (var otherimages in product.ProductList)
-                            {
-                                try
-                                {
-                                    uri = new Uri(otherimages);
-                                    var newOtherImage = RestoreImage(org, uri);
-                                    _productRepository.UpdateProductOtherImage(otherimages, newOtherImage);
-                                }
-                                catch (Exception)
-                                {
+        //[HttpGet]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //public async Task<object> GetProductsImages()
+        //{
+        //    var orglist = await _mediator.Send(new GetAllOrganizationQuery(null));
+        //    orglist = orglist.Where(x => x.IsPublished == true).ToList();
+        //    if (orglist != null)
+        //    {
+        //        foreach (var org in orglist)
+        //        {
+        //            List<ProductResponse> productResponses = new List<ProductResponse>();
+        //            productResponses = await _mediator.Send(new GetAllProductsByOrganizationsQuery(org.OrgId, null,0));
+        //            foreach (var product in productResponses)
+        //            {
+        //                try
+        //                {
+        //                    var image = product.Image;
+        //                    Uri uri = new Uri(image);
+        //                    var newImageFile = RestoreImage(org, uri);
+        //                    _productRepository.UpdateProductImage(image, newImageFile);
+        //                    foreach (var otherimages in product.ProductList)
+        //                    {
+        //                        try
+        //                        {
+        //                            uri = new Uri(otherimages);
+        //                            var newOtherImage = RestoreImage(org, uri);
+        //                            _productRepository.UpdateProductOtherImage(otherimages, newOtherImage);
+        //                        }
+        //                        catch (Exception)
+        //                        {
 
-                                }
-                            }
-                        }
-                        catch (Exception)
-                        {
+        //                        }
+        //                    }
+        //                }
+        //                catch (Exception)
+        //                {
 
-                        }
-                    }
-                }
-            }
-            return null;
-        }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return null;
+        //}
 
         private string RestoreImage(OrganizationResponse org, Uri uri)
         {
