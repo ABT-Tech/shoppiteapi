@@ -50,6 +50,7 @@ namespace Shoppite.Infrastructure.Repositories
                         var ProductList = ProductStrList.Split(',');*/
                         productsDTO.Id = Convert.ToInt32(result["Id"]);
                         productsDTO.Title = result["Title"].ToString();
+                        productsDTO.Description = string.Empty;
                        // productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
                         productsDTO.Image = result["Image"].ToString();
                         productsDTO.Brand = result["Brand"].ToString();
@@ -57,8 +58,8 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
                        // productsDTO.ProductList = ProductList;
                         productsDTO.ProductGUID = (Guid)result["ProductGUID"];
-                       /* productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
-                        productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);*/
+                        productsDTO.SpecificationNames = string.Empty;
+                        //productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);*/
                         productsDTO.Quantity = Convert.ToInt32(result["quantity"]);
                         productsDTO.orgId = Convert.ToInt32(orgId);
                         productsDTO.WishlistedProduct = productsDTO.WishlistedProduct;
