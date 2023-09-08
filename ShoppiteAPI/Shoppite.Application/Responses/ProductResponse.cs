@@ -24,6 +24,8 @@ namespace Shoppite.Application.Responses
         public int CategoryId { get; set; }
         public string SpecificationNames { get; set; }
         public int SpecificationId { get; set; }
+        public int StatusId { get; set; }
+        public string Status { get; set; }
     }
     public class ProductMasterResponse
     {
