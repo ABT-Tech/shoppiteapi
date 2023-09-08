@@ -26,10 +26,10 @@ namespace Shoppite.Infrastructure.Repositories
         {
             _MasterContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-        public async Task<MasterProductDTO> GetAllProductsByOrganizations(int orgId = 0,int? UserId = null, int orgCat_ID = 0)
+        public async Task<List<ProductsDTO>> GetAllProductsByOrganizations(int orgId = 0,int? UserId = null, int orgCat_ID = 0)
         {            
             List<ProductsDTO> productsDTOs = new List<ProductsDTO>();
-            MasterProductDTO masterProductDTO = new MasterProductDTO();
+           // MasterProductDTO masterProductDTO = new MasterProductDTO();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
                 string strSQL = "GetAllProductsByOrganizations";
@@ -46,22 +46,17 @@ namespace Shoppite.Infrastructure.Repositories
                     while (await result.ReadAsync())
                     {
                         ProductsDTO productsDTO = new  ProductsDTO();
-                       /* var ProductStrList = result["ProductList"].ToString();
-                        var ProductList = ProductStrList.Split(',');*/
                         productsDTO.Id = Convert.ToInt32(result["Id"]);
                         productsDTO.Title = result["Title"].ToString();
                         productsDTO.Description = string.Empty;
-                       // productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
                         productsDTO.Image = result["Image"].ToString();
                         productsDTO.Brand = result["Brand"].ToString();
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
                         productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
-                       // productsDTO.ProductList = ProductList;
                         productsDTO.ProductGUID = (Guid)result["ProductGUID"];
                         productsDTO.SpecificationNames = string.Empty;
-                        //productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);*/
                         productsDTO.Quantity = Convert.ToInt32(result["quantity"]);
-                        productsDTO.orgId = Convert.ToInt32(orgId);
+                        productsDTO.orgId = Convert.ToInt32(result["orgId"]);
                         productsDTO.WishlistedProduct = productsDTO.WishlistedProduct;
                         productsDTO.BrandId= Convert.ToInt32(result["BrandId"]);
                         productsDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
@@ -71,12 +66,12 @@ namespace Shoppite.Infrastructure.Repositories
                     }
                 }
             }
-            for (int i = 0; i < productsDTOs.Count; i++)
+           /* for (int i = 0; i < productsDTOs.Count; i++)
             {
                 var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == productsDTOs[i].orgId&&x.IsDefault==true);
                 if (DefaultSpecification != null)
                 {
-                    var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
+                    var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == DefaultSpecification.OrgId);
                    if(specification!=null)
                     {
                         productsDTOs[i].SpecificationId = (int)DefaultSpecification.SpecificationId;
@@ -84,11 +79,11 @@ namespace Shoppite.Infrastructure.Repositories
                     }
                          
                 }             
-            }
-            if (UserId!=null)
+            }*/
+            /*if (UserId!=null)
             {
-                var getusername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == UserId&&u.OrgId== orgId);
-                var wishlistList = await _MasterContext.CustomerWishlists.Where(x => x.UserName == getusername.Email&&x.OrgId==orgId).ToListAsync();
+                var getusername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == UserId);
+                var wishlistList = await _MasterContext.CustomerWishlists.Where(x => x.UserName == getusername.Email&&x.OrgId==getusername.OrgId).ToListAsync();
                 for (int i = 0; i < productsDTOs.Count; i++)
                 {
                     for (int j = 0; j < wishlistList.Count; j++)
@@ -102,7 +97,7 @@ namespace Shoppite.Infrastructure.Repositories
                         }
                         else
                         {
-                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productsDTOs[i].SpecificationId && x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == orgId);
+                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productsDTOs[i].SpecificationId && x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == productsDTOs[i].orgId);
                             if (productsDTOs[i].Id == wishlistList[j].ProductId && productspecDetails.ProductSpecificationId == wishlistList[j].ProductSpecificationId)
                             {
                                 productsDTOs[i].WishlistedProduct = true;
@@ -110,10 +105,10 @@ namespace Shoppite.Infrastructure.Repositories
                         }
                     }
                 }
-            }
-            var productList = productsDTOs.GroupBy(p => p.Status,p => p,(key, g) => new DetailProductDTO { Status = key, productsDTOs = g.ToList() }).ToList();
-            masterProductDTO.MainProductDTOs = productList;
-            return masterProductDTO;           
+            }*/
+          /*  var productList = productsDTOs.GroupBy(p => p.Status,p => p,(key, g) => new DetailProductDTO { Status = key, productsDTOs = g.ToList() }).ToList();
+            masterProductDTO.MainProductDTOs = productList;*/
+            return productsDTOs;           
         }
         public async Task<List<ProductsDTO>> GetWishlistByUser(int orgId, int userId) 
         {
@@ -193,7 +188,7 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return productsDTOs;
         }
-        public async Task<List<ProductsDTO>> SearchProducts(int orgId,string productname)
+        public async Task<List<ProductsDTO>> SearchProducts(int? orgId,string productname,int OrgCategoryId)
         {
             List<ProductsDTO> productsDTOs = new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
@@ -205,28 +200,26 @@ namespace Shoppite.Infrastructure.Repositories
                 var parameter = command.CreateParameter();
                 command.Parameters.Add(new SqlParameter("@OrgId", orgId));
                 command.Parameters.Add(new SqlParameter("@ProductName", productname));
+                command.Parameters.Add(new SqlParameter("@OrgCategoryId", OrgCategoryId));
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())
                 {
                     while (await result.ReadAsync())
                     {
-                        ProductsDTO productsDTO = new ProductsDTO();
-                        var ProductStrList = result["ProductList"].ToString();
-                        var ProductList = ProductStrList.Split(',');
+                        ProductsDTO productsDTO = new ProductsDTO();      
                         productsDTO.Id = Convert.ToInt32(result["Id"]);
                         productsDTO.Title = result["Title"].ToString();
-                        productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString().Replace("\r\n", "")).Replace("\r\n", "");
+                    //    productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString().Replace("\r\n", "")).Replace("\r\n", "");
                         productsDTO.Image = result["Image"].ToString();
                         productsDTO.Brand = result["Brand"].ToString();
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
                         productsDTO.OldPrice = result["OldPrice"] !=DBNull.Value ? Convert.ToDouble(result["OldPrice"]):0;
-                        productsDTO.ProductList = ProductList;
                         productsDTO.Quantity = Convert.ToInt32(result["qty"]);
                         productsDTO.ProductGUID = (Guid)result["ProductGUID"];
-                        productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
-                        productsDTO.SpecificationId = Convert.ToInt32(result["SpecificationIds"]);
-                        productsDTO.orgId = Convert.ToInt32(orgId);
+                       // productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
+                       // productsDTO.SpecificationId = Convert.ToInt32(result["SpecificationIds"]);
+                        productsDTO.orgId = Convert.ToInt32(result["OrgId"]);
                         productsDTO.BrandId = Convert.ToInt32(result["BrandId"]);
                         productsDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
                         productsDTOs.Add(productsDTO);
@@ -341,20 +334,14 @@ namespace Shoppite.Infrastructure.Repositories
                     while (await result.ReadAsync())
                     {
                         ProductsByBestSellerDTO product = new();
-                     //   var ProductStrList = result["ProductList"].ToString();
-                     //   var ProductList = ProductStrList.Split(',');
                         product.Id = Convert.ToInt32(result["ProductId"]);
                         product.Title = result["ProductName"].ToString();
-                    //    product.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
                         product.Image = result["Image"].ToString();
-                       // product.ProductList = ProductList;
                         product.Brand = result["Brands"].ToString();
                         product.Price = Convert.ToDouble(result["Price"]);
                         product.ProductGUID = (Guid)result["ProductGuid"];
-                        /* product.SpecificationNames = result["SpecificationNames"].ToString();
-                         product.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);*/
                         product.OldPrice = result["OldPrice"] != DBNull.Value ? Convert.ToDouble(result["OldPrice"]) : 0;
-                        product.orgId = Convert.ToInt32(orgId);
+                        product.orgId = Convert.ToInt32(result["orgId"]);
                         product.Quantity = Convert.ToInt32(result["Qty"]);
                         product.BrandId = Convert.ToInt32(result["BrandId"]);
                         product.CategoryId = Convert.ToInt32(result["CategoryId"]);
@@ -365,10 +352,10 @@ namespace Shoppite.Infrastructure.Repositories
             for (int i = 0; i < bestSellerDTOs.Count; i++)
             {
                 var ProductDetails = await _MasterContext.ProductBasics.FirstOrDefaultAsync(x => x.ProductId == bestSellerDTOs[i].Id && x.OrgId == bestSellerDTOs[i].orgId);
-                var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == ProductDetails.ProductGuid && x.OrgId == orgId&&x.IsDefault==true);
+                var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == ProductDetails.ProductGuid && x.OrgId == ProductDetails.OrgId && x.IsDefault==true);
                 if (DefaultSpecification != null)
                 {
-                    var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
+                    var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == DefaultSpecification.OrgId);
                     if(specification!=null)
                     {
                         bestSellerDTOs[i].SpecificationId = specification.SpecificationId;
@@ -378,7 +365,7 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return bestSellerDTOs;
         }
-        public async Task<List<ProductsDTO>> GetProductsByCategory(int orgId,int CategoryId)
+        public async Task<List<ProductsDTO>> GetProductsByCategory(int? orgId,int CategoryId,int OrgCategoryId)
         {
             List<ProductsDTO> productsDTOs = new List<ProductsDTO>();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
@@ -390,6 +377,7 @@ namespace Shoppite.Infrastructure.Repositories
                 var parameter = command.CreateParameter();
                 command.Parameters.Add(new SqlParameter("@OrgId", orgId));
                 command.Parameters.Add(new SqlParameter("@CategoryId", CategoryId));
+                command.Parameters.Add(new SqlParameter("@OrgCategoryId", CategoryId));
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())
@@ -397,21 +385,15 @@ namespace Shoppite.Infrastructure.Repositories
                     while (await result.ReadAsync())
                     {
                         ProductsDTO productsDTO = new ProductsDTO();
-                        var ProductStrList = result["ProductList"].ToString();
-                        var ProductList = ProductStrList.Split(',');
                         productsDTO.Id = Convert.ToInt32(result["Id"]);
                         productsDTO.Title = result["Title"].ToString();
-                        productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
                         productsDTO.Image = result["Image"].ToString();
                         productsDTO.Brand = result["Brand"].ToString();
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
                         productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
                         productsDTO.ProductGUID = (Guid)result["ProductGUID"];
-                        productsDTO.ProductList = ProductList;
-                       /* productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
-                        productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);*/
                         productsDTO.Quantity = Convert.ToInt32(result["Qty"]);
-                        productsDTO.orgId = Convert.ToInt32(orgId);
+                        productsDTO.orgId = Convert.ToInt32(result["orgId"]);
                         productsDTO.BrandId = Convert.ToInt32(result["BrandId"]);
                         productsDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
                         productsDTOs.Add(productsDTO);
@@ -423,7 +405,7 @@ namespace Shoppite.Infrastructure.Repositories
                 var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == productsDTOs[i].orgId);
                 if (DefaultSpecification != null)
                 {
-                    var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
+                    var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == DefaultSpecification.OrgId);
                     if(specification!=null)
                     {
                         productsDTOs[i].SpecificationId = specification.SpecificationId;
@@ -493,7 +475,7 @@ namespace Shoppite.Infrastructure.Repositories
             }          
             return productsDTO;
         }
-        public async Task<List<ProductsDTO>> GetSimilarProducts(int orgId, int CategoryId,int  BrandId,int? UserId)
+        public async Task<List<ProductsDTO>> GetSimilarProducts(int? orgId, int CategoryId,int  BrandId,int? UserId,int OrgCategoryId)
         {
             List<ProductsDTO> productsDTOs = new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
@@ -506,27 +488,22 @@ namespace Shoppite.Infrastructure.Repositories
                 command.Parameters.Add(new SqlParameter("@OrgId", orgId));
                 command.Parameters.Add(new SqlParameter("@CategoryId", CategoryId));
                 command.Parameters.Add(new SqlParameter("@BrandId", BrandId));
+                command.Parameters.Add(new SqlParameter("@OrgCategoryId", OrgCategoryId));
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using var result = await command.ExecuteReaderAsync();
                 while (await result.ReadAsync())
                 {
                     ProductsDTO productsDTO = new();
-                    var ProductStrList = result["ProductList"].ToString();
-                    var ProductList = ProductStrList.Split(',');
                     productsDTO.Id = Convert.ToInt32(result["Id"]);
-                    productsDTO.Title = result["Title"].ToString();
-                    productsDTO.Description = HtmlUtilities.ConvertToPlainText(result["Description"].ToString()).Replace("\r\n", "");
+                    productsDTO.Title = result["Title"].ToString();                  
                     productsDTO.Image = result["Image"].ToString();
                     productsDTO.Brand = result["Brand"].ToString();
                     productsDTO.Price = Convert.ToDouble(result["Price"]);
                     productsDTO.OldPrice = Convert.ToDouble(result["OldPrice"]);
                     productsDTO.ProductGUID = (Guid)result["ProductGUID"];
-                    /* productsDTO.SpecificationNames = result["SpecificationNames"].ToString();
-                     productsDTO.SpecificationIds = Convert.ToInt32(result["SpecificationIds"]);*/
-                    productsDTO.ProductList = ProductList;
                     productsDTO.Quantity = Convert.ToInt32(result["Qty"]);
-                    productsDTO.orgId = Convert.ToInt32(orgId);
+                    productsDTO.orgId = Convert.ToInt32(result["orgId"]);
                     productsDTO.BrandId = Convert.ToInt32(result["BrandId"]);
                     productsDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
                     productsDTOs.Add(productsDTO);
@@ -537,7 +514,7 @@ namespace Shoppite.Infrastructure.Repositories
                 var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == productsDTOs[i].orgId && x.IsDefault == true);
                 if (DefaultSpecification != null)
                 {
-                    var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == orgId);
+                    var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId && x.OrgId == DefaultSpecification.OrgId);
                     if (specification != null)
                     {
                         productsDTOs[i].SpecificationId = (int)DefaultSpecification.SpecificationId;
@@ -548,8 +525,8 @@ namespace Shoppite.Infrastructure.Repositories
             }
             if (UserId != null)
             {
-                var getusername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == UserId && u.OrgId == orgId);
-                var wishlistList = await _MasterContext.CustomerWishlists.Where(x => x.UserName == getusername.Email && x.OrgId == orgId).ToListAsync();
+                var getusername = await _MasterContext.Users.FirstOrDefaultAsync(u => u.UserId == UserId);
+                var wishlistList = await _MasterContext.CustomerWishlists.Where(x => x.UserName == getusername.Email && x.OrgId == getusername.OrgId).ToListAsync();
                 for (int i = 0; i < productsDTOs.Count; i++)
                 {
                     for (int j = 0; j < wishlistList.Count; j++)
@@ -563,7 +540,7 @@ namespace Shoppite.Infrastructure.Repositories
                         }
                         else
                         {
-                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productsDTOs[i].SpecificationId && x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == orgId);
+                            var productspecDetails = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.SpecificationId == productsDTOs[i].SpecificationId && x.ProductGuid == productsDTOs[i].ProductGUID && x.OrgId == productsDTOs[i].orgId);
                             if (productsDTOs[i].Id == wishlistList[j].ProductId && productspecDetails.ProductSpecificationId == wishlistList[j].ProductSpecificationId)
                             {
                                 productsDTOs[i].WishlistedProduct = true;
@@ -787,8 +764,6 @@ namespace Shoppite.Infrastructure.Repositories
                     }
                 }
             
- 
-            //var statusDetails = await GetAllProducts(OrgId, OrgCategoryId);
             var productList = productsDTOs.GroupBy(x => new { x.Status, }, (key, g) => new { StatusType = key.Status, productstatusList = g.ToList() });
             foreach (var sp in productList)
             {
@@ -814,28 +789,7 @@ namespace Shoppite.Infrastructure.Repositories
                 }
                 productsDTOs.Add(status_Product);
             }
-            /*  using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
-              {
-                  string strSQL = "SELECT TOP(50) STATUS FROM Status " +
-                      "LEFT JOIN PRODUCT_STATUS ON STATUS.STATUSID=STATUS.STATUSID " +
-                      "LEFT JOIN PRODUCT_BASIC ON PRODUCT_STATUS.PRODUCTGUID=PRODUCT_BASIC.PRODUCTGUID " +
-                      "LEFT JOIN ORGANIZATION ON ORGANIZATION.ID= PRODUCT_BASIC.ORGID " +
-                      "LEFT JOIN ORGANIZATIONCATEGORY ON ORGANIZATION.Org_CategoryId=ORGANIZATIONCATEGORY.Org_CategoryId " +
-                      "WHERE ORGANIZATIONCATEGORY.Org_CategoryId= " + OrgCategoryId
-                      ;
-
-                  command.CommandText = strSQL;
-                  command.CommandType = CommandType.Text;
-                  var parameter = command.CreateParameter();
-                  await this._MasterContext.Database.OpenConnectionAsync();
-                  using (var result = await command.ExecuteReaderAsync())
-                  {
-                      while (await result.ReadAsync())
-                      {
-                          productsDTOs.Status = result["Status"].ToString();                     
-                      }
-                  }
-              }*/
+            
             return productsDTOs;
         }
         public async Task<List<AllProductsDTO>> GetAllProductsByCategory(int? OrgId, int OrgCategoryId,int CategoryId)

@@ -57,9 +57,9 @@ namespace Shoppite.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> SearchProducts(int org_Id, string productname)
+        public async Task<object> SearchProducts(int? org_Id, string productname, int OrgCategoryId)
         {
-            return await _mediator.Send(new SearchProduct(org_Id, productname));
+            return await _mediator.Send(new SearchProduct(org_Id, productname,OrgCategoryId));
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -82,9 +82,9 @@ namespace Shoppite.API.Controllers
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetAllProductsByCategory(int OrgId, int CategoryId)
+        public async Task<object> GetAllProductsByCategory(int? OrgId, int CategoryId, int OrgCategoryId)
         {
-            return await _mediator.Send(new GetProductsByCategory(OrgId, CategoryId));
+            return await _mediator.Send(new GetProductsByCategory(OrgId, CategoryId,OrgCategoryId));
         }
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -101,9 +101,9 @@ namespace Shoppite.API.Controllers
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetSimilarProducts(int OrgId, int CategoryId, int BrandId, int? UserId)
+        public async Task<object> GetSimilarProducts(int? OrgId, int CategoryId, int BrandId, int? UserId, int OrgCategoryId)
         {
-            return await _mediator.Send(new GetSimilarProducts(OrgId, CategoryId, BrandId,UserId));
+            return await _mediator.Send(new GetSimilarProducts(OrgId, CategoryId, BrandId,UserId,OrgCategoryId));
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]

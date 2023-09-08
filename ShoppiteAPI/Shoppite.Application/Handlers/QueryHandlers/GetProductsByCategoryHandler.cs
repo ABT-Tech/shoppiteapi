@@ -23,7 +23,7 @@ namespace Shoppite.Application.Handlers.QueryHandlers
         }
         public async Task<List<ProductResponse>> Handle(GetProductsByCategory request, CancellationToken cancellationToken)
         {
-            var products = await _productRepository.GetProductsByCategory(request.OrgId,request.CategoryId);
+            var products = await _productRepository.GetProductsByCategory(request.OrgId,request.CategoryId,request.OrgCategoryId);
             var mapper = ObjectMapper.Mapper.Map<List<ProductResponse>>(products);
             return mapper;
         }
