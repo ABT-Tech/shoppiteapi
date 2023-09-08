@@ -377,7 +377,7 @@ namespace Shoppite.Infrastructure.Repositories
                 var parameter = command.CreateParameter();
                 command.Parameters.Add(new SqlParameter("@OrgId", orgId));
                 command.Parameters.Add(new SqlParameter("@CategoryId", CategoryId));
-                command.Parameters.Add(new SqlParameter("@OrgCategoryId", CategoryId));
+                command.Parameters.Add(new SqlParameter("@OrgCategoryId", OrgCategoryId));
                 await this._MasterContext.Database.OpenConnectionAsync();
 
                 using (var result = await command.ExecuteReaderAsync())
