@@ -12,7 +12,7 @@ using Shoppite.Application.Mapper;
 
 namespace Shoppite.Application.Handlers.QueryHandlers
 {
-    public class GetAllProductsByOrganizationsHandler : IRequestHandler<GetAllProductsByOrganizationsQuery, ProductMasterResponse>
+    public class GetAllProductsByOrganizationsHandler : IRequestHandler<GetAllProductsByOrganizationsQuery, List<ProductResponse>>
     {
         private readonly IProductRepository _productRepository;
 
@@ -20,10 +20,10 @@ namespace Shoppite.Application.Handlers.QueryHandlers
         {
             _productRepository = productRepository;
         }
-        public async Task<ProductMasterResponse> Handle(GetAllProductsByOrganizationsQuery request, CancellationToken cancellationToken)
+        public async Task<List<ProductResponse>> Handle(GetAllProductsByOrganizationsQuery request, CancellationToken cancellationToken)
         {
             var products = await _productRepository.GetAllProductsByOrganizations(request.org_id,request.userId,request.orgcat_Id);
-            var mapper = ObjectMapper.Mapper.Map<ProductMasterResponse>(products);
+            var mapper = ObjectMapper.Mapper.Map<List<ProductResponse>>(products);
             return mapper;
         }
     }

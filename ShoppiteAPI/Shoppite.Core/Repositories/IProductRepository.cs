@@ -11,16 +11,16 @@ namespace Shoppite.Core.Repositories
 {
     public interface IProductRepository
     {
-        Task<MasterProductDTO> GetAllProductsByOrganizations(int orgId,int? UserId, int orgcat_Id);
+        Task<List<ProductsDTO>> GetAllProductsByOrganizations(int orgId,int? UserId, int orgcat_Id);
         Task<List<ProductsDTO>> GetWishlistByUser(int orgId, int user_id);
-        Task<List<ProductsDTO>> SearchProducts(int orgId,string productname);
+        Task<List<ProductsDTO>> SearchProducts(int? orgId,string productname,int OrgCategoryId);
         Task<List<RecentlyViewedProductDTO>> GetRecentlyViewedProductsByCategory(int OrgId,string IP);
         Task<List<RecentlyViewedProductDTO>> MostViewedProductsByCategory(int OrgId, int CategoryId, string IP);
         Task<List<ProductsByBestSellerDTO>> ProductByBestSellers(int? OrgId,string type,int OrgCategoryId);
-        Task<List<ProductsDTO>> GetProductsByCategory(int OrgId, int CategoryId);
+        Task<List<ProductsDTO>> GetProductsByCategory(int? OrgId, int CategoryId,int OrgCategoryId);
         Task<string> UpdateProductDetailsForVendor(UpdateProductDetail products);
         Task<ProductDetailsForVendor> GetAllProductsForVendor(int OrgId,int Id);
-        Task<List<ProductsDTO>> GetSimilarProducts(int OrgId, int CategoryId,int BrandId,int? UserId);
+        Task<List<ProductsDTO>> GetSimilarProducts(int? OrgId, int CategoryId,int BrandId,int? UserId,int OrgCategoryId);
         Task<List<ProductVariationDTO>> GetProductVariationDetail(int OrgId, Guid Id);
         Task<List<ProductsDTO>> GetProductDetailsBySpecification(int OrgId, Guid ProductGUID, int? SpecificationId,int? UserId);
         void UpdateProductImage(string oldpath, string newPath);
