@@ -48,7 +48,7 @@ namespace Shoppite.Infrastructure.Repositories
                         ProductsDTO productsDTO = new  ProductsDTO();
                         productsDTO.Id = Convert.ToInt32(result["Id"]);
                         productsDTO.Title = result["Title"].ToString();
-                        productsDTO.Description = string.Empty;
+                        productsDTO.Description = result["Description"].ToString();
                         productsDTO.Image = result["Image"].ToString();
                         productsDTO.Brand = result["Brand"].ToString();
                         productsDTO.Price = Convert.ToDouble(result["Price"]);
@@ -62,6 +62,7 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
                         productsDTO.Status = result["Status"].ToString();
                         productsDTO.StatusId = Convert.ToInt32(result["StatusId"]);
+                        productsDTO.ProductOtherImages = result["ProductList"].ToString();
                         productsDTOs.Add(productsDTO);
                     }
                 }
@@ -146,6 +147,7 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.orgId = Convert.ToInt32(orgId);
                         productsDTO.BrandId = Convert.ToInt32(result["BrandId"]);
                         productsDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
+                        productsDTO.ProductOtherImages = ProductStrList;
                         productsDTOs.Add(productsDTO);
                     }
                 }

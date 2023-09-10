@@ -29,5 +29,6 @@ namespace Shoppite.Core.DTOs
         public string ProductImage { get; set; }
         public int StatusId { get; set; }
         public string Status { get; set; }
+        public string ProductOtherImages { get; set; }
     }
 }
