@@ -712,13 +712,13 @@ namespace Shoppite.Infrastructure.Repositories
             }
 
         }
-        public async Task<List<AllProductsDTO>> GetAllProducts(int? OrgId,int? OrgCategoryId)
+        public async Task<List<AllProductsDTO>> GetAllProducts(int? OrgId,int OrgCategoryId)
         {
             List<AllProductsDTO> productsDTOs = new();
             //productsDTOs.StausDetails = new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
-                string strSQL = "SP_GetAllProducts_BY_STATUS";
+                string strSQL = "SP_GetAllProducts";
 
                 command.CommandText = strSQL;
                 command.CommandType = CommandType.StoredProcedure;
@@ -744,60 +744,16 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTO.orgId = Convert.ToInt32(result["orgId"]);
                         productsDTO.BrandId = Convert.ToInt32(result["BrandId"]);
                         productsDTO.CategoryId = Convert.ToInt32(result["CategoryId"]);
-                        productsDTO.Status = result["Status"].ToString();
+                      //  productsDTO.Status = result["Status"].ToString();
                         productsDTOs.Add(productsDTO);
                     }
                 }
-            }
-
-                //var specificationIds= productsDTOs.Select(x => x.SpecificationId).ToArray();
-                var SpecifcationArray = productsDTOs.ToArray();
-                for (int i = 0; i < SpecifcationArray.Length; i++)
-                {
-                    var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == SpecifcationArray[i].ProductGUID && x.OrgId == SpecifcationArray[i].orgId && x.IsDefault == true);
-                    if (DefaultSpecification != null)
-                    {
-                        var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId);
-                        if (specification != null)
-                        {
-                            SpecifcationArray[i].SpecificationId = (int)DefaultSpecification.SpecificationId;
-                            SpecifcationArray[i].SpecificationNames = specification.SpecificationName;
-                        }
-                    }
-                }
-            
-            var productList = productsDTOs.GroupBy(x => new { x.Status, }, (key, g) => new { StatusType = key.Status, productstatusList = g.ToList() });
-            foreach (var sp in productList)
-            {
-                AllProductsDTO status_Product = new AllProductsDTO();
-                status_Product.Status = sp.StatusType;
-
-                status_Product.ProductsByStatus = status_Product.ProductsByStatus == null ? new List<AllProductsDTO>() : status_Product.ProductsByStatus;
-                foreach (var prod in sp.productstatusList)
-                {
-                    AllProductsDTO allProducts = new AllProductsDTO();
-                    allProducts.SpecificationId = prod.SpecificationId;
-                    allProducts.Price = prod.Price;
-                    allProducts.Id = prod.Id;
-                    allProducts.Title = prod.Title;
-                    allProducts.ProductGUID = prod.ProductGUID;
-                    allProducts.Brand = prod.Brand;
-                    allProducts.OldPrice = prod.OldPrice;
-                    allProducts.Quantity = prod.Quantity;
-                    allProducts.orgId = prod.orgId;
-                    allProducts.BrandId = prod.BrandId;
-                    allProducts.CategoryId = prod.CategoryId;
-                    status_Product.ProductsByStatus.Add(allProducts);
-                }
-                productsDTOs.Add(status_Product);
-            }
-            
+            }                                            
             return productsDTOs;
         }
         public async Task<List<AllProductsDTO>> GetAllProductsByCategory(int? OrgId, int OrgCategoryId,int CategoryId)
         {
             List<AllProductsDTO> productsDTOs = new();
-            //productsDTOs.StausDetails = new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
                 string strSQL = "SP_GetAllProductsByCAtegoryid";
@@ -829,21 +785,7 @@ namespace Shoppite.Infrastructure.Repositories
                         productsDTOs.Add(productsDTO);
                     }
                 }
-            }
-            var SpecifcationArray = productsDTOs.ToArray();
-            for (int i = 0; i < SpecifcationArray.Length; i++)
-            {
-                var DefaultSpecification = await _MasterContext.ProductSpecifications.FirstOrDefaultAsync(x => x.ProductGuid == SpecifcationArray[i].ProductGUID && x.OrgId == SpecifcationArray[i].orgId && x.IsDefault == true);
-                if (DefaultSpecification != null)
-                {
-                    var specification = await _MasterContext.SpecificationSetups.FirstOrDefaultAsync(x => x.SpecificationId == DefaultSpecification.SpecificationId);
-                    if (specification != null)
-                    {
-                        SpecifcationArray[i].SpecificationId = (int)DefaultSpecification.SpecificationId;
-                        SpecifcationArray[i].SpecificationNames = specification.SpecificationName;
-                    }
-                }
-            }           
+            }                    
             return productsDTOs;
         }
     }

@@ -37,6 +37,6 @@ namespace Shoppite.Application.Queries
     public record GetAllOrganizationCategoryQuery() : IRequest<List<OrganizationCategoryResponse>>;
     public record GetAllParentCategories() : IRequest<List<MainCategoryResponse>>;
     public record GetAllCategoriesByParent(int MaincategoryId) : IRequest<List<CategoriesResponse>>;
-    public record GetAllProductsQuery(int? OrgId, int? OrgCategoryId) : IRequest<List<AllProductResponse>>;
+    public record GetAllProductsQuery(int? OrgId, int OrgCategoryId) : IRequest<List<AllProductResponse>>;
     public record GetAllProductsByCategoryQuery(int? OrgId, int OrgCategoryId,int CategoryId) : IRequest<List<AllProductResponse>>;
 }
