@@ -184,7 +184,7 @@ namespace Shoppite.API.Controllers
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetAllProducts(int? OrgId, int? OrgCategoryId)
+        public async Task<object> GetAllProducts(int? OrgId, int OrgCategoryId)
         {
             return await _mediator.Send(new GetAllProductsQuery(OrgId,OrgCategoryId));
         }
