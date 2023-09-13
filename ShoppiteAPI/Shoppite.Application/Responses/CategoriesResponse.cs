@@ -10,7 +10,7 @@ namespace Shoppite.Application.Responses
     {
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
-       // public int MainCategoryId { get; set; }
+        public int MainCategoryId { get; set; }
         public string CategoryImage { get; set; }
     }
 }

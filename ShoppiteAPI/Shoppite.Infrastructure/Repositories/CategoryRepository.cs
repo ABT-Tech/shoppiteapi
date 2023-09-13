@@ -91,7 +91,7 @@ namespace Shoppite.Infrastructure.Repositories
                                "Category_Master.Category_Name AS MainCategory, " +
                                "Category_Master.Icon AS MainCategoryImage " +
                                "FROM Category_Master " +
-                               "WhERE  Category_Master.Parent_Category_Id=0 AND Category_Master.OrgId=0 AND Category_Master.IspUBLISHED=1 Order by Category_Name asc "
+                               "WhERE  Category_Master.Parent_Category_Id=0 AND Category_Master.OrgId=0 AND Category_Master.IspUBLISHED=1 Order by Category_Id asc "
                                ;
 
                 command.CommandText = strSQL;
@@ -113,7 +113,7 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return categoryDtos;
         }
-        public async Task<List<CategoriesDTO>> GetAllSubCategories()
+        public async Task<List<CategoriesDTO>> GetAllSubCategories(int MainCategoryId)
         {
             
             List<CategoriesDTO> categoryDtos = new();
@@ -123,7 +123,7 @@ namespace Shoppite.Infrastructure.Repositories
                 command.CommandText = strSQL;
                 command.CommandType = CommandType.StoredProcedure;
                 var parameter = command.CreateParameter();
-               // command.Parameters.Add(new SqlParameter("@MainCategoryId", MainCategoryId));
+                command.Parameters.Add(new SqlParameter("@MainCategoryId", MainCategoryId));
 
                 await this._MasterContext.Database.OpenConnectionAsync();
                 using (var result = await command.ExecuteReaderAsync())
@@ -131,7 +131,7 @@ namespace Shoppite.Infrastructure.Repositories
                     while (await result.ReadAsync())
                     {
                         CategoriesDTO categoryDTO = new CategoriesDTO();
-                        //categoryDTO.MainCategoryId= Convert.ToInt32(result["MainCategoryId"]);
+                      //  categoryDTO.MainCategoryId= Convert.ToInt32(result["MainCategoryId"]);
                         categoryDTO.CategoryId= Convert.ToInt32(result["CategoryId"]);
                         categoryDTO.CategoryName=result["CategoryName"].ToString();
                         categoryDTO.CategoryImage= result["CategoryImage"].ToString();
