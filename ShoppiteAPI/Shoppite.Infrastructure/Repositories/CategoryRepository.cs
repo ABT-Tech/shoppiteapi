@@ -113,7 +113,7 @@ namespace Shoppite.Infrastructure.Repositories
             }
             return categoryDtos;
         }
-        public async Task<List<CategoriesDTO>> GetAllCategoriesByMainCategory(int MainCategoryId)
+        public async Task<List<CategoriesDTO>> GetAllSubCategories()
         {
             
             List<CategoriesDTO> categoryDtos = new();
@@ -123,7 +123,7 @@ namespace Shoppite.Infrastructure.Repositories
                 command.CommandText = strSQL;
                 command.CommandType = CommandType.StoredProcedure;
                 var parameter = command.CreateParameter();
-                command.Parameters.Add(new SqlParameter("@MainCategoryId", MainCategoryId));
+               // command.Parameters.Add(new SqlParameter("@MainCategoryId", MainCategoryId));
 
                 await this._MasterContext.Database.OpenConnectionAsync();
                 using (var result = await command.ExecuteReaderAsync())
@@ -131,7 +131,7 @@ namespace Shoppite.Infrastructure.Repositories
                     while (await result.ReadAsync())
                     {
                         CategoriesDTO categoryDTO = new CategoriesDTO();
-                        categoryDTO.MainCategoryId= Convert.ToInt32(result["MainCategoryId"]);
+                        //categoryDTO.MainCategoryId= Convert.ToInt32(result["MainCategoryId"]);
                         categoryDTO.CategoryId= Convert.ToInt32(result["CategoryId"]);
                         categoryDTO.CategoryName=result["CategoryName"].ToString();
                         categoryDTO.CategoryImage= result["CategoryImage"].ToString();

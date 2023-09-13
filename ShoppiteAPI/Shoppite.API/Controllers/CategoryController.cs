@@ -41,9 +41,9 @@ namespace Shoppite.API.Controllers
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<object> GetAllCategoriesByParent(int MainCategoryId)
+        public async Task<object> GetAllSubCategories()
         {
-            return await _mediator.Send(new GetAllCategoriesByParent(MainCategoryId));
+            return await _mediator.Send(new GetAllSubCategories());
         }
     }
 }
