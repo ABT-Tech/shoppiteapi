@@ -756,7 +756,7 @@ namespace Shoppite.Infrastructure.Repositories
             List<AllProductsDTO> productsDTOs = new();
             using (var command = this._MasterContext.Database.GetDbConnection().CreateCommand())
             {
-                string strSQL = "SP_GetAllProductsByCAtegoryid";
+                string strSQL = "SP_GetAllProductsByCategoryid";
 
                 command.CommandText = strSQL;
                 command.CommandType = CommandType.StoredProcedure;

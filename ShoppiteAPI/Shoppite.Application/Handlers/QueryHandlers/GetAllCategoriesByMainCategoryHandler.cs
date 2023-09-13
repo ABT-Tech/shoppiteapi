@@ -13,16 +13,16 @@ using System.Threading.Tasks;
 
 namespace Shoppite.Application.Handlers.QueryHandlers
 {
-   public class GetAllCategoriesByMainCategoryHandler : IRequestHandler<GetAllCategoriesByParent, List<CategoriesResponse>>
+   public class GetAllCategoriesByMainCategoryHandler : IRequestHandler<GetAllSubCategories, List<CategoriesResponse>>
     {
         private readonly ICategoryRepository _categoryRepository;
         public GetAllCategoriesByMainCategoryHandler(ICategoryRepository categoryRepository)
         {
             _categoryRepository = categoryRepository;
         }
-        public async Task<List<CategoriesResponse>> Handle(GetAllCategoriesByParent request, CancellationToken cancellationToken)
+        public async Task<List<CategoriesResponse>> Handle(GetAllSubCategories request, CancellationToken cancellationToken)
         {
-            var Categories = await _categoryRepository.GetAllCategoriesByMainCategory(request.MaincategoryId);
+            var Categories = await _categoryRepository.GetAllSubCategories();
             var mapper = ObjectMapper.Mapper.Map<List<CategoriesResponse>>(Categories);
             return mapper;
         }

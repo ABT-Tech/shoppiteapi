@@ -14,6 +14,6 @@ namespace Shoppite.Core.Repositories
         //custom operations here
         Task<List<CategoryDTO>> GetAllCategory(int? OrgId,int OrgCategoryId);
         Task<List<MainCategoryDTO>> GetAllParentcategories();
-        Task<List<CategoriesDTO>> GetAllCategoriesByMainCategory(int MainCategoryId);
+        Task<List<CategoriesDTO>> GetAllSubCategories();
     }
 }
